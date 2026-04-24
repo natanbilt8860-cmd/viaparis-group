@@ -68,9 +68,13 @@ const menuData = [
 
 const STORAGE_KEY = "via-paris-dashboard-data";
 const LANGUAGE_STORAGE_KEY = "via-paris-language";
+const SUPABASE_TABLE = "app_state";
+const SUPABASE_ROW_ID = "global";
 const HERO_DEFAULT_MEDIA = "assets/images/video-home.mp4";
 const HERO_FALLBACK_IMAGE = "assets/images/foto-2.png";
 let currentLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) || "pt-BR";
+const supabaseConfig = window.VIA_PARIS_SUPABASE || {};
+const supabaseClient = createSupabaseClient();
 
 const translations = {
   "pt-BR": {
@@ -308,68 +312,150 @@ const defaultState = {
   reservations: []
 };
 
-let state = loadState();
+let state = deepCopy(defaultState);
 let selectedEventId = null;
 let pendingEventFlyer = "";
 let pendingHeroMedia = "";
 let pendingGalleryImages = [];
 
+function createSupabaseClient() {
+  if (!window.supabase || !supabaseConfig.url || !supabaseConfig.anonKey) {
+    return null;
+  }
+
+  if (!/\.supabase\.co$/i.test(String(supabaseConfig.url).replace(/\/$/, ""))) {
+    console.warn("[Via Paris] Supabase URL invalida. Use a Project URL no formato https://<project-ref>.supabase.co");
+    return null;
+  }
+
+  try {
+    return window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey);
+  } catch (error) {
+    console.warn("[Via Paris] Falha ao iniciar cliente Supabase:", error);
+    return null;
+  }
+}
+
 function deepCopy(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-function loadState() {
+function mergeState(parsed) {
+  return {
+    ...deepCopy(defaultState),
+    ...parsed,
+    home: {
+      ...deepCopy(defaultState.home),
+      ...(parsed.home || {})
+    },
+    events: Array.isArray(parsed.events) ? parsed.events : deepCopy(defaultState.events),
+    tableTypes: Array.isArray(parsed.tableTypes) ? parsed.tableTypes : deepCopy(defaultState.tableTypes),
+    reservations: Array.isArray(parsed.reservations) ? parsed.reservations : []
+  };
+}
+
+function loadLocalState() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) return deepCopy(defaultState);
 
     const parsed = JSON.parse(saved);
-    return {
-      ...deepCopy(defaultState),
-      ...parsed,
-      home: {
-        ...deepCopy(defaultState.home),
-        ...(parsed.home || {})
-      },
-      events: Array.isArray(parsed.events) ? parsed.events : deepCopy(defaultState.events),
-      tableTypes: Array.isArray(parsed.tableTypes) ? parsed.tableTypes : deepCopy(defaultState.tableTypes),
-      reservations: Array.isArray(parsed.reservations) ? parsed.reservations : []
-    };
+    return mergeState(parsed);
   } catch (_error) {
     return deepCopy(defaultState);
   }
 }
 
-if (!state.home.heroMedia || state.home.heroMedia === "assets/images/foto-1.jpg") {
-  state.home.heroMedia = HERO_DEFAULT_MEDIA;
+async function loadState() {
+  const localState = loadLocalState();
+  if (!supabaseClient) return localState;
+
+  try {
+    const { data, error } = await supabaseClient
+      .from(SUPABASE_TABLE)
+      .select("state_json")
+      .eq("id", SUPABASE_ROW_ID)
+      .maybeSingle();
+
+    if (error) {
+      console.warn("[Via Paris] Falha ao ler estado do Supabase:", error.message || error);
+      return localState;
+    }
+
+    if (data && data.state_json && typeof data.state_json === "object") {
+      const mergedCloud = mergeState(data.state_json);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedCloud));
+      return mergedCloud;
+    }
+
+    await supabaseClient
+      .from(SUPABASE_TABLE)
+      .upsert({ id: SUPABASE_ROW_ID, state_json: localState }, { onConflict: "id" });
+
+    return localState;
+  } catch (error) {
+    console.warn("[Via Paris] Erro inesperado ao carregar estado do Supabase:", error);
+    return localState;
+  }
 }
 
-if (!isVideoSource(state.home.heroMedia)) {
-  state.home.heroMedia = HERO_DEFAULT_MEDIA;
-}
+function normalizeState() {
+  if (!state.home.heroMedia || state.home.heroMedia === "assets/images/foto-1.jpg") {
+    state.home.heroMedia = HERO_DEFAULT_MEDIA;
+  }
 
-if (state.home.heroImage === HERO_DEFAULT_MEDIA) {
-  state.home.heroImage = HERO_FALLBACK_IMAGE;
-}
+  if (!isVideoSource(state.home.heroMedia)) {
+    state.home.heroMedia = HERO_DEFAULT_MEDIA;
+  }
 
-if (!state.home.heroMedia) {
-  state.home.heroMedia = state.home.heroImage || defaultState.home.heroMedia;
-}
+  if (state.home.heroImage === HERO_DEFAULT_MEDIA) {
+    state.home.heroImage = HERO_FALLBACK_IMAGE;
+  }
 
-if (!state.home.heroImage || state.home.heroImage === "assets/images/foto-1.jpg") {
-  state.home.heroImage = HERO_FALLBACK_IMAGE;
-}
+  if (!state.home.heroMedia) {
+    state.home.heroMedia = state.home.heroImage || defaultState.home.heroMedia;
+  }
 
-if (Array.isArray(state.home.gallery)) {
-  state.home.gallery = state.home.gallery.filter((image) => image && image.src !== "assets/images/foto-1.jpg");
-}
+  if (!state.home.heroImage || state.home.heroImage === "assets/images/foto-1.jpg") {
+    state.home.heroImage = HERO_FALLBACK_IMAGE;
+  }
 
-if (!state.home.gallery.length) {
-  state.home.gallery = deepCopy(defaultState.home.gallery);
+  if (Array.isArray(state.home.gallery)) {
+    state.home.gallery = state.home.gallery.filter((image) => image && image.src !== "assets/images/foto-1.jpg");
+  }
+
+  if (!state.home.gallery.length) {
+    state.home.gallery = deepCopy(defaultState.home.gallery);
+  }
 }
 
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  void saveStateToCloud();
+}
+
+async function saveStateToCloud() {
+  if (!supabaseClient) return;
+
+  try {
+    const { error } = await supabaseClient
+      .from(SUPABASE_TABLE)
+      .upsert(
+        {
+          id: SUPABASE_ROW_ID,
+          state_json: state,
+          updated_at: new Date().toISOString()
+        },
+        { onConflict: "id" }
+      );
+
+    if (error) {
+      console.warn("[Via Paris] Falha ao salvar no Supabase:", error.message || error);
+    }
+  } catch (error) {
+    console.warn("[Via Paris] Erro inesperado ao salvar no Supabase:", error);
+    // Keep local data working even when cloud sync fails.
+  }
 }
 
 function makeId(prefix) {
@@ -1001,11 +1087,18 @@ function setupAdmin() {
   }
 }
 
-renderMenu();
-applyHomeImages();
-renderGallery();
-renderEvents();
-setupMobileMenu();
-setupLightbox();
-setupEvents();
-setupAdmin();
+async function initApp() {
+  state = await loadState();
+  normalizeState();
+
+  renderMenu();
+  applyHomeImages();
+  renderGallery();
+  renderEvents();
+  setupMobileMenu();
+  setupLightbox();
+  setupEvents();
+  setupAdmin();
+}
+
+void initApp();

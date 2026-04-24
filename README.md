@@ -39,6 +39,56 @@ Site organizado em pastas para facilitar manutencao.
 - Faça login na conta Vercel e confirme os prompts
 - Para publicar em producao: `vercel --prod`
 
+## Conectar com Supabase (salvar dados online)
+
+O projeto ja esta preparado para sincronizar os dados de eventos/mesas/reservas/fotos no Supabase.
+
+1. Crie um projeto em `https://supabase.com`.
+2. No SQL Editor, rode:
+
+```sql
+create table if not exists public.app_state (
+	id text primary key,
+	state_json jsonb not null,
+	updated_at timestamptz not null default now()
+);
+
+grant usage on schema public to anon;
+grant select, insert, update on table public.app_state to anon;
+
+alter table public.app_state enable row level security;
+
+drop policy if exists "public read app_state" on public.app_state;
+create policy "public read app_state"
+on public.app_state
+for select
+to anon
+using (true);
+
+drop policy if exists "public insert app_state" on public.app_state;
+create policy "public insert app_state"
+on public.app_state
+for insert
+to anon
+with check (true);
+
+drop policy if exists "public update app_state" on public.app_state;
+create policy "public update app_state"
+on public.app_state
+for update
+to anon
+using (true)
+with check (true);
+```
+
+3. Abra `assets/js/supabase-config.js` e preencha:
+- `url`: Project URL do Supabase
+- `anonKey`: chave anon/publica do Supabase
+
+4. Faça deploy novamente na Vercel.
+
+Observacao: com essa configuracao, qualquer pessoa que conheca sua URL pode gravar dados na tabela. Para seguranca forte, o ideal e proteger gravacao com autenticacao ou Edge Function.
+
 ## URLs apos publicar
 
 - Site principal: `https://seu-dominio/`
