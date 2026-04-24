@@ -106,7 +106,7 @@ O projeto agora envia notificacao automaticamente ao confirmar uma reserva, sem 
 
 Como configurar na Vercel (Project Settings > Environment Variables):
 
-- `WHATSAPP_ACCESS_TOKEN`: token da Meta WhatsApp Cloud API
+- `WHATSAPP_ACCESS_TOKEN`: token da Meta WhatsApp Cloud API (nunca colocar no codigo/README)
 - `WHATSAPP_PHONE_NUMBER_ID`: Phone Number ID da conta WhatsApp Business
 - `WHATSAPP_TEAM_NUMBER`: numero que recebe alerta (formato internacional, so numeros, ex: `32465557160`)
 - `WHATSAPP_API_VERSION` (opcional): padrao `v21.0`
