@@ -63,6 +63,7 @@ module.exports = async function handler(req, res) {
     const result = await response.json();
 
     if (!response.ok) {
+      console.error("WhatsApp API error:", JSON.stringify(result));
       return res.status(response.status).json({
         error: "WhatsApp API error",
         details: result
