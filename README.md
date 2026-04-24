@@ -87,6 +87,11 @@ with check (true);
 
 4. Faça deploy novamente na Vercel.
 
+Sincronizacao atual:
+- Toda alteracao feita no painel `diretoria-admin` (eventos, mesas e midia da home) salva localmente e tenta salvar no Supabase na hora.
+- Toda nova reserva de mesa tambem salva localmente e sincroniza no Supabase.
+- Se a internet falhar ou o Supabase recusar no momento, o site guarda a pendencia e tenta novamente automaticamente quando voltar conexao/aba.
+
 Observacao: com essa configuracao, qualquer pessoa que conheca sua URL pode gravar dados na tabela. Para seguranca forte, o ideal e proteger gravacao com autenticacao ou Edge Function.
 
 ## URLs apos publicar

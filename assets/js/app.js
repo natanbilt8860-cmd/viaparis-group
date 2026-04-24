@@ -70,6 +70,8 @@ const STORAGE_KEY = "via-paris-dashboard-data";
 const LANGUAGE_STORAGE_KEY = "via-paris-language";
 const SUPABASE_TABLE = "app_state";
 const SUPABASE_ROW_ID = "global";
+const PENDING_SYNC_KEY = "via-paris-pending-sync";
+const SUPABASE_RETRY_DELAY_MS = 3000;
 const HERO_DEFAULT_MEDIA = "assets/images/video-home.mp4";
 const HERO_FALLBACK_IMAGE = "assets/images/foto-2.png";
 let currentLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) || "pt-BR";
@@ -317,6 +319,8 @@ let selectedEventId = null;
 let pendingEventFlyer = "";
 let pendingHeroMedia = "";
 let pendingGalleryImages = [];
+let syncRetryTimer = null;
+let syncInFlight = false;
 
 function createSupabaseClient() {
   if (!window.supabase || !supabaseConfig.url || !supabaseConfig.anonKey) {
@@ -431,11 +435,37 @@ function normalizeState() {
 
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  void saveStateToCloud();
+  markPendingSync();
+  void flushStateToCloud();
 }
 
-async function saveStateToCloud() {
-  if (!supabaseClient) return;
+function hasPendingSync() {
+  return localStorage.getItem(PENDING_SYNC_KEY) === "1";
+}
+
+function markPendingSync() {
+  localStorage.setItem(PENDING_SYNC_KEY, "1");
+}
+
+function clearPendingSync() {
+  localStorage.removeItem(PENDING_SYNC_KEY);
+}
+
+function scheduleSyncRetry() {
+  if (!supabaseClient || syncRetryTimer) return;
+
+  syncRetryTimer = window.setTimeout(() => {
+    syncRetryTimer = null;
+    void flushStateToCloud();
+  }, SUPABASE_RETRY_DELAY_MS);
+}
+
+async function flushStateToCloud() {
+  if (!supabaseClient) return false;
+  if (!hasPendingSync()) return true;
+  if (syncInFlight) return false;
+
+  syncInFlight = true;
 
   try {
     const { error } = await supabaseClient
@@ -451,10 +481,18 @@ async function saveStateToCloud() {
 
     if (error) {
       console.warn("[Via Paris] Falha ao salvar no Supabase:", error.message || error);
+      scheduleSyncRetry();
+      return false;
     }
+
+    clearPendingSync();
+    return true;
   } catch (error) {
     console.warn("[Via Paris] Erro inesperado ao salvar no Supabase:", error);
-    // Keep local data working even when cloud sync fails.
+    scheduleSyncRetry();
+    return false;
+  } finally {
+    syncInFlight = false;
   }
 }
 
@@ -1099,6 +1137,23 @@ async function initApp() {
   setupLightbox();
   setupEvents();
   setupAdmin();
+
+  // If there are local changes pending cloud sync, keep retrying in the background.
+  if (hasPendingSync()) {
+    void flushStateToCloud();
+  }
 }
 
 void initApp();
+
+window.addEventListener("online", () => {
+  if (hasPendingSync()) {
+    void flushStateToCloud();
+  }
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && hasPendingSync()) {
+    void flushStateToCloud();
+  }
+});
