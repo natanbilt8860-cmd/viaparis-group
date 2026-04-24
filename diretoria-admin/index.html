@@ -40,6 +40,7 @@
             <article class="admin-card">
               <h3>Eventos</h3>
               <form id="event-form" class="admin-form">
+                <input id="event-edit-id" type="hidden" />
                 <input id="event-title" type="text" placeholder="Nome da festa" required />
                 <input id="event-date" type="text" placeholder="Data e horario" required />
                 <input id="event-price" type="text" placeholder="Valor da entrada (ex.: 15 EUR)" required />
@@ -51,7 +52,8 @@
                 <input id="event-flyer-file" class="upload-input" type="file" accept="image/*" />
                 <img id="event-flyer-preview" class="upload-preview" alt="Preview do flyer" hidden />
 
-                <button class="btn btn-primary" type="submit">Adicionar evento</button>
+                <button id="event-save-btn" class="btn btn-primary" type="button">Adicionar evento</button>
+                <button id="event-cancel-edit" class="btn btn-outline" type="button" hidden>Cancelar edicao</button>
               </form>
               <div id="admin-events-list" class="admin-list"></div>
             </article>
@@ -59,13 +61,15 @@
             <article class="admin-card">
               <h3>Mesas</h3>
               <form id="table-form" class="admin-form">
+                <input id="table-edit-id" type="hidden" />
                 <select id="table-event-id" required>
                   <option value="">Selecione o evento</option>
                 </select>
                 <input id="table-name" type="text" placeholder="Nome da mesa (VIP, Lounge...)" required />
                 <input id="table-qty" type="number" min="1" placeholder="Quantidade disponivel" required />
                 <input id="table-notes" type="text" placeholder="Observacao (opcional)" />
-                <button class="btn btn-primary" type="submit">Adicionar mesa</button>
+                <button id="table-save-btn" class="btn btn-primary" type="button">Adicionar mesa</button>
+                <button id="table-cancel-edit" class="btn btn-outline" type="button" hidden>Cancelar edicao</button>
               </form>
               <div id="admin-tables-list" class="admin-list"></div>
             </article>

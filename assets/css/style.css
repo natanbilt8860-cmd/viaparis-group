@@ -400,6 +400,7 @@ h2 {
 .reservation-form select,
 .reservation-form textarea,
 .admin-form input,
+.admin-form select,
 .admin-form textarea {
   width: 100%;
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -493,6 +494,11 @@ h2 {
   color: var(--text);
   padding: 6px 10px;
   cursor: pointer;
+}
+
+.admin-item-actions {
+  display: flex;
+  gap: 8px;
 }
 
 .upload-dropzone {

@@ -958,7 +958,10 @@ function renderAdminLists() {
             <strong>${eventItem.title}</strong>
             <p>${eventItem.date} · Entrada ${eventItem.entryPrice}</p>
           </div>
-          <button type="button" data-delete-event="${eventItem.id}">Remover</button>
+          <div class="admin-item-actions">
+            <button type="button" data-edit-event="${eventItem.id}">Editar</button>
+            <button type="button" data-delete-event="${eventItem.id}">Remover</button>
+          </div>
         </div>
       `
     )
@@ -989,7 +992,10 @@ function renderAdminLists() {
                 <strong>${tableType.name}</strong>
                 <p>${eventItem.title} · ${tableType.quantity} mesas · ${reservations} reservas</p>
               </div>
-              <button type="button" data-delete-table="${tableType.id}" data-event-id="${eventItem.id}">Remover</button>
+              <div class="admin-item-actions">
+                <button type="button" data-edit-table="${tableType.id}" data-event-id="${eventItem.id}">Editar</button>
+                <button type="button" data-delete-table="${tableType.id}" data-event-id="${eventItem.id}">Remover</button>
+              </div>
             </div>
           `;
         })
@@ -1010,8 +1016,161 @@ function setupAdmin() {
   const eventList = document.getElementById("admin-events-list");
   const tableList = document.getElementById("admin-tables-list");
   const eventFlyerFile = document.getElementById("event-flyer-file");
+  const eventSaveBtn = document.getElementById("event-save-btn");
+  const eventCancelEditBtn = document.getElementById("event-cancel-edit");
+  const eventEditId = document.getElementById("event-edit-id");
   const heroPhotoFile = document.getElementById("hero-photo-file");
   const galleryFiles = document.getElementById("gallery-files");
+  const tableSaveBtn = document.getElementById("table-save-btn");
+  const tableCancelEditBtn = document.getElementById("table-cancel-edit");
+  const tableEditId = document.getElementById("table-edit-id");
+
+  const resetEventFormState = () => {
+    if (!(eventForm instanceof HTMLFormElement)) return;
+    eventForm.reset();
+    pendingEventFlyer = "";
+    if (eventEditId instanceof HTMLInputElement) {
+      eventEditId.value = "";
+    }
+    if (eventSaveBtn instanceof HTMLButtonElement) {
+      eventSaveBtn.textContent = "Adicionar evento";
+    }
+    if (eventCancelEditBtn instanceof HTMLButtonElement) {
+      eventCancelEditBtn.hidden = true;
+    }
+    setPreviewImage("event-flyer-preview", "");
+    if (eventFlyerFile instanceof HTMLInputElement) {
+      eventFlyerFile.value = "";
+    }
+  };
+
+  const resetTableFormState = () => {
+    if (!(tableForm instanceof HTMLFormElement)) return;
+    tableForm.reset();
+    if (tableEditId instanceof HTMLInputElement) {
+      tableEditId.value = "";
+    }
+    if (tableSaveBtn instanceof HTMLButtonElement) {
+      tableSaveBtn.textContent = "Adicionar mesa";
+    }
+    if (tableCancelEditBtn instanceof HTMLButtonElement) {
+      tableCancelEditBtn.hidden = true;
+    }
+  };
+
+  const handleEventSave = () => {
+    const title = document.getElementById("event-title");
+    const date = document.getElementById("event-date");
+    const price = document.getElementById("event-price");
+    const details = document.getElementById("event-details");
+
+    if (
+      !(title instanceof HTMLInputElement) ||
+      !(date instanceof HTMLInputElement) ||
+      !(price instanceof HTMLInputElement) ||
+      !(details instanceof HTMLTextAreaElement)
+    ) {
+      return;
+    }
+
+    if (!title.value.trim() || !date.value.trim() || !price.value.trim() || !details.value.trim()) {
+      alert("Preencha todos os campos do evento.");
+      return;
+    }
+
+    const editingId = eventEditId instanceof HTMLInputElement ? eventEditId.value : "";
+    const editingEvent = editingId ? state.events.find((item) => item.id === editingId) : null;
+
+    let flyerToSave = pendingEventFlyer;
+    if (!flyerToSave && editingEvent) {
+      flyerToSave = editingEvent.flyer;
+    }
+    if (!flyerToSave) {
+      flyerToSave = state.home.gallery[0] ? state.home.gallery[0].src : HERO_FALLBACK_IMAGE;
+    }
+
+    if (editingEvent) {
+      editingEvent.title = title.value.trim();
+      editingEvent.date = date.value.trim();
+      editingEvent.entryPrice = price.value.trim();
+      editingEvent.details = details.value.trim();
+      editingEvent.flyer = flyerToSave;
+    } else {
+      const newEventId = makeId("evento");
+      state.events.push({
+        id: newEventId,
+        title: title.value.trim(),
+        date: date.value.trim(),
+        flyer: flyerToSave,
+        entryPrice: price.value.trim(),
+        details: details.value.trim()
+      });
+
+      state.eventTableTypes[newEventId] = deepCopy(defaultState.tableTypes).map((tableType) => ({
+        ...tableType,
+        id: makeId("mesa")
+      }));
+    }
+
+    saveState();
+    resetEventFormState();
+    renderEvents();
+    renderAdminLists();
+  };
+
+  const handleTableSave = () => {
+    const name = document.getElementById("table-name");
+    const qty = document.getElementById("table-qty");
+    const notes = document.getElementById("table-notes");
+    const eventIdSelect = document.getElementById("table-event-id");
+
+    if (
+      !(name instanceof HTMLInputElement) ||
+      !(qty instanceof HTMLInputElement) ||
+      !(notes instanceof HTMLInputElement) ||
+      !(eventIdSelect instanceof HTMLSelectElement)
+    ) {
+      return;
+    }
+
+    const eventId = eventIdSelect.value;
+    if (!eventId) {
+      alert("Selecione o evento para cadastrar essa mesa.");
+      return;
+    }
+
+    if (!name.value.trim()) {
+      alert("Informe o nome da mesa.");
+      return;
+    }
+
+    if (!Array.isArray(state.eventTableTypes[eventId])) {
+      state.eventTableTypes[eventId] = [];
+    }
+
+    const editingId = tableEditId instanceof HTMLInputElement ? tableEditId.value : "";
+    const existing = editingId ? state.eventTableTypes[eventId].find((item) => item.id === editingId) : null;
+
+    if (existing) {
+      existing.name = name.value.trim();
+      existing.quantity = Math.max(Number(qty.value) || 1, 1);
+      existing.notes = notes.value.trim();
+    } else {
+      state.eventTableTypes[eventId].push({
+        id: makeId("mesa"),
+        name: name.value.trim(),
+        quantity: Math.max(Number(qty.value) || 1, 1),
+        notes: notes.value.trim()
+      });
+    }
+
+    saveState();
+    resetTableFormState();
+    renderAdminLists();
+    if (selectedEventId === eventId) {
+      renderTableOptions(eventId);
+    }
+  };
 
   if (
     !(loginWrap instanceof HTMLElement) ||
@@ -1037,7 +1196,8 @@ function setupAdmin() {
     pendingHeroMedia = "";
     pendingGalleryImages = [];
 
-    setPreviewImage("event-flyer-preview", "");
+    resetEventFormState();
+    resetTableFormState();
     setHeroPreview(state.home.heroMedia || state.home.heroImage);
     setGalleryPreview(state.home.gallery.map((item) => item.src));
 
@@ -1052,89 +1212,31 @@ function setupAdmin() {
   if (eventForm instanceof HTMLFormElement) {
     eventForm.addEventListener("submit", (event) => {
       event.preventDefault();
-      const title = document.getElementById("event-title");
-      const date = document.getElementById("event-date");
-      const price = document.getElementById("event-price");
-      const details = document.getElementById("event-details");
-
-      if (
-        !(title instanceof HTMLInputElement) ||
-        !(date instanceof HTMLInputElement) ||
-        !(price instanceof HTMLInputElement) ||
-        !(details instanceof HTMLTextAreaElement)
-      ) {
-        return;
-      }
-
-      if (!pendingEventFlyer) {
-        pendingEventFlyer = state.home.gallery[0] ? state.home.gallery[0].src : HERO_FALLBACK_IMAGE;
-      }
-
-      const newEventId = makeId("evento");
-      state.events.push({
-        id: newEventId,
-        title: title.value.trim(),
-        date: date.value.trim(),
-        flyer: pendingEventFlyer,
-        entryPrice: price.value.trim(),
-        details: details.value.trim()
-      });
-
-      state.eventTableTypes[newEventId] = deepCopy(defaultState.tableTypes).map((tableType) => ({
-        ...tableType,
-        id: makeId("mesa")
-      }));
-
-      saveState();
-      eventForm.reset();
-      pendingEventFlyer = "";
-      setPreviewImage("event-flyer-preview", "");
-      if (eventFlyerFile instanceof HTMLInputElement) {
-        eventFlyerFile.value = "";
-      }
-      renderEvents();
-      renderAdminLists();
+      handleEventSave();
     });
+  }
+
+  if (eventSaveBtn instanceof HTMLButtonElement) {
+    eventSaveBtn.addEventListener("click", handleEventSave);
+  }
+
+  if (eventCancelEditBtn instanceof HTMLButtonElement) {
+    eventCancelEditBtn.addEventListener("click", resetEventFormState);
   }
 
   if (tableForm instanceof HTMLFormElement) {
     tableForm.addEventListener("submit", (event) => {
       event.preventDefault();
-
-      const name = document.getElementById("table-name");
-      const qty = document.getElementById("table-qty");
-      const notes = document.getElementById("table-notes");
-      const eventIdSelect = document.getElementById("table-event-id");
-      if (
-        !(name instanceof HTMLInputElement) ||
-        !(qty instanceof HTMLInputElement) ||
-        !(notes instanceof HTMLInputElement) ||
-        !(eventIdSelect instanceof HTMLSelectElement)
-      ) {
-        return;
-      }
-
-      const eventId = eventIdSelect.value;
-      if (!eventId) {
-        alert("Selecione o evento para cadastrar essa mesa.");
-        return;
-      }
-
-      if (!Array.isArray(state.eventTableTypes[eventId])) {
-        state.eventTableTypes[eventId] = [];
-      }
-
-      state.eventTableTypes[eventId].push({
-        id: makeId("mesa"),
-        name: name.value.trim(),
-        quantity: Math.max(Number(qty.value) || 1, 1),
-        notes: notes.value.trim()
-      });
-
-      saveState();
-      tableForm.reset();
-      renderAdminLists();
+      handleTableSave();
     });
+  }
+
+  if (tableSaveBtn instanceof HTMLButtonElement) {
+    tableSaveBtn.addEventListener("click", handleTableSave);
+  }
+
+  if (tableCancelEditBtn instanceof HTMLButtonElement) {
+    tableCancelEditBtn.addEventListener("click", resetTableFormState);
   }
 
   if (homeForm instanceof HTMLFormElement) {
@@ -1194,7 +1296,41 @@ function setupAdmin() {
     eventList.addEventListener("click", (event) => {
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
+      const editEventId = target.getAttribute("data-edit-event");
       const eventId = target.getAttribute("data-delete-event");
+
+      if (editEventId) {
+        const eventItem = state.events.find((item) => item.id === editEventId);
+        const title = document.getElementById("event-title");
+        const date = document.getElementById("event-date");
+        const price = document.getElementById("event-price");
+        const details = document.getElementById("event-details");
+        if (
+          eventItem &&
+          title instanceof HTMLInputElement &&
+          date instanceof HTMLInputElement &&
+          price instanceof HTMLInputElement &&
+          details instanceof HTMLTextAreaElement
+        ) {
+          title.value = eventItem.title;
+          date.value = eventItem.date;
+          price.value = eventItem.entryPrice;
+          details.value = eventItem.details;
+          if (eventEditId instanceof HTMLInputElement) {
+            eventEditId.value = eventItem.id;
+          }
+          pendingEventFlyer = "";
+          setPreviewImage("event-flyer-preview", eventItem.flyer);
+          if (eventSaveBtn instanceof HTMLButtonElement) {
+            eventSaveBtn.textContent = "Salvar evento";
+          }
+          if (eventCancelEditBtn instanceof HTMLButtonElement) {
+            eventCancelEditBtn.hidden = false;
+          }
+        }
+        return;
+      }
+
       if (!eventId) return;
 
       state.events = state.events.filter((item) => item.id !== eventId);
@@ -1210,8 +1346,42 @@ function setupAdmin() {
     tableList.addEventListener("click", (event) => {
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
+      const editTableId = target.getAttribute("data-edit-table");
       const tableId = target.getAttribute("data-delete-table");
       const eventId = target.getAttribute("data-event-id");
+
+      if (editTableId && eventId) {
+        const eventTables = getEventTableTypes(eventId);
+        const tableItem = eventTables.find((item) => item.id === editTableId);
+        const eventIdSelect = document.getElementById("table-event-id");
+        const name = document.getElementById("table-name");
+        const qty = document.getElementById("table-qty");
+        const notes = document.getElementById("table-notes");
+
+        if (
+          tableItem &&
+          eventIdSelect instanceof HTMLSelectElement &&
+          name instanceof HTMLInputElement &&
+          qty instanceof HTMLInputElement &&
+          notes instanceof HTMLInputElement
+        ) {
+          eventIdSelect.value = eventId;
+          name.value = tableItem.name;
+          qty.value = String(tableItem.quantity);
+          notes.value = tableItem.notes || "";
+          if (tableEditId instanceof HTMLInputElement) {
+            tableEditId.value = tableItem.id;
+          }
+          if (tableSaveBtn instanceof HTMLButtonElement) {
+            tableSaveBtn.textContent = "Salvar mesa";
+          }
+          if (tableCancelEditBtn instanceof HTMLButtonElement) {
+            tableCancelEditBtn.hidden = false;
+          }
+        }
+        return;
+      }
+
       if (!tableId) return;
 
       if (!eventId || !Array.isArray(state.eventTableTypes[eventId])) return;
