@@ -7,6 +7,8 @@ module.exports = async function handler(req, res) {
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
   const teamNumber = process.env.WHATSAPP_TEAM_NUMBER;
   const apiVersion = process.env.WHATSAPP_API_VERSION || "v21.0";
+  const templateName = process.env.WHATSAPP_TEMPLATE_NAME;
+  const templateLanguage = process.env.WHATSAPP_TEMPLATE_LANGUAGE || "pt_BR";
 
   if (!accessToken || !phoneNumberId || !teamNumber) {
     return res.status(500).json({
@@ -40,6 +42,47 @@ module.exports = async function handler(req, res) {
       `Criada em: ${createdAt || new Date().toISOString()}`
     ].join("\n");
 
+    const templateParams = [
+      name || "-",
+      eventTitle || "-",
+      eventDate || "-",
+      tableName || "-",
+      String(guests || "-"),
+      phone || "-",
+      note || "-"
+    ];
+
+    const requestBody = templateName
+      ? {
+          messaging_product: "whatsapp",
+          to: teamNumber,
+          type: "template",
+          template: {
+            name: templateName,
+            language: {
+              code: templateLanguage
+            },
+            components: [
+              {
+                type: "body",
+                parameters: templateParams.map((value) => ({
+                  type: "text",
+                  text: value
+                }))
+              }
+            ]
+          }
+        }
+      : {
+          messaging_product: "whatsapp",
+          to: teamNumber,
+          type: "text",
+          text: {
+            body: message,
+            preview_url: false
+          }
+        };
+
     const response = await fetch(
       `https://graph.facebook.com/${apiVersion}/${phoneNumberId}/messages`,
       {
@@ -48,15 +91,7 @@ module.exports = async function handler(req, res) {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          messaging_product: "whatsapp",
-          to: teamNumber,
-          type: "text",
-          text: {
-            body: message,
-            preview_url: false
-          }
-        })
+        body: JSON.stringify(requestBody)
       }
     );
 
