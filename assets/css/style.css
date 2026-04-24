@@ -1,0 +1,794 @@
+:root {
+  --bg: #0c0c0c;
+  --panel: #171717;
+  --text: #f3efe7;
+  --muted: #b6ae9f;
+  --accent: #df932f;
+  --accent-2: #b56b14;
+  --line: rgba(223, 147, 47, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Manrope", sans-serif;
+  background:
+    radial-gradient(1200px 600px at 10% -20%, rgba(223, 147, 47, 0.25), transparent 60%),
+    radial-gradient(1000px 500px at 100% 10%, rgba(223, 147, 47, 0.15), transparent 55%),
+    var(--bg);
+  color: var(--text);
+}
+
+.container {
+  width: min(1120px, 92%);
+  margin: 0 auto;
+}
+
+.section {
+  padding: 88px 0;
+}
+
+.section-dark {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+}
+
+.kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+  font-size: 0.76rem;
+  margin-bottom: 10px;
+}
+
+h1,
+h2,
+.brand {
+  font-family: "Bebas Neue", sans-serif;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(2.8rem, 8vw, 5.2rem);
+  line-height: 0.95;
+}
+
+h2 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 14px;
+}
+
+.lead,
+.section-intro {
+  color: var(--muted);
+  max-width: 66ch;
+  line-height: 1.6;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(12, 12, 12, 0.84);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(6px);
+}
+
+.nav-wrap {
+  min-height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.brand-logo {
+  width: 132px;
+  height: auto;
+  display: block;
+}
+
+.main-nav {
+  display: flex;
+  gap: 24px;
+}
+
+.main-nav a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.96rem;
+}
+
+.main-nav a:hover {
+  color: var(--accent);
+}
+
+.menu-toggle {
+  display: none;
+  border: 0;
+  background: transparent;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--text);
+  margin: 6px 0;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 28px;
+  align-items: center;
+  position: relative;
+}
+
+.hero-actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-image-wrap {
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hero-image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-video {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-mascotte {
+  position: absolute;
+  right: -390px;
+  bottom: -150px;
+  width: clamp(420px, 50vw, 720px);
+  height: auto;
+  z-index: 2;
+  pointer-events: none;
+  filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.42));
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  min-height: 44px;
+  padding: 0 20px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #0b0b0b;
+}
+
+.btn-primary:hover {
+  background: var(--accent-2);
+  color: #fff;
+}
+
+.btn-outline {
+  border-color: var(--line);
+  color: var(--text);
+}
+
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.menu-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.menu-card h3 {
+  font-family: "Bebas Neue", sans-serif;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  font-size: 1.55rem;
+  margin: 0 0 10px;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+  gap: 12px;
+}
+
+.menu-item strong {
+  font-size: 0.95rem;
+}
+
+.menu-item span {
+  color: var(--accent);
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.gallery-grid img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.gallery-grid img:hover {
+  transform: translateY(-3px);
+}
+
+.reservation-box {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(223, 147, 47, 0.08), transparent);
+  padding: 28px;
+}
+
+.reservation-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.event-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  padding: 0;
+}
+
+.event-card img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+}
+
+.event-card-body {
+  padding: 12px;
+}
+
+.event-card-body h3 {
+  margin: 0 0 4px;
+  font-size: 1.1rem;
+}
+
+.event-card-body p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.reservation-contact {
+  margin-top: 14px;
+}
+
+.event-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.85);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.event-modal[hidden] {
+  display: none !important;
+}
+
+.event-modal-card {
+  width: min(980px, 100%);
+  max-height: 90vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 18px;
+  background: #151515;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  padding: 16px;
+  position: relative;
+}
+
+.event-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  cursor: pointer;
+}
+
+.event-modal-flyer {
+  width: 100%;
+  max-height: 72vh;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  object-fit: cover;
+}
+
+.event-modal-content {
+  min-width: 0;
+}
+
+.event-modal-content h3 {
+  margin: 0 0 8px;
+  font-size: 1.8rem;
+  font-family: "Bebas Neue", sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.event-price {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.reservation-form,
+.admin-form {
+  display: grid;
+  gap: 10px;
+}
+
+.reservation-form input,
+.reservation-form select,
+.reservation-form textarea,
+.admin-form input,
+.admin-form textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background: #111;
+  color: var(--text);
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.reservation-feedback {
+  min-height: 24px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.admin-login {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+  max-width: 460px;
+}
+
+.admin-login input {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background: #111;
+  color: var(--text);
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.admin-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.admin-panel {
+  margin-top: 18px;
+}
+
+.admin-actions {
+  margin-bottom: 14px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 14px;
+}
+
+.admin-card h3 {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-family: "Bebas Neue", sans-serif;
+  letter-spacing: 0.03em;
+  font-size: 1.6rem;
+}
+
+.admin-list {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.admin-item {
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-item button {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.upload-dropzone {
+  border: 1px dashed rgba(255, 255, 255, 0.28);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.upload-dropzone:hover,
+.upload-dropzone:focus-visible,
+.upload-dropzone.drag-over {
+  border-color: var(--accent);
+  background: rgba(223, 147, 47, 0.1);
+  outline: none;
+}
+
+.upload-input {
+  display: none;
+}
+
+.upload-preview {
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.upload-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.upload-preview-grid img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: grid;
+  place-items: center;
+  z-index: 25;
+  padding: 20px;
+}
+
+.lightbox[hidden] {
+  display: none !important;
+}
+
+.lightbox img {
+  max-width: min(1000px, 90vw);
+  max-height: 85vh;
+  border-radius: 10px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.site-footer {
+  padding: 34px 0 42px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-logo {
+  width: 110px;
+  height: auto;
+}
+
+@media (max-width: 960px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-mascotte {
+    right: -92px;
+    bottom: -164px;
+    width: 280px;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .events-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-modal-card {
+    grid-template-columns: 1fr;
+  }
+
+  .upload-preview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .main-nav {
+    position: absolute;
+    top: 74px;
+    right: 4%;
+    left: 4%;
+    background: #141414;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 12px;
+    flex-direction: column;
+    display: none;
+  }
+
+  .main-nav.open {
+    display: flex;
+  }
+
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reservation-box {
+    padding: 18px 14px;
+    border-radius: 14px;
+  }
+
+  .events-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .event-card {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+  }
+
+  .event-card img {
+    aspect-ratio: 4 / 5;
+  }
+
+  .event-card-body {
+    padding: 10px;
+  }
+
+  .event-card-body h3 {
+    font-size: 1rem;
+  }
+
+  .event-card-body p {
+    font-size: 0.88rem;
+  }
+
+  .reservation-actions .btn {
+    width: 100%;
+  }
+
+  .event-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+  }
+
+  .event-modal-card {
+    width: calc(100vw - 16px);
+    max-width: 420px;
+    max-height: calc(100vh - 16px);
+    grid-template-columns: minmax(0, 1fr);
+    padding: 10px;
+    gap: 10px;
+    border-radius: 12px;
+    margin: 0;
+    left: auto;
+    right: auto;
+  }
+
+  .event-modal-flyer {
+    width: 100%;
+    max-width: 100%;
+    max-height: 34vh;
+    border-radius: 8px;
+  }
+
+  .event-modal-content,
+  .reservation-form,
+  .reservation-feedback {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .event-modal-content h3 {
+    font-size: 1.4rem;
+    padding-right: 34px;
+    line-height: 1;
+  }
+
+  .event-modal-close {
+    top: 8px;
+    right: 8px;
+  }
+
+  .reservation-form h4 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .reservation-form {
+    gap: 8px;
+  }
+
+  .reservation-form input,
+  .reservation-form select,
+  .reservation-form textarea {
+    padding: 10px 12px;
+  }
+
+  .hero-mascotte {
+    right: -108px;
+    bottom: -100px;
+    width: 320px;
+  }
+
+  .section {
+    padding: 72px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .reservation-box {
+    padding: 16px 12px;
+  }
+
+  .event-modal {
+    padding: 6px;
+  }
+
+  .event-modal-card {
+    width: calc(100vw - 12px);
+    max-width: 400px;
+    max-height: calc(100vh - 12px);
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .event-modal-flyer {
+    max-height: 28vh;
+  }
+
+  .event-modal-content h3 {
+    font-size: 1.2rem;
+  }
+
+  .event-modal-content .section-intro,
+  .event-price,
+  .reservation-feedback {
+    font-size: 0.92rem;
+  }
+
+  .event-card-body {
+    padding: 9px;
+  }
+}
