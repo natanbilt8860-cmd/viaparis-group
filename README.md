@@ -99,3 +99,25 @@ Observacao: com essa configuracao, qualquer pessoa que conheca sua URL pode grav
 - Site principal: `https://seu-dominio/`
 - Menu (QR Code): `https://seu-dominio/diretoria-menu`
 - Admin: `https://seu-dominio/diretoria-admin`
+
+## Envio automatico de reserva no WhatsApp
+
+O projeto agora envia notificacao automaticamente ao confirmar uma reserva, sem o cliente clicar em mais nada.
+
+Como configurar na Vercel (Project Settings > Environment Variables):
+
+- `WHATSAPP_ACCESS_TOKEN`: token da Meta WhatsApp Cloud API
+- `WHATSAPP_PHONE_NUMBER_ID`: Phone Number ID da conta WhatsApp Business
+- `WHATSAPP_TEAM_NUMBER`: numero que recebe alerta (formato internacional, so numeros, ex: `32465557160`)
+- `WHATSAPP_API_VERSION` (opcional): padrao `v21.0`
+
+Depois, faça um novo deploy.
+
+Arquitetura:
+- Frontend confirma reserva normalmente.
+- Frontend chama `POST /api/notify-reservation`.
+- A API serverless (`api/notify-reservation.js`) envia a mensagem para o WhatsApp via Meta API.
+
+Importante:
+- A API oficial da Meta nao envia direto para grupo de WhatsApp.
+- O recomendado e enviar para um numero da equipe (responsavel) e esse numero repassar ao grupo, ou usar automacao externa da equipe.

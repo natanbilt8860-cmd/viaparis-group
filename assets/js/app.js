@@ -546,6 +546,25 @@ function makeId(prefix) {
   return `${prefix}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 }
 
+async function notifyReservationTeam(reservationData) {
+  try {
+    const response = await fetch("/api/notify-reservation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(reservationData)
+    });
+
+    if (!response.ok) {
+      const details = await response.text();
+      console.warn("[Via Paris] Falha ao notificar reserva:", details || response.statusText);
+    }
+  } catch (error) {
+    console.warn("[Via Paris] Erro ao enviar notificacao da reserva:", error);
+  }
+}
+
 function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -928,9 +947,25 @@ function setupEvents() {
         createdAt: new Date().toISOString()
       });
 
+      const savedReservation = state.reservations[state.reservations.length - 1];
+
       saveState();
       renderTableOptions(selectedEventId);
       renderAdminLists();
+
+      void notifyReservationTeam({
+        reservationId: savedReservation.id,
+        eventId: selectedEventId,
+        eventTitle: state.events.find((item) => item.id === selectedEventId)?.title || "Evento",
+        eventDate: state.events.find((item) => item.id === selectedEventId)?.date || "",
+        tableTypeId: tableType.id,
+        tableName: tableType.name,
+        name: savedReservation.name,
+        phone: savedReservation.phone,
+        guests: savedReservation.guests,
+        note: savedReservation.note,
+        createdAt: savedReservation.createdAt
+      });
 
       reserveForm.reset();
       if (feedback) feedback.textContent = translate("modal.success", "Reserva confirmada com sucesso. Mesa gratuita garantida!");
