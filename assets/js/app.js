@@ -311,6 +311,16 @@ const defaultState = {
       details: "Noite urbana com convidados especiais e show ao vivo."
     }
   ],
+  eventTableTypes: {
+    "evento-sexta-neon": [
+      { id: "mesa-vip-neon", name: "Mesa VIP", quantity: 6, notes: "Ate 6 pessoas" },
+      { id: "mesa-lounge-neon", name: "Mesa Lounge", quantity: 10, notes: "Area central" }
+    ],
+    "evento-sabado-urbano": [
+      { id: "mesa-vip-urbano", name: "Mesa VIP", quantity: 6, notes: "Ate 6 pessoas" },
+      { id: "mesa-lounge-urbano", name: "Mesa Lounge", quantity: 10, notes: "Area central" }
+    ]
+  },
   reservations: []
 };
 
@@ -354,6 +364,10 @@ function mergeState(parsed) {
     },
     events: Array.isArray(parsed.events) ? parsed.events : deepCopy(defaultState.events),
     tableTypes: Array.isArray(parsed.tableTypes) ? parsed.tableTypes : deepCopy(defaultState.tableTypes),
+    eventTableTypes:
+      parsed.eventTableTypes && typeof parsed.eventTableTypes === "object"
+        ? parsed.eventTableTypes
+        : deepCopy(defaultState.eventTableTypes),
     reservations: Array.isArray(parsed.reservations) ? parsed.reservations : []
   };
 }
@@ -431,6 +445,38 @@ function normalizeState() {
   if (!state.home.gallery.length) {
     state.home.gallery = deepCopy(defaultState.home.gallery);
   }
+
+  if (!state.eventTableTypes || typeof state.eventTableTypes !== "object") {
+    state.eventTableTypes = {};
+  }
+
+  const legacyTables = Array.isArray(state.tableTypes) ? state.tableTypes : [];
+  const validEventIds = new Set(state.events.map((eventItem) => eventItem.id));
+
+  // Migrate old global table settings to per-event tables.
+  state.events.forEach((eventItem) => {
+    const currentTables = state.eventTableTypes[eventItem.id];
+    if (!Array.isArray(currentTables) || !currentTables.length) {
+      state.eventTableTypes[eventItem.id] = legacyTables.length
+        ? legacyTables.map((tableType) => ({ ...tableType }))
+        : deepCopy(defaultState.tableTypes).map((tableType) => ({ ...tableType, id: makeId("mesa") }));
+    }
+  });
+
+  Object.keys(state.eventTableTypes).forEach((eventId) => {
+    if (!validEventIds.has(eventId)) {
+      delete state.eventTableTypes[eventId];
+    }
+  });
+}
+
+function getEventTableTypes(eventId) {
+  if (!eventId || !state.eventTableTypes || typeof state.eventTableTypes !== "object") {
+    return [];
+  }
+
+  const eventTables = state.eventTableTypes[eventId];
+  return Array.isArray(eventTables) ? eventTables : [];
 }
 
 function saveState() {
@@ -675,12 +721,14 @@ function renderTableOptions(eventId) {
   const select = document.getElementById("reserve-table");
   if (!(select instanceof HTMLSelectElement)) return;
 
-  if (!state.tableTypes.length) {
+  const eventTables = getEventTableTypes(eventId);
+
+  if (!eventTables.length) {
     select.innerHTML = `<option value="">${translate("modal.noTables", "Sem mesas cadastradas")}</option>`;
     return;
   }
 
-  select.innerHTML = state.tableTypes
+  select.innerHTML = eventTables
     .map((tableType) => {
       const reserved = getReservedCount(eventId, tableType.id);
       const left = Math.max(tableType.quantity - reserved, 0);
@@ -855,7 +903,8 @@ function setupEvents() {
         return;
       }
 
-      const tableType = state.tableTypes.find((item) => item.id === table.value);
+      const eventTables = getEventTableTypes(selectedEventId);
+      const tableType = eventTables.find((item) => item.id === table.value);
       if (!tableType) {
         if (feedback) feedback.textContent = translate("modal.selectTable", "Selecione uma mesa disponivel.");
         return;
@@ -892,7 +941,14 @@ function setupEvents() {
 function renderAdminLists() {
   const eventList = document.getElementById("admin-events-list");
   const tableList = document.getElementById("admin-tables-list");
+  const tableEventSelect = document.getElementById("table-event-id");
   if (!(eventList instanceof HTMLElement) || !(tableList instanceof HTMLElement)) return;
+
+  if (tableEventSelect instanceof HTMLSelectElement) {
+    tableEventSelect.innerHTML = state.events
+      .map((eventItem) => `<option value="${eventItem.id}">${eventItem.title}</option>`)
+      .join("");
+  }
 
   eventList.innerHTML = state.events
     .map(
@@ -908,18 +964,36 @@ function renderAdminLists() {
     )
     .join("");
 
-  tableList.innerHTML = state.tableTypes
-    .map((tableType) => {
-      const reservations = state.reservations.filter((item) => item.tableTypeId === tableType.id).length;
-      return `
-        <div class="admin-item">
-          <div>
-            <strong>${tableType.name}</strong>
-            <p>${tableType.quantity} mesas · ${reservations} reservas</p>
+  tableList.innerHTML = state.events
+    .map((eventItem) => {
+      const eventTables = getEventTableTypes(eventItem.id);
+      if (!eventTables.length) {
+        return `
+          <div class="admin-item">
+            <div>
+              <strong>${eventItem.title}</strong>
+              <p>Sem mesas cadastradas para este evento</p>
+            </div>
           </div>
-          <button type="button" data-delete-table="${tableType.id}">Remover</button>
-        </div>
-      `;
+        `;
+      }
+
+      return eventTables
+        .map((tableType) => {
+          const reservations = state.reservations.filter(
+            (item) => item.eventId === eventItem.id && item.tableTypeId === tableType.id
+          ).length;
+          return `
+            <div class="admin-item">
+              <div>
+                <strong>${tableType.name}</strong>
+                <p>${eventItem.title} · ${tableType.quantity} mesas · ${reservations} reservas</p>
+              </div>
+              <button type="button" data-delete-table="${tableType.id}" data-event-id="${eventItem.id}">Remover</button>
+            </div>
+          `;
+        })
+        .join("");
     })
     .join("");
 }
@@ -993,18 +1067,23 @@ function setupAdmin() {
       }
 
       if (!pendingEventFlyer) {
-        alert("Envie um flyer para o evento.");
-        return;
+        pendingEventFlyer = state.home.gallery[0] ? state.home.gallery[0].src : HERO_FALLBACK_IMAGE;
       }
 
+      const newEventId = makeId("evento");
       state.events.push({
-        id: makeId("evento"),
+        id: newEventId,
         title: title.value.trim(),
         date: date.value.trim(),
         flyer: pendingEventFlyer,
         entryPrice: price.value.trim(),
         details: details.value.trim()
       });
+
+      state.eventTableTypes[newEventId] = deepCopy(defaultState.tableTypes).map((tableType) => ({
+        ...tableType,
+        id: makeId("mesa")
+      }));
 
       saveState();
       eventForm.reset();
@@ -1025,11 +1104,27 @@ function setupAdmin() {
       const name = document.getElementById("table-name");
       const qty = document.getElementById("table-qty");
       const notes = document.getElementById("table-notes");
-      if (!(name instanceof HTMLInputElement) || !(qty instanceof HTMLInputElement) || !(notes instanceof HTMLInputElement)) {
+      const eventIdSelect = document.getElementById("table-event-id");
+      if (
+        !(name instanceof HTMLInputElement) ||
+        !(qty instanceof HTMLInputElement) ||
+        !(notes instanceof HTMLInputElement) ||
+        !(eventIdSelect instanceof HTMLSelectElement)
+      ) {
         return;
       }
 
-      state.tableTypes.push({
+      const eventId = eventIdSelect.value;
+      if (!eventId) {
+        alert("Selecione o evento para cadastrar essa mesa.");
+        return;
+      }
+
+      if (!Array.isArray(state.eventTableTypes[eventId])) {
+        state.eventTableTypes[eventId] = [];
+      }
+
+      state.eventTableTypes[eventId].push({
         id: makeId("mesa"),
         name: name.value.trim(),
         quantity: Math.max(Number(qty.value) || 1, 1),
@@ -1103,6 +1198,7 @@ function setupAdmin() {
       if (!eventId) return;
 
       state.events = state.events.filter((item) => item.id !== eventId);
+      delete state.eventTableTypes[eventId];
       state.reservations = state.reservations.filter((item) => item.eventId !== eventId);
       saveState();
       renderEvents();
@@ -1115,10 +1211,13 @@ function setupAdmin() {
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
       const tableId = target.getAttribute("data-delete-table");
+      const eventId = target.getAttribute("data-event-id");
       if (!tableId) return;
 
-      state.tableTypes = state.tableTypes.filter((item) => item.id !== tableId);
-      state.reservations = state.reservations.filter((item) => item.tableTypeId !== tableId);
+      if (!eventId || !Array.isArray(state.eventTableTypes[eventId])) return;
+
+      state.eventTableTypes[eventId] = state.eventTableTypes[eventId].filter((item) => item.id !== tableId);
+      state.reservations = state.reservations.filter((item) => !(item.eventId === eventId && item.tableTypeId === tableId));
       saveState();
       renderAdminLists();
     });
