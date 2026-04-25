@@ -1567,7 +1567,7 @@ async function initApp() {
   renderMenu();
   applyHomeImages();
   renderGallery();
-  renderEvents();
+  applySiteLanguage(currentLanguage);
   setupMobileMenu();
   setupLightbox();
   setupEvents();
