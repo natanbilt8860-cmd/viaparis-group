@@ -78,9 +78,13 @@ const HERO_PORTFOLIO_IMAGES = [
   "assets/images/portfolio/Capture d'écran 2026-04-25 190139_Nero_AI_Image_Upscaler_Photo_Face.png",
   "assets/images/portfolio/upscalemedia-transformed_Nero_AI_Image_Upscaler_Photo_Face.png"
 ].map((path) => encodeURI(path));
-const HERO_DEFAULT_MEDIA = HERO_PORTFOLIO_IMAGES[0] || "assets/images/video-home.mp4";
+const HOME_PORTFOLIO_GALLERY = HERO_PORTFOLIO_IMAGES.map((src, index) => ({
+  src,
+  alt: `Foto Via Paris Portfolio ${index + 1}`
+}));
+const HERO_DEFAULT_MEDIA = "assets/images/video-home.mp4";
 const HERO_FALLBACK_IMAGE = "assets/images/foto-2.png";
-let currentLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) || "pt-BR";
+let currentLanguage = "pt-BR";
 const supabaseConfig = window.VIA_PARIS_SUPABASE || {};
 const supabaseClient = createSupabaseClient();
 
@@ -388,11 +392,7 @@ const defaultState = {
   home: {
     heroMedia: HERO_DEFAULT_MEDIA,
     heroImage: HERO_FALLBACK_IMAGE,
-    gallery: [
-      { src: "assets/images/foto-2.png", alt: "Foto Via Paris 2" },
-      { src: "assets/images/foto-3.png", alt: "Foto Via Paris 3" },
-      { src: "assets/images/foto-4.png", alt: "Foto Via Paris 4" }
-    ]
+    gallery: deepCopy(HOME_PORTFOLIO_GALLERY)
   },
   tableTypes: [
     { id: "mesa-vip", name: "Mesa VIP", quantity: 6, notes: "Ate 6 pessoas" },
@@ -436,7 +436,6 @@ let pendingHeroMedia = "";
 let pendingGalleryImages = [];
 let syncRetryTimer = null;
 let syncInFlight = false;
-let heroSlideshowTimer = null;
 
 function createSupabaseClient() {
   if (!window.supabase || !supabaseConfig.url || !supabaseConfig.anonKey) {
@@ -524,9 +523,7 @@ async function loadState() {
 }
 
 function normalizeState() {
-  if (!state.home.heroMedia || state.home.heroMedia === "assets/images/foto-1.jpg") {
-    state.home.heroMedia = HERO_DEFAULT_MEDIA;
-  }
+  state.home.heroMedia = HERO_DEFAULT_MEDIA;
 
   if (state.home.heroImage === "assets/images/video-home.mp4") {
     state.home.heroImage = HERO_FALLBACK_IMAGE;
@@ -540,12 +537,18 @@ function normalizeState() {
     state.home.heroImage = HERO_FALLBACK_IMAGE;
   }
 
-  if (Array.isArray(state.home.gallery)) {
-    state.home.gallery = state.home.gallery.filter((image) => image && image.src !== "assets/images/foto-1.jpg");
+  if (!Array.isArray(state.home.gallery)) {
+    state.home.gallery = [];
   }
 
-  if (!state.home.gallery.length) {
-    state.home.gallery = deepCopy(defaultState.home.gallery);
+  state.home.gallery = state.home.gallery.filter((image) => image && image.src !== "assets/images/foto-1.jpg");
+
+  const hasPortfolioImage = state.home.gallery.some(
+    (image) => image && typeof image.src === "string" && image.src.includes("/portfolio/")
+  );
+
+  if (!state.home.gallery.length || !hasPortfolioImage) {
+    state.home.gallery = deepCopy(HOME_PORTFOLIO_GALLERY);
   }
 
   if (!state.eventTableTypes || typeof state.eventTableTypes !== "object") {
@@ -778,33 +781,12 @@ function renderGallery() {
 
 function applyHomeImages() {
   const heroVideo = document.getElementById("hero-video");
-  const heroImage = document.getElementById("hero-image");
-  const slideshowSources = HERO_PORTFOLIO_IMAGES.length ? HERO_PORTFOLIO_IMAGES : [HERO_FALLBACK_IMAGE];
-
-  if (heroSlideshowTimer) {
-    window.clearInterval(heroSlideshowTimer);
-    heroSlideshowTimer = null;
-  }
-
-  if (heroImage instanceof HTMLImageElement) {
-    let index = 0;
-    heroImage.hidden = false;
-    heroImage.src = slideshowSources[index];
-    heroImage.alt = "Via Paris portfolio";
-
-    if (slideshowSources.length > 1) {
-      heroSlideshowTimer = window.setInterval(() => {
-        index = (index + 1) % slideshowSources.length;
-        heroImage.src = slideshowSources[index];
-      }, 3500);
-    }
-  }
+  const mediaSrc = HERO_DEFAULT_MEDIA;
 
   if (heroVideo instanceof HTMLVideoElement) {
-    heroVideo.hidden = true;
-    heroVideo.pause();
-    heroVideo.removeAttribute("src");
-    heroVideo.load();
+    heroVideo.hidden = false;
+    heroVideo.src = mediaSrc;
+    heroVideo.play().catch(() => {});
   }
 }
 
