@@ -52,60 +52,75 @@ module.exports = async function handler(req, res) {
       note || "-"
     ];
 
-    const requestBody = templateName
-      ? {
-          messaging_product: "whatsapp",
-          to: teamNumber,
-          type: "template",
-          template: {
-            name: templateName,
-            language: {
-              code: templateLanguage
-            },
-            components: [
-              {
-                type: "body",
-                parameters: templateParams.map((value) => ({
-                  type: "text",
-                  text: value
-                }))
-              }
-            ]
-          }
-        }
-      : {
-          messaging_product: "whatsapp",
-          to: teamNumber,
-          type: "text",
-          text: {
-            body: message,
-            preview_url: false
-          }
-        };
-
-    const response = await fetch(
-      `https://graph.facebook.com/${apiVersion}/${phoneNumberId}/messages`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json"
+    const templateRequestBody = {
+      messaging_product: "whatsapp",
+      to: teamNumber,
+      type: "template",
+      template: {
+        name: templateName,
+        language: {
+          code: templateLanguage
         },
-        body: JSON.stringify(requestBody)
+        components: [
+          {
+            type: "body",
+            parameters: templateParams.map((value) => ({
+              type: "text",
+              text: value
+            }))
+          }
+        ]
       }
-    );
+    };
 
-    const result = await response.json();
+    const textRequestBody = {
+      messaging_product: "whatsapp",
+      to: teamNumber,
+      type: "text",
+      text: {
+        body: message,
+        preview_url: false
+      }
+    };
 
-    if (!response.ok) {
-      console.error("WhatsApp API error:", JSON.stringify(result));
-      return res.status(response.status).json({
+    const sendWhatsAppMessage = async (body) => {
+      const response = await fetch(
+        `https://graph.facebook.com/${apiVersion}/${phoneNumberId}/messages`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(body)
+        }
+      );
+
+      const result = await response.json();
+      return { response, result };
+    };
+
+    if (templateName) {
+      const templateAttempt = await sendWhatsAppMessage(templateRequestBody);
+
+      if (templateAttempt.response.ok) {
+        return res.status(200).json({ ok: true, mode: "template", result: templateAttempt.result });
+      }
+
+      console.error("WhatsApp template send failed, trying text fallback:", JSON.stringify(templateAttempt.result));
+    }
+
+    const textAttempt = await sendWhatsAppMessage(textRequestBody);
+
+    if (!textAttempt.response.ok) {
+      console.error("WhatsApp API error:", JSON.stringify(textAttempt.result));
+      return res.status(textAttempt.response.status).json({
         error: "WhatsApp API error",
-        details: result
+        details: textAttempt.result
       });
     }
 
-    return res.status(200).json({ ok: true, result });
+    return res.status(200).json({ ok: true, mode: "text", result: textAttempt.result });
   } catch (error) {
     return res.status(500).json({
       error: "Unexpected error",
