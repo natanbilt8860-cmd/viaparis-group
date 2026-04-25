@@ -112,33 +112,33 @@ const translations = {
       ctaSecondary: "Ver proximos eventos"
     },
     contact: {
-      addressLabel: "Morada:",
+      addressLabel: "Adress:",
       addressValue: "Chaussée d'Alsemberg 5, Bruxelles",
       hoursLabel: "Horario:",
-      hoursValue: "Quinta a Domingo - 22h as 5h",
+      hoursValue: "Sabado - 22h as 5h",
       phoneLabel: "Telefone:"
     },
     about: {
       kicker: "Sobre",
       title: "O que e o Via Paris",
-      intro: "O Via Paris e um music bar em Bruxelles com noites latinas, urban e afro, ambiente premium e energia de pista cheia ate de madrugada.",
+      intro: "O Via Paris e um music bar em Bruxelles com musicas ao vivo, ambiente premium e energia de pista cheia ate de madrugada.",
       card1Title: "Atmosfera",
       card1Text: "Casa focada em experiencia completa: som forte, luz envolvente e atendimento rapido.",
       card2Title: "Musica",
-      card2Text: "Programacao com ritmos latinos, funk, afrobeat e DJs convidados em festas especiais.",
+      card2Text: "Programacao com ritmos latinos, funk, Sertanejo, Piseiro, DJs e muito mais.",
       card3Title: "Publico",
       card3Text: "Perfeito para aniversarios, grupos e quem quer viver a noite de Bruxelles com estilo."
     },
     upcoming: {
       kicker: "Agenda",
       title: "Proximos eventos em destaque",
-      intro: "Atualizamos esta lista com as proximas noites para facilitar a pesquisa no Google e ajudar novos clientes a conhecer o Via Paris.",
+      intro: "Atualizamos esta lista com as proximas noites.",
       empty: "Novos eventos serao anunciados em breve."
     },
     partners: {
       kicker: "Parcerias",
       title: "Quem construi a noite conosco",
-      intro: "Lisa, Pablo e Nexvo apoiam o Via Paris em conteudo, divulgacao e ativacoes que fortalecem cada evento."
+      intro: "Elisangela Mendes Esthetica, Pablo Barber e Nexvo Solution apoiam o Via Paris em conteudo, divulgacao e ativacoes que fortalecem cada evento."
     },
     gallery: {
       kicker: "Galeria",
