@@ -72,7 +72,13 @@ const SUPABASE_TABLE = "app_state";
 const SUPABASE_ROW_ID = "global";
 const PENDING_SYNC_KEY = "via-paris-pending-sync";
 const SUPABASE_RETRY_DELAY_MS = 3000;
-const HERO_DEFAULT_MEDIA = "assets/images/video-home.mp4";
+const HERO_PORTFOLIO_IMAGES = [
+  "assets/images/portfolio/Capture d'écran 2026-04-25 185047_Nero_AI_Image_Upscaler_Photo_Face.png",
+  "assets/images/portfolio/Capture d'écran 2026-04-25 190023_Nero_AI_Image_Upscaler_Photo_Face.png",
+  "assets/images/portfolio/Capture d'écran 2026-04-25 190139_Nero_AI_Image_Upscaler_Photo_Face.png",
+  "assets/images/portfolio/upscalemedia-transformed_Nero_AI_Image_Upscaler_Photo_Face.png"
+].map((path) => encodeURI(path));
+const HERO_DEFAULT_MEDIA = HERO_PORTFOLIO_IMAGES[0] || "assets/images/video-home.mp4";
 const HERO_FALLBACK_IMAGE = "assets/images/foto-2.png";
 let currentLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) || "pt-BR";
 const supabaseConfig = window.VIA_PARIS_SUPABASE || {};
@@ -90,12 +96,45 @@ const translations = {
     },
     nav: {
       home: "Inicio",
+      about: "Sobre",
       photos: "Fotos",
+      upcoming: "Proximos",
       reserve: "Reserva"
     },
     hero: {
       lead: "A noite começa aqui. Drinks, música e uma energia que não para.",
-      cta: "Ver eventos e reservar"
+      cta: "Ver eventos e reservar",
+      ctaStrong: "Reserva a tua mesa - e gratuito",
+      ctaSecondary: "Ver proximos eventos"
+    },
+    contact: {
+      addressLabel: "Morada:",
+      addressValue: "Chaussée d'Alsemberg 5, Bruxelles",
+      hoursLabel: "Horario:",
+      hoursValue: "Quinta a Domingo - 22h as 5h",
+      phoneLabel: "Telefone:"
+    },
+    about: {
+      kicker: "Sobre",
+      title: "O que e o Via Paris",
+      intro: "O Via Paris e um music bar em Bruxelles com noites latinas, urban e afro, ambiente premium e energia de pista cheia ate de madrugada.",
+      card1Title: "Atmosfera",
+      card1Text: "Casa focada em experiencia completa: som forte, luz envolvente e atendimento rapido.",
+      card2Title: "Musica",
+      card2Text: "Programacao com ritmos latinos, funk, afrobeat e DJs convidados em festas especiais.",
+      card3Title: "Publico",
+      card3Text: "Perfeito para aniversarios, grupos e quem quer viver a noite de Bruxelles com estilo."
+    },
+    upcoming: {
+      kicker: "Agenda",
+      title: "Proximos eventos em destaque",
+      intro: "Atualizamos esta lista com as proximas noites para facilitar a pesquisa no Google e ajudar novos clientes a conhecer o Via Paris.",
+      empty: "Novos eventos serao anunciados em breve."
+    },
+    partners: {
+      kicker: "Parcerias",
+      title: "Quem construi a noite conosco",
+      intro: "Lisa, Pablo e Nexvo apoiam o Via Paris em conteudo, divulgacao e ativacoes que fortalecem cada evento."
     },
     gallery: {
       kicker: "Galeria",
@@ -138,12 +177,45 @@ const translations = {
     },
     nav: {
       home: "Accueil",
+      about: "A propos",
       photos: "Photos",
+      upcoming: "A venir",
       reserve: "Reservation"
     },
     hero: {
       lead: "La nuit commence ici. Cocktails, musique et une energie qui ne s arrete jamais.",
-      cta: "Voir les evenements et reserver"
+      cta: "Voir les evenements et reserver",
+      ctaStrong: "Reserve ta table - c est gratuit",
+      ctaSecondary: "Voir les prochains evenements"
+    },
+    contact: {
+      addressLabel: "Adresse:",
+      addressValue: "Chaussée d'Alsemberg 5, Bruxelles",
+      hoursLabel: "Horaires:",
+      hoursValue: "Jeudi a Dimanche - 22h a 5h",
+      phoneLabel: "Telephone:"
+    },
+    about: {
+      kicker: "A propos",
+      title: "Qu est-ce que Via Paris",
+      intro: "Via Paris est un music bar a Bruxelles, connu pour ses nuits latines, urban et afro dans une ambiance premium.",
+      card1Title: "Atmosphere",
+      card1Text: "Une experience complete: son puissant, lumiere immersive et service rapide.",
+      card2Title: "Musique",
+      card2Text: "Programmation avec rythmes latins, funk, afrobeat et DJs invites selon les soirees.",
+      card3Title: "Public",
+      card3Text: "Ideal pour anniversaires, groupes et sorties nocturnes a Bruxelles."
+    },
+    upcoming: {
+      kicker: "Agenda",
+      title: "Prochains evenements en vedette",
+      intro: "Nous mettons cette liste a jour pour aider les nouveaux visiteurs a trouver les prochaines soirees Via Paris.",
+      empty: "De nouveaux evenements seront annonces bientot."
+    },
+    partners: {
+      kicker: "Partenariats",
+      title: "Ceux qui construisent la nuit avec nous",
+      intro: "Lisa, Pablo et Nexvo soutiennent Via Paris en contenu, diffusion et activations sur evenement."
     },
     gallery: {
       kicker: "Galerie",
@@ -186,12 +258,45 @@ const translations = {
     },
     nav: {
       home: "Home",
+      about: "About",
       photos: "Photos",
+      upcoming: "Upcoming",
       reserve: "Reservation"
     },
     hero: {
       lead: "The night starts here. Drinks, music and nonstop energy.",
-      cta: "See events and reserve"
+      cta: "See events and reserve",
+      ctaStrong: "Reserve your table - it is free",
+      ctaSecondary: "See upcoming events"
+    },
+    contact: {
+      addressLabel: "Address:",
+      addressValue: "Chaussée d'Alsemberg 5, Bruxelles",
+      hoursLabel: "Opening hours:",
+      hoursValue: "Thursday to Sunday - 10 PM to 5 AM",
+      phoneLabel: "Phone:"
+    },
+    about: {
+      kicker: "About",
+      title: "What Via Paris is",
+      intro: "Via Paris is a Brussels music bar known for latin, urban and afro nights in a premium party atmosphere.",
+      card1Title: "Atmosphere",
+      card1Text: "A complete night-out setup: strong sound, immersive lights and fast service.",
+      card2Title: "Music",
+      card2Text: "Line-up with latin rhythms, funk, afrobeat and invited DJs on special nights.",
+      card3Title: "Crowd",
+      card3Text: "Perfect for birthdays, groups and anyone who wants a stylish Brussels nightlife experience."
+    },
+    upcoming: {
+      kicker: "Agenda",
+      title: "Upcoming highlighted events",
+      intro: "We update this list to help new visitors and improve how search engines understand upcoming Via Paris nights.",
+      empty: "New events will be announced soon."
+    },
+    partners: {
+      kicker: "Partners",
+      title: "Who builds the night with us",
+      intro: "Lisa, Pablo and Nexvo support Via Paris with content, promotion and event activations."
     },
     gallery: {
       kicker: "Gallery",
@@ -331,6 +436,7 @@ let pendingHeroMedia = "";
 let pendingGalleryImages = [];
 let syncRetryTimer = null;
 let syncInFlight = false;
+let heroSlideshowTimer = null;
 
 function createSupabaseClient() {
   if (!window.supabase || !supabaseConfig.url || !supabaseConfig.anonKey) {
@@ -422,11 +528,7 @@ function normalizeState() {
     state.home.heroMedia = HERO_DEFAULT_MEDIA;
   }
 
-  if (!isVideoSource(state.home.heroMedia)) {
-    state.home.heroMedia = HERO_DEFAULT_MEDIA;
-  }
-
-  if (state.home.heroImage === HERO_DEFAULT_MEDIA) {
+  if (state.home.heroImage === "assets/images/video-home.mp4") {
     state.home.heroImage = HERO_FALLBACK_IMAGE;
   }
 
@@ -676,12 +778,33 @@ function renderGallery() {
 
 function applyHomeImages() {
   const heroVideo = document.getElementById("hero-video");
-  const mediaSrc = isVideoSource(state.home.heroMedia) ? state.home.heroMedia : HERO_DEFAULT_MEDIA;
+  const heroImage = document.getElementById("hero-image");
+  const slideshowSources = HERO_PORTFOLIO_IMAGES.length ? HERO_PORTFOLIO_IMAGES : [HERO_FALLBACK_IMAGE];
+
+  if (heroSlideshowTimer) {
+    window.clearInterval(heroSlideshowTimer);
+    heroSlideshowTimer = null;
+  }
+
+  if (heroImage instanceof HTMLImageElement) {
+    let index = 0;
+    heroImage.hidden = false;
+    heroImage.src = slideshowSources[index];
+    heroImage.alt = "Via Paris portfolio";
+
+    if (slideshowSources.length > 1) {
+      heroSlideshowTimer = window.setInterval(() => {
+        index = (index + 1) % slideshowSources.length;
+        heroImage.src = slideshowSources[index];
+      }, 3500);
+    }
+  }
 
   if (heroVideo instanceof HTMLVideoElement) {
-    heroVideo.hidden = false;
-    heroVideo.src = mediaSrc;
-    heroVideo.play().catch(() => {});
+    heroVideo.hidden = true;
+    heroVideo.pause();
+    heroVideo.removeAttribute("src");
+    heroVideo.load();
   }
 }
 
@@ -718,6 +841,7 @@ function renderEvents() {
 
   if (!state.events.length) {
     wrapper.innerHTML = `<p class="section-intro">${translate("events.noEvents", "Nenhum evento cadastrado no momento.")}</p>`;
+    renderUpcomingEventsText();
     return;
   }
 
@@ -731,6 +855,31 @@ function renderEvents() {
             <p>${eventItem.date}</p>
           </div>
         </button>
+      `
+    )
+    .join("");
+
+  renderUpcomingEventsText();
+}
+
+function renderUpcomingEventsText() {
+  const list = document.getElementById("upcoming-events-list");
+  if (!(list instanceof HTMLElement)) return;
+
+  if (!state.events.length) {
+    list.innerHTML = `<li>${translate("upcoming.empty", "Novos eventos serao anunciados em breve.")}</li>`;
+    return;
+  }
+
+  list.innerHTML = state.events
+    .slice(0, 6)
+    .map(
+      (eventItem) => `
+        <li>
+          <strong>${eventItem.title}</strong>
+          <span>${eventItem.date}</span>
+          <p>${eventItem.details}</p>
+        </li>
       `
     )
     .join("");

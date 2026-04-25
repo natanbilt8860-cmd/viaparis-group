@@ -147,6 +147,32 @@ h2 {
   flex-wrap: wrap;
 }
 
+.hero-contact-grid {
+  margin-top: 18px;
+  display: grid;
+  gap: 8px;
+  max-width: 680px;
+}
+
+.hero-contact-item {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+.hero-contact-item strong {
+  color: var(--text);
+}
+
+.hero-contact-item a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.hero-contact-item a:hover {
+  text-decoration: underline;
+}
+
 .hero-image-wrap {
   border-radius: 18px;
   overflow: hidden;
@@ -183,6 +209,10 @@ h2 {
   margin-left: calc(50% - 50vw);
   padding: 14px 0 8px;
   overflow: hidden;
+}
+
+.partners-context {
+  margin-bottom: 14px;
 }
 
 .partners-wrap {
@@ -267,6 +297,68 @@ h2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
+}
+
+.about-box,
+.upcoming-box {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 26px;
+}
+
+.about-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.about-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.about-card h3 {
+  margin: 0 0 6px;
+  color: var(--accent);
+  font-family: "Bebas Neue", sans-serif;
+  letter-spacing: 0.03em;
+  font-size: 1.4rem;
+}
+
+.about-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.upcoming-events-list {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.upcoming-events-list li {
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.upcoming-events-list strong {
+  color: var(--text);
+  font-size: 1.02rem;
+}
+
+.upcoming-events-list span,
+.upcoming-events-list p {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
 }
 
 .menu-card {
@@ -653,6 +745,22 @@ h2 {
   height: auto;
 }
 
+.footer-instagram {
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 0.92rem;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.footer-instagram:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(223, 147, 47, 0.08);
+}
+
 @media (max-width: 960px) {
   .hero-grid {
     grid-template-columns: 1fr;
@@ -670,6 +778,10 @@ h2 {
 
   .events-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
   }
 
   .admin-grid {
@@ -714,6 +826,11 @@ h2 {
   .reservation-box {
     padding: 18px 14px;
     border-radius: 14px;
+  }
+
+  .about-box,
+  .upcoming-box {
+    padding: 18px 14px;
   }
 
   .events-grid {

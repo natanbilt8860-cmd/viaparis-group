@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Via Paris Music Bar</title>
   <meta name="description" content="Via Paris Music Bar - menu, galeria de fotos e reservas." />
+  <link rel="icon" type="image/png" href="assets/images/favicon/estrela.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;700&display=swap" rel="stylesheet" />
@@ -226,7 +227,9 @@
 
         <nav id="main-nav" class="main-nav" aria-label="Menu principal">
           <a href="#inicio" data-i18n="nav.home">Inicio</a>
+          <a href="#sobre" data-i18n="nav.about">Sobre</a>
           <a href="#fotos" data-i18n="nav.photos">Fotos</a>
+          <a href="#proximos" data-i18n="nav.upcoming">Proximos</a>
           <a href="#reserva" data-i18n="nav.reserve">Reserva</a>
         </nav>
       </div>
@@ -240,15 +243,44 @@
             <h1>Via Paris</h1>
             <p class="lead" data-i18n="hero.lead">A noite começa aqui. Drinks, música e uma energia que não para.</p>
             <div class="hero-actions">
-              <a href="#reserva" class="btn btn-primary" data-i18n="hero.cta">Ver eventos e reservar</a>
+              <a href="#reserva" class="btn btn-primary" data-i18n="hero.ctaStrong">Reserva a tua mesa - e gratuito</a>
+              <a href="#proximos" class="btn btn-outline" data-i18n="hero.ctaSecondary">Ver proximos eventos</a>
+            </div>
+            <div class="hero-contact-grid" aria-label="Informacoes principais">
+              <p class="hero-contact-item"><strong data-i18n="contact.addressLabel">Morada:</strong> <span data-i18n="contact.addressValue">Chaussée d'Alsemberg 5, Bruxelles</span></p>
+              <p class="hero-contact-item"><strong data-i18n="contact.hoursLabel">Horario:</strong> <span data-i18n="contact.hoursValue">Quinta a Domingo - 22h as 5h</span></p>
+              <p class="hero-contact-item"><strong data-i18n="contact.phoneLabel">Telefone:</strong> <a href="tel:+32465557160">+32 465 55 71 60</a></p>
             </div>
           </div>
           <div class="hero-image-wrap">
+            <img id="hero-image" class="hero-image" src="" alt="Via Paris" hidden />
             <video id="hero-video" class="hero-video" autoplay muted loop playsinline hidden>
               <source src="" type="video/mp4" />
             </video>
           </div>
           <img src="assets/images/mascotte.png" alt="Mascotte Via Paris" class="hero-mascotte" />
+        </div>
+      </section>
+
+      <section id="sobre" class="section section-dark">
+        <div class="container about-box">
+          <p class="kicker" data-i18n="about.kicker">Sobre</p>
+          <h2 data-i18n="about.title">O que e o Via Paris</h2>
+          <p class="section-intro" data-i18n="about.intro">O Via Paris e um music bar em Bruxelles com noites latinas, urban e afro, ambiente premium e energia de pista cheia ate de madrugada.</p>
+          <div class="about-grid">
+            <article class="about-card">
+              <h3 data-i18n="about.card1Title">Atmosfera</h3>
+              <p data-i18n="about.card1Text">Casa focada em experiencia completa: som forte, luz envolvente e atendimento rapido.</p>
+            </article>
+            <article class="about-card">
+              <h3 data-i18n="about.card2Title">Musica</h3>
+              <p data-i18n="about.card2Text">Programacao com ritmos latinos, funk, afrobeat e DJs convidados em festas especiais.</p>
+            </article>
+            <article class="about-card">
+              <h3 data-i18n="about.card3Title">Publico</h3>
+              <p data-i18n="about.card3Text">Perfeito para aniversarios, grupos e quem quer viver a noite de Bruxelles com estilo.</p>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -273,15 +305,31 @@
         </div>
       </section>
 
+      <section id="proximos" class="section section-dark">
+        <div class="container upcoming-box">
+          <p class="kicker" data-i18n="upcoming.kicker">Agenda</p>
+          <h2 data-i18n="upcoming.title">Proximos eventos em destaque</h2>
+          <p class="section-intro" data-i18n="upcoming.intro">Atualizamos esta lista com as proximas noites para facilitar a pesquisa no Google e ajudar novos clientes a conhecer o Via Paris.</p>
+          <ul id="upcoming-events-list" class="upcoming-events-list" aria-live="polite"></ul>
+        </div>
+      </section>
+
     </main>
 
     <section class="partners-strip" aria-label="Faixa de logos">
+      <div class="container partners-context">
+        <p class="kicker" data-i18n="partners.kicker">Parcerias</p>
+        <h2 data-i18n="partners.title">Quem construi a noite conosco</h2>
+        <p class="section-intro" data-i18n="partners.intro">Lisa, Pablo e Nexvo apoiam o Via Paris em conteudo, divulgacao e ativacoes que fortalecem cada evento.</p>
+      </div>
       <div class="container partners-wrap">
         <div class="partners-marquee" role="presentation">
           <div class="partners-track">
             <img src="assets/images/parceria-lisa.png" alt="Lisa" />
+            <img src="assets/images/parceria-pablo.png" alt="Pablo" />
             <img src="assets/images/parceria-nexvo.png" alt="Nexvo" />
             <img src="assets/images/parceria-lisa.png" alt="" aria-hidden="true" />
+            <img src="assets/images/parceria-pablo.png" alt="" aria-hidden="true" />
             <img src="assets/images/parceria-nexvo.png" alt="" aria-hidden="true" />
           </div>
         </div>
@@ -321,6 +369,15 @@
       <div class="container footer-content">
         <img src="assets/images/logo-alt.png" alt="Via Paris" class="footer-logo" />
         <p data-i18n="footer.copy">Via Paris Music Bar - Todos os direitos reservados</p>
+        <a
+          class="footer-instagram"
+          href="https://www.instagram.com/viaparisbar/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Instagram Via Paris"
+        >
+          Instagram @viaparisbar
+        </a>
       </div>
     </footer>
   </div>
