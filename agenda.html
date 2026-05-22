@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Via Paris | Agenda</title>
+  <meta name="description" content="Eventos Via Paris com detalhes completos e reserva." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #000;
+      --surface: #090909;
+      --surface-2: #101010;
+      --text: #fff;
+      --muted: #cfcfcf;
+      --line: rgba(255, 255, 255, 0.24);
+      --line-soft: rgba(255, 255, 255, 0.14);
+      --accent: #ff8a00;
+      --accent-soft: rgba(255, 138, 0, 0.14);
+      --max: 980px;
+      --ease: 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 138, 0, 0.15), transparent 28%),
+        radial-gradient(circle at 100% 20%, rgba(255, 255, 255, 0.05), transparent 34%),
+        var(--bg);
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container { width: min(100% - 2rem, var(--max)); margin: 0 auto; }
+
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(12px);
+      background: rgba(8, 8, 8, 0.92);
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .site-nav-inner {
+      min-height: 78px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      justify-self: start;
+    }
+
+    .brand img {
+      height: 52px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.6rem;
+      flex-wrap: wrap;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.82rem;
+    }
+
+    .nav-links a {
+      color: #ececec;
+      border: 1px solid transparent;
+      padding: 0.3rem 0.45rem;
+      transition: border-color var(--ease), background var(--ease);
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible,
+    .nav-links a.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .social-links {
+      justify-self: end;
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .social-link {
+      width: 2.1rem;
+      height: 2.1rem;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #fff;
+      transition: border-color var(--ease), background var(--ease), transform var(--ease);
+    }
+
+    .social-link:hover,
+    .social-link:focus-visible {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      transform: translateY(-2px);
+    }
+
+    .social-link svg {
+      width: 1rem;
+      height: 1rem;
+      fill: currentColor;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 72px;
+      z-index: 30;
+      backdrop-filter: blur(11px);
+      background: rgba(0, 0, 0, 0.86);
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .topbar-inner {
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .topbar-title {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.07em;
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+
+    .back-btn {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: #fff;
+      padding: 0.52rem 0.75rem;
+      font: inherit;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.74rem;
+      cursor: pointer;
+      display: none;
+    }
+
+    .back-btn.visible { display: inline-block; }
+
+    .home-view {
+      padding: 1.2rem 0 4rem;
+    }
+
+    .home-intro {
+      color: var(--muted);
+      margin-bottom: 0.95rem;
+      font-size: 0.95rem;
+    }
+
+    .genre-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 1.35rem;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.72rem;
+      padding: 0.48rem 0.68rem;
+      cursor: pointer;
+      transition: border-color var(--ease), background var(--ease);
+    }
+
+    .chip:hover { border-color: var(--accent); background: var(--accent-soft); }
+
+    .month + .month { margin-top: 1.6rem; }
+
+    .month-title {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.06em;
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      margin-bottom: 0.4rem;
+    }
+
+    .event-list { border-top: 1px solid var(--line); }
+
+    .event-row {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: #fff;
+      text-align: left;
+      display: grid;
+      grid-template-columns: 92px 1fr auto;
+      align-items: center;
+      gap: 0.82rem;
+      padding: 0.76rem 0;
+      cursor: pointer;
+      transition: background var(--ease), border-color var(--ease), transform var(--ease);
+    }
+
+    .event-row:hover,
+    .event-row:focus-visible {
+      background: var(--accent-soft);
+      border-bottom-color: var(--accent);
+      transform: translateX(5px);
+    }
+
+    .event-row:active,
+    .event-row.is-pressed {
+      transform: scale(0.992);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .event-row img {
+      width: 92px;
+      height: 92px;
+      object-fit: cover;
+      border: 1px solid var(--line-soft);
+    }
+
+    .event-date { color: #f7c996; font-size: 0.9rem; }
+
+    .event-name {
+      margin-top: 0.08rem;
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.04em;
+      font-size: clamp(1.15rem, 2.6vw, 1.9rem);
+      line-height: 1;
+    }
+
+    .event-venue { margin-top: 0.25rem; color: #ffd6a8; font-size: 0.9rem; }
+
+    .event-tag {
+      border: 1px solid var(--line);
+      padding: 0.27rem 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.74rem;
+      justify-self: end;
+    }
+
+    .detail-view {
+      display: none;
+      padding: 1rem 0 6.2rem;
+    }
+
+    .detail-view.visible { display: block; }
+
+    .hero-flyer {
+      width: 100%;
+      border: 1px solid var(--line-soft);
+      min-height: 260px;
+      max-height: 72vh;
+      object-fit: cover;
+      background: #050505;
+    }
+
+    .event-main {
+      margin-top: 0.95rem;
+      border-bottom: 1px solid var(--line-soft);
+      padding-bottom: 0.95rem;
+    }
+
+    .main-date { color: #f7c996; font-size: 1rem; }
+
+    .main-title {
+      margin-top: 0.12rem;
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.04em;
+      font-size: clamp(2rem, 5.1vw, 3.3rem);
+      line-height: 0.95;
+    }
+
+    .main-venue {
+      margin-top: 0.52rem;
+      font-size: 1.05rem;
+    }
+
+    .main-venue small {
+      display: block;
+      margin-top: 0.15rem;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .code-link {
+      margin-top: 0.65rem;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      font-size: 0.84rem;
+      color: #ffcb90;
+      border-bottom: 1px solid #ffcb90;
+    }
+
+    .tabs {
+      margin-top: 0.8rem;
+      display: flex;
+      gap: 1rem;
+      border-bottom: 1px solid var(--line-soft);
+      padding-bottom: 0.48rem;
+    }
+
+    .tab-btn {
+      border: 0;
+      background: transparent;
+      color: #fff;
+      font: inherit;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.86rem;
+      opacity: 0.65;
+      position: relative;
+      padding-bottom: 0.42rem;
+    }
+
+    .tab-btn.active { opacity: 1; }
+
+    .tab-btn.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -0.5rem;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .tab-panel { display: none; padding-top: 0.95rem; }
+    .tab-panel.active { display: block; }
+
+    .section-title {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.05em;
+      font-size: 1.95rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .lineup-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+
+    .artist {
+      border: 1px solid var(--line-soft);
+      background: var(--surface);
+      padding: 0.72rem;
+    }
+
+    .artist-label {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.72rem;
+      color: #ffc88e;
+      margin-bottom: 0.28rem;
+    }
+
+    .artist-name { font-size: 1.12rem; font-weight: 700; }
+
+    .ticket-card {
+      border: 1px solid var(--line);
+      background: #040404;
+      padding: 0.86rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.65rem;
+      margin-top: 0.65rem;
+      transition: transform var(--ease), border-color var(--ease), background var(--ease);
+      cursor: pointer;
+    }
+
+    .ticket-card:hover {
+      transform: translateX(4px);
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .ticket-card.soldout { opacity: 0.62; cursor: not-allowed; }
+
+    .ticket-title {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 1.48rem;
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+
+    .ticket-sub { color: #dcdcdc; margin-top: 0.22rem; }
+
+    .ticket-price { font-size: 1.45rem; font-weight: 700; align-self: center; }
+
+    .badge {
+      margin-top: 0.4rem;
+      display: inline-block;
+      border: 1px solid #ff5f5f;
+      color: #ff9f9f;
+      font-size: 0.67rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.08rem 0.35rem;
+    }
+
+    .reserve-box {
+      margin-top: 0.92rem;
+      border: 1px solid var(--line-soft);
+      background: #060606;
+      padding: 0.78rem;
+    }
+
+    .reserve-box h4 {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 1.38rem;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.48rem;
+    }
+
+    .reserve-form { display: grid; gap: 0.45rem; }
+
+    .reserve-form input,
+    .reserve-form select,
+    .reserve-form textarea,
+    .reserve-form button {
+      width: 100%;
+      border: 1px solid var(--line-soft);
+      background: #050505;
+      color: #fff;
+      padding: 0.6rem;
+      font: inherit;
+    }
+
+    .reserve-form button {
+      border-color: var(--accent);
+      background: linear-gradient(90deg, #ff8a00, #ff6d00);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+
+    .feedback { margin-top: 0.42rem; color: #ffd19a; }
+
+    .venue-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.68rem;
+    }
+
+    .venue-name {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.05em;
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .venue-address { color: #ddd; margin-top: 0.2rem; }
+
+    .map-link {
+      color: #ffcb90;
+      border-bottom: 1px solid #ffcb90;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.82rem;
+      margin-top: 0.2rem;
+      white-space: nowrap;
+    }
+
+    .map-frame {
+      width: 100%;
+      border: 1px solid var(--line-soft);
+      height: 300px;
+      background: #080808;
+    }
+
+    .bottom-cta {
+      display: none;
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 0.85rem;
+      width: min(100% - 1.4rem, var(--max));
+      border: 0;
+      background: linear-gradient(90deg, #ff8a00, #ff6d00);
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      padding: 0.88rem;
+      cursor: pointer;
+      box-shadow: 0 14px 30px rgba(255, 106, 0, 0.35);
+      z-index: 35;
+    }
+
+    .bottom-cta.visible { display: block; }
+
+    @media (max-width: 860px) {
+      .event-row { grid-template-columns: 82px 1fr; }
+      .event-row img { width: 82px; height: 82px; }
+      .event-tag { justify-self: start; margin-top: 0.32rem; }
+      .lineup-grid { grid-template-columns: 1fr; }
+      .ticket-card { grid-template-columns: 1fr; }
+      .ticket-price { justify-self: start; }
+      .map-frame { height: 260px; }
+    }
+
+    @media (max-width: 600px) {
+      .site-nav-inner {
+        min-height: 66px;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        padding: 0.45rem 0;
+      }
+
+      .brand img { height: 42px; }
+
+      .nav-links {
+        gap: 0.35rem;
+        font-size: 0.62rem;
+      }
+
+      .social-links {
+        justify-self: center;
+      }
+
+      .topbar { top: 110px; }
+
+      .topbar-inner { min-height: 60px; }
+      .topbar-title { font-size: 1.5rem; }
+      .event-row { grid-template-columns: 72px 1fr; gap: 0.68rem; }
+      .event-row img { width: 72px; height: 72px; }
+      .main-title { font-size: clamp(1.7rem, 9vw, 2.2rem); }
+      .section-title { font-size: 1.7rem; }
+      .bottom-cta { font-size: 0.76rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-nav">
+    <div class="container site-nav-inner">
+      <a class="brand" href="index.html#home" aria-label="Via Paris Inicio">
+        <img src="/assets/images/logo.png" alt="Via Paris" />
+      </a>
+      <nav class="nav-links" aria-label="Navegacao principal">
+        <a href="index.html#home">Home</a>
+        <a href="agenda.html" class="active">Agenda</a>
+        <a href="index.html#corporate">Corporate</a>
+        <a href="index.html#group-booking">Group Booking</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+      <div class="social-links" aria-label="Social media links">
+        <a class="social-link" href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2m0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5M12 7.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5m0 1.8a2.7 2.7 0 1 0 2.7 2.7A2.7 2.7 0 0 0 12 9.3m4.86-3.14a1.08 1.08 0 1 1-1.08 1.08 1.08 1.08 0 0 1 1.08-1.08"/></svg>
+        </a>
+        <a class="social-link" href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.28 2c.36 1.96 1.94 3.5 3.9 3.8v3.24a7.07 7.07 0 0 1-3.9-1.23v6.84a6.62 6.62 0 1 1-5.73-6.56v3.36a3.26 3.26 0 1 0 2.37 3.2V2h3.36z"/></svg>
+        </a>
+        <a class="social-link" href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 22v-8.2h2.8l.42-3.2H13.6V8.56c0-.92.26-1.54 1.58-1.54h1.68V4.18A22.8 22.8 0 0 0 14.4 4c-2.44 0-4.1 1.5-4.1 4.26V10.6H7.5v3.2h2.8V22h3.3z"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <h1 id="topbar-title" class="topbar-title">Eventos a seguir</h1>
+      <button id="back-home" class="back-btn" type="button">Voltar para agenda</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="home-view" class="home-view">
+      <div class="container">
+        <p class="home-intro">Escolha um evento para abrir os detalhes completos.</p>
+        <div class="genre-filters" aria-label="Filtros de estilo musical">
+          <button class="chip" type="button">Afro House</button>
+          <button class="chip" type="button">House</button>
+          <button class="chip" type="button">Latin Tech House</button>
+        </div>
+        <div id="home-events-root"></div>
+      </div>
+    </section>
+
+    <section id="detail-view" class="detail-view">
+      <div class="container">
+        <img id="hero-flyer" class="hero-flyer" src="" alt="Flyer do evento" />
+
+        <section class="event-main">
+          <p id="main-date" class="main-date"></p>
+          <h2 id="main-title" class="main-title"></h2>
+          <div class="main-venue">
+            <strong id="main-venue"></strong>
+            <small id="main-address"></small>
+          </div>
+          <a href="#reserve-box" class="code-link">VOCE TEM UM CODIGO?</a>
+
+          <div class="tabs">
+            <button class="tab-btn active" type="button" data-tab="lineup">Line-up</button>
+            <button class="tab-btn" type="button" data-tab="billets">Ingressos</button>
+            <button class="tab-btn" type="button" data-tab="venue">Local</button>
+          </div>
+        </section>
+
+        <section id="tab-lineup" class="tab-panel active">
+          <h3 class="section-title">Line-up</h3>
+          <div id="lineup-grid" class="lineup-grid"></div>
+        </section>
+
+        <section id="tab-billets" class="tab-panel">
+          <h3 class="section-title">Ingressos</h3>
+          <div id="ticket-list"></div>
+
+          <div id="reserve-box" class="reserve-box">
+            <h4>Sistema de reserva de mesa</h4>
+            <form id="reserve-form" class="reserve-form">
+              <input id="reserve-name" type="text" placeholder="Nome completo" required />
+              <input id="reserve-phone" type="text" placeholder="WhatsApp / Telefone" required />
+              <input id="reserve-guests" type="number" min="1" placeholder="Numero de pessoas" required />
+              <select id="reserve-table" required></select>
+              <textarea id="reserve-note" rows="2" placeholder="Observacoes (opcional)"></textarea>
+              <button type="submit">Confirmar reserva</button>
+            </form>
+            <p id="reserve-feedback" class="feedback"></p>
+          </div>
+        </section>
+
+        <section id="tab-venue" class="tab-panel">
+          <h3 class="section-title">Local</h3>
+          <div class="venue-head">
+            <div>
+              <p id="venue-name" class="venue-name"></p>
+              <p id="venue-address" class="venue-address"></p>
+            </div>
+            <a id="map-link" class="map-link" href="#" target="_blank" rel="noopener">Como chegar</a>
+          </div>
+          <iframe
+            id="map-frame"
+            class="map-frame"
+            title="Localizacao"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            src=""
+          ></iframe>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <button id="bottom-cta" class="bottom-cta" type="button">Ingressos a partir de -</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/assets/js/supabase-config.js"></script>
+  <script src="/assets/js/event-store.js"></script>
+  <script>
+    const store = window.ViaParisEventsStore;
+    let state = store.load();
+    let selectedEventId = null;
+
+    const dateMonthFormatter = new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" });
+    const dateShortFormatter = new Intl.DateTimeFormat("pt-BR", {
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+    const dateLongFormatter = new Intl.DateTimeFormat("pt-BR", {
+      weekday: "long",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+
+    const homeView = document.getElementById("home-view");
+    const detailView = document.getElementById("detail-view");
+    const backBtn = document.getElementById("back-home");
+    const topbarTitle = document.getElementById("topbar-title");
+    const bottomCta = document.getElementById("bottom-cta");
+
+    function safe(value) {
+      return value && String(value).trim() ? String(value) : "-";
+    }
+
+    function sortTs(eventItem) {
+      const date = new Date(eventItem.startAt || "");
+      return Number.isNaN(date.getTime()) ? Number.MAX_SAFE_INTEGER : date.getTime();
+    }
+
+    function groupedEvents(items) {
+      const ordered = [...items].sort((a, b) => sortTs(a) - sortTs(b));
+      return ordered.reduce((acc, eventItem) => {
+        const date = new Date(eventItem.startAt || "");
+        const key = Number.isNaN(date.getTime()) ? "Data a definir" : dateMonthFormatter.format(date);
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(eventItem);
+        return acc;
+      }, {});
+    }
+
+    function formatDate(eventItem, longMode) {
+      const date = new Date(eventItem.startAt || "");
+      if (Number.isNaN(date.getTime())) return "Data a definir";
+      const base = longMode ? dateLongFormatter.format(date) : dateShortFormatter.format(date);
+      return eventItem.endLabel ? `${base} - ${eventItem.endLabel}` : base;
+    }
+
+    function mapLink(address) {
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address || "Bruxelles")}`;
+    }
+
+    function mapEmbed(address) {
+      return `https://maps.google.com/maps?q=${encodeURIComponent(address || "Bruxelles")}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
+    }
+
+    function findSelectedEvent() {
+      const events = [...(state.events || [])].sort((a, b) => sortTs(a) - sortTs(b));
+      if (!events.length) return null;
+      return events.find((item) => item.id === selectedEventId) || events[0];
+    }
+
+    function renderHome() {
+      const root = document.getElementById("home-events-root");
+      const groups = groupedEvents(state.events || []);
+      const months = Object.keys(groups);
+
+      if (!months.length) {
+        root.innerHTML = "<p>Nenhum evento configurado no momento.</p>";
+        return;
+      }
+
+      root.innerHTML = months
+        .map((month) => {
+          const rows = groups[month]
+            .map((eventItem) => {
+              const tag = eventItem.tags && eventItem.tags.length ? eventItem.tags[0] : "Evento";
+              return `
+                <button class="event-row" type="button" data-event-id="${eventItem.id}" aria-label="${eventItem.title}">
+                  <img src="${eventItem.flyer}" alt="Flyer ${eventItem.title}" />
+                  <div>
+                    <p class="event-date">${formatDate(eventItem, false)}</p>
+                    <p class="event-name">${safe(eventItem.title)}</p>
+                    <p class="event-venue">${safe(eventItem.venue)}</p>
+                  </div>
+                  <span class="event-tag">${tag}</span>
+                </button>
+              `;
+            })
+            .join("");
+          return `<section class="month"><h2 class="month-title">${month}</h2><div class="event-list">${rows}</div></section>`;
+        })
+        .join("");
+    }
+
+    function renderLineup(eventItem) {
+      const blocks = [
+        { label: "Cantores", value: safe(eventItem.singers) },
+        { label: "DJs", value: safe(eventItem.djs) },
+        { label: "Convidados especiais", value: safe(eventItem.specialGuests) }
+      ];
+
+      document.getElementById("lineup-grid").innerHTML = blocks
+        .map(
+          (item) => `
+            <article class="artist">
+              <p class="artist-label">${item.label}</p>
+              <p class="artist-name">${item.value}</p>
+            </article>
+          `
+        )
+        .join("");
+    }
+
+    function fillTableOptions(eventItem) {
+      const select = document.getElementById("reserve-table");
+      const tables = Array.isArray(eventItem.tables) ? eventItem.tables : [];
+
+      if (!tables.length) {
+        select.innerHTML = '<option value="">Sem mesas cadastradas</option>';
+        return;
+      }
+
+      select.innerHTML = tables
+        .map((table) => {
+          const reserved = store.getReservedCount(state, eventItem.id, table.id);
+          const left = Math.max((Number(table.available) || 0) - reserved, 0);
+          const label = `${table.name} - ${table.price} (${left} disponiveis)`;
+          return `<option value="${table.id}" ${left === 0 ? "disabled" : ""}>${label}</option>`;
+        })
+        .join("");
+    }
+
+    function renderTickets(eventItem) {
+      const ticketList = document.getElementById("ticket-list");
+      const tables = Array.isArray(eventItem.tables) ? eventItem.tables : [];
+
+      const entryCard = `
+        <article class="ticket-card ${!eventItem.entryPrice ? "soldout" : ""}">
+          <div>
+            <h4 class="ticket-title">Ingresso</h4>
+            <p class="ticket-sub">Ingresso regular (acesso a pista principal)</p>
+            ${!eventItem.entryPrice ? '<span class="badge">Esgotado</span>' : ""}
+          </div>
+          <p class="ticket-price">${safe(eventItem.entryPrice)}</p>
+        </article>
+      `;
+
+      const tableCards = tables
+        .map((table) => {
+          const reserved = store.getReservedCount(state, eventItem.id, table.id);
+          const left = Math.max((Number(table.available) || 0) - reserved, 0);
+          const soldOut = left === 0;
+
+          return `
+            <article class="ticket-card ${soldOut ? "soldout" : ""}">
+              <div>
+                <h4 class="ticket-title">${table.name}</h4>
+                <p class="ticket-sub">${table.capacity} lugares · ${left} disponiveis</p>
+                ${soldOut ? '<span class="badge">Esgotado</span>' : ""}
+              </div>
+              <p class="ticket-price">${table.price}</p>
+            </article>
+          `;
+        })
+        .join("");
+
+      ticketList.innerHTML = entryCard + tableCards;
+
+      const prices = [];
+      if (eventItem.entryPrice) prices.push(eventItem.entryPrice);
+      (eventItem.tables || []).forEach((table) => {
+        if (table.price) prices.push(table.price);
+      });
+      bottomCta.textContent = `Ingressos a partir de ${prices[0] || "-"}`;
+    }
+
+    function renderVenue(eventItem) {
+      document.getElementById("venue-name").textContent = safe(eventItem.venue);
+      document.getElementById("venue-address").textContent = safe(eventItem.address);
+      document.getElementById("map-link").setAttribute("href", mapLink(eventItem.address));
+      document.getElementById("map-frame").setAttribute("src", mapEmbed(eventItem.address));
+    }
+
+    function renderDetail(eventItem) {
+      document.getElementById("hero-flyer").src = eventItem.flyer;
+      document.getElementById("main-date").textContent = formatDate(eventItem, true);
+      document.getElementById("main-title").textContent = safe(eventItem.title);
+      document.getElementById("main-venue").textContent = safe(eventItem.venue);
+      document.getElementById("main-address").textContent = safe(eventItem.address);
+      document.getElementById("reserve-feedback").textContent = "";
+      document.getElementById("reserve-form").reset();
+
+      renderLineup(eventItem);
+      renderTickets(eventItem);
+      renderVenue(eventItem);
+      fillTableOptions(eventItem);
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-tab") === tabName);
+      });
+
+      document.querySelectorAll(".tab-panel").forEach((panel) => {
+        panel.classList.toggle("active", panel.id === `tab-${tabName}`);
+      });
+    }
+
+    function showHome() {
+      homeView.style.display = "block";
+      detailView.classList.remove("visible");
+      backBtn.classList.remove("visible");
+      bottomCta.classList.remove("visible");
+      topbarTitle.textContent = "Eventos a seguir";
+      selectedEventId = null;
+      history.replaceState(null, "", "agenda.html");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showDetail(eventId) {
+      selectedEventId = eventId;
+      const eventItem = findSelectedEvent();
+      if (!eventItem) return;
+
+      homeView.style.display = "none";
+      detailView.classList.add("visible");
+      backBtn.classList.add("visible");
+      bottomCta.classList.add("visible");
+      topbarTitle.textContent = eventItem.title || "Evento";
+
+      switchTab("lineup");
+      renderDetail(eventItem);
+      history.replaceState(null, "", `agenda.html#event-${eventItem.id}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function submitReservation(event) {
+      event.preventDefault();
+      const eventItem = findSelectedEvent();
+      if (!eventItem) return;
+
+      const name = document.getElementById("reserve-name").value.trim();
+      const phone = document.getElementById("reserve-phone").value.trim();
+      const guests = Math.max(Number(document.getElementById("reserve-guests").value) || 1, 1);
+      const tableId = document.getElementById("reserve-table").value;
+      const note = document.getElementById("reserve-note").value.trim();
+      const feedback = document.getElementById("reserve-feedback");
+
+      const table = (eventItem.tables || []).find((item) => item.id === tableId);
+      if (!table) {
+        feedback.textContent = "Escolha uma mesa disponivel.";
+        return;
+      }
+
+      const reserved = store.getReservedCount(state, eventItem.id, table.id);
+      if (reserved >= Number(table.available || 0)) {
+        feedback.textContent = "Essa mesa esta lotada. Escolha outro tipo.";
+        fillTableOptions(eventItem);
+        return;
+      }
+
+      state = store.update((draft) => {
+        draft.reservations.push({
+          id: store.makeId("rsv"),
+          eventId: eventItem.id,
+          tableId: table.id,
+          name,
+          phone,
+          guests,
+          note,
+          createdAt: new Date().toISOString()
+        });
+      });
+
+      try {
+        await store.pushCloud(state);
+      } catch (_error) {
+        feedback.textContent = "Reserva salva localmente. Sincronizacao na nuvem pendente.";
+      }
+
+      renderDetail(eventItem);
+      feedback.textContent = "Reserva confirmada com sucesso.";
+    }
+
+    function wire() {
+      document.getElementById("home-events-root").addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const row = target.closest(".event-row");
+        if (!(row instanceof HTMLButtonElement)) return;
+        const eventId = row.getAttribute("data-event-id");
+        if (eventId) showDetail(eventId);
+      });
+
+      document.getElementById("home-events-root").addEventListener("pointerdown", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const row = target.closest(".event-row");
+        if (row) row.classList.add("is-pressed");
+      });
+
+      ["pointerup", "pointerleave", "pointercancel"].forEach((evtName) => {
+        document.getElementById("home-events-root").addEventListener(evtName, () => {
+          document.querySelectorAll(".event-row.is-pressed").forEach((item) => item.classList.remove("is-pressed"));
+        });
+      });
+
+      backBtn.addEventListener("click", showHome);
+
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const tabName = btn.getAttribute("data-tab");
+          if (tabName) switchTab(tabName);
+        });
+      });
+
+      bottomCta.addEventListener("click", () => {
+        switchTab("billets");
+        document.getElementById("reserve-box").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      document.getElementById("reserve-form").addEventListener("submit", submitReservation);
+    }
+
+    function openFromHashIfAny() {
+      const hash = window.location.hash || "";
+      if (!hash.startsWith("#event-")) return;
+      const eventId = hash.replace("#event-", "");
+      const exists = (state.events || []).some((item) => item.id === eventId);
+      if (exists) showDetail(eventId);
+    }
+
+    async function init() {
+      try {
+        state = await store.syncWithCloud();
+      } catch (_error) {
+        state = store.load();
+      }
+
+      renderHome();
+      wire();
+      openFromHashIfAny();
+    }
+
+    window.addEventListener("storage", (event) => {
+      if (event.key === store.STORAGE_KEY) {
+        state = store.load();
+        renderHome();
+        if (selectedEventId) {
+          showDetail(selectedEventId);
+        }
+      }
+    });
+
+    void init();
+  </script>
+</body>
+</html>

@@ -3,110 +3,650 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Via Paris - Admin</title>
-  <meta name="description" content="Painel administrativo Via Paris." />
-  <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/favicon/16x16.png?v=5" />
-  <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon/32x32.png?v=5" />
-  <link rel="icon" type="image/png" sizes="48x48" href="../assets/images/favicon/48x48.png?v=5" />
-  <link rel="icon" type="image/png" sizes="512x512" href="../assets/images/favicon/favicon-512x512.png?v=5" />
-  <link rel="shortcut icon" href="../assets/images/favicon/32x32.png?v=5" />
-  <link rel="apple-touch-icon" href="../assets/images/favicon/favicon-512x512.png?v=5" />
+  <title>Via Paris | Diretoria Admin</title>
+  <meta name="description" content="Painel administrativo completo para eventos Via Paris." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
-    .admin-page {
+    :root {
+      --bg: #000;
+      --surface: #0d0d0d;
+      --text: #fff;
+      --muted: #d2d2d2;
+      --line: rgba(255, 255, 255, 0.2);
+      --orange: #ff8a00;
+      --orange-soft: rgba(255, 138, 0, 0.12);
+      --ok: #8fff98;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 0 0, rgba(255, 138, 0, 0.18), transparent 24%), var(--bg);
       min-height: 100vh;
-      padding: 40px 0;
+      padding: 1.2rem 0 2rem;
+    }
+
+    .container { width: min(100% - 2rem, var(--max)); margin: 0 auto; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .header img { height: 60px; }
+    h1 {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.08em;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1;
+    }
+    .subtitle { color: var(--muted); margin-top: 0.35rem; }
+
+    .login,
+    .panel-card {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      padding: 1rem;
+      margin-top: 0.9rem;
+    }
+
+    .login { max-width: 440px; }
+
+    input,
+    textarea,
+    select,
+    button {
+      width: 100%;
+      font: inherit;
+      color: var(--text);
+      background: #060606;
+      border: 1px solid var(--line);
+      padding: 0.62rem;
+      margin-top: 0.5rem;
+    }
+
+    textarea { min-height: 80px; resize: vertical; }
+
+    .btn {
+      border-color: var(--orange);
+      background: linear-gradient(90deg, #ff8a00, #ff6e00);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .btn-ghost {
+      border-color: var(--line);
+      background: transparent;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+
+    .panel { display: grid; gap: 1rem; }
+    .grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 1.2fr 1fr;
+      align-items: start;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.7rem;
+    }
+
+    .form-grid .full { grid-column: span 2; }
+
+    .label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #ffd8ab;
+      margin-top: 0.35rem;
+      display: block;
+    }
+
+    .flyer-preview {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      margin-top: 0.55rem;
+      background: #000;
+    }
+
+    .table-row {
+      display: grid;
+      grid-template-columns: 1fr 0.9fr 0.7fr 0.7fr auto;
+      gap: 0.5rem;
+      align-items: end;
+      margin-top: 0.5rem;
+    }
+
+    .mini-btn {
+      width: auto;
+      padding: 0.55rem 0.8rem;
+      margin-top: 0;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: #111;
+      color: #fff;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+    }
+
+    .list { display: grid; gap: 0.6rem; margin-top: 0.6rem; }
+    .item {
+      border: 1px solid var(--line);
+      padding: 0.65rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.8rem;
+      align-items: center;
+      background: #070707;
+    }
+
+    .item strong { display: block; font-size: 1rem; }
+    .item small { color: var(--muted); }
+    .actions { display: flex; gap: 0.4rem; }
+
+    .sync { margin-top: 0.5rem; color: #ffd8ab; }
+    .ok { color: var(--ok); }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid .full { grid-column: span 1; }
+      .table-row { grid-template-columns: 1fr; }
+      .item { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
-  <main class="admin-page">
-    <section id="admin" class="section section-dark" style="padding-top: 0;">
-      <div class="container">
-        <p class="kicker">Painel</p>
-        <h1>Espaco Admin</h1>
-        <p class="section-intro">Gerencie eventos, mesas e fotos da home.</p>
+  <main class="container">
+    <div class="header">
+      <div>
+        <h1>Diretoria Admin</h1>
+        <p class="subtitle">Configure cada evento completo, mesas e reservas com sync automatico.</p>
+      </div>
+      <img src="/assets/images/logo.png" alt="Via Paris" />
+    </div>
 
-        <div id="admin-login" class="admin-login">
-          <label for="admin-pin">PIN admin</label>
-          <input id="admin-pin" type="password" placeholder="Digite o PIN" />
-          <button id="admin-open" class="btn btn-primary" type="button">Entrar</button>
-          <p class="admin-hint">PIN padrao: 1234</p>
+    <section id="login" class="login">
+      <label class="label" for="pin">PIN admin</label>
+      <input id="pin" type="password" placeholder="Digite seu PIN" />
+      <button id="login-btn" class="btn" type="button">Entrar</button>
+    </section>
+
+    <section id="panel" class="panel" hidden>
+      <article class="panel-card">
+        <div style="display:flex; justify-content:space-between; gap:1rem; align-items:center;">
+          <h2 style="font-family:'Bebas Neue',sans-serif; letter-spacing:0.08em; font-size:1.8rem;">Painel de Eventos</h2>
+          <button id="logout-btn" class="btn-ghost" type="button" style="width:auto;">Sair</button>
         </div>
+        <p id="sync-status" class="sync">Sincronizando...</p>
+      </article>
 
-        <div id="admin-panel" class="admin-panel" hidden>
-          <div class="admin-actions">
-            <button id="admin-close" class="btn btn-outline" type="button">Sair do admin</button>
-          </div>
+      <div class="grid">
+        <article class="panel-card">
+          <h3 style="font-family:'Bebas Neue',sans-serif; letter-spacing:0.08em; font-size:1.5rem;">Cadastrar / Editar Evento</h3>
+          <form id="event-form">
+            <input id="event-id" type="hidden" />
+            <div class="form-grid">
+              <div>
+                <label class="label" for="title">Nome da festa</label>
+                <input id="title" type="text" required />
+              </div>
+              <div>
+                <label class="label" for="entryPrice">Preco de entrada</label>
+                <input id="entryPrice" type="text" placeholder="Ex: 20 EUR" required />
+              </div>
 
-          <div class="admin-grid">
-            <article class="admin-card">
-              <h3>Eventos</h3>
-              <form id="event-form" class="admin-form">
-                <input id="event-edit-id" type="hidden" />
-                <input id="event-title" type="text" placeholder="Nome da festa" required />
-                <input id="event-date" type="text" placeholder="Data e horario" required />
-                <input id="event-price" type="text" placeholder="Valor da entrada (ex.: 15 EUR)" required />
-                <textarea id="event-details" rows="3" placeholder="Detalhes do evento" required></textarea>
+              <div>
+                <label class="label" for="startAt">Data e horario de inicio</label>
+                <input id="startAt" type="datetime-local" required />
+              </div>
+              <div>
+                <label class="label" for="endLabel">Horario final (texto)</label>
+                <input id="endLabel" type="text" placeholder="Ex: 6:00am" />
+              </div>
 
-                <div id="event-flyer-drop" class="upload-dropzone" role="button" tabindex="0" data-file-input="event-flyer-file">
-                  Arraste o flyer aqui ou clique para selecionar
-                </div>
-                <input id="event-flyer-file" class="upload-input" type="file" accept="image/*" />
-                <img id="event-flyer-preview" class="upload-preview" alt="Preview do flyer" hidden />
+              <div class="full">
+                <label class="label" for="address">Endereco</label>
+                <input id="address" type="text" required />
+              </div>
 
-                <button id="event-save-btn" class="btn btn-primary" type="button">Adicionar evento</button>
-                <button id="event-cancel-edit" class="btn btn-outline" type="button" hidden>Cancelar edicao</button>
-              </form>
-              <div id="admin-events-list" class="admin-list"></div>
-            </article>
+              <div>
+                <label class="label" for="venue">Nome do local</label>
+                <input id="venue" type="text" required />
+              </div>
+              <div>
+                <label class="label" for="tags">Tags (separadas por virgula)</label>
+                <input id="tags" type="text" placeholder="Afro House, Showcase" />
+              </div>
 
-            <article class="admin-card">
-              <h3>Mesas</h3>
-              <form id="table-form" class="admin-form">
-                <input id="table-edit-id" type="hidden" />
-                <select id="table-event-id" required>
-                  <option value="">Selecione o evento</option>
-                </select>
-                <input id="table-name" type="text" placeholder="Nome da mesa (VIP, Lounge...)" required />
-                <input id="table-qty" type="number" min="1" placeholder="Quantidade disponivel" required />
-                <input id="table-notes" type="text" placeholder="Observacao (opcional)" />
-                <button id="table-save-btn" class="btn btn-primary" type="button">Adicionar mesa</button>
-                <button id="table-cancel-edit" class="btn btn-outline" type="button" hidden>Cancelar edicao</button>
-              </form>
-              <div id="admin-tables-list" class="admin-list"></div>
-            </article>
+              <div>
+                <label class="label" for="singers">Cantores / artistas</label>
+                <input id="singers" type="text" />
+              </div>
+              <div>
+                <label class="label" for="djs">DJs</label>
+                <input id="djs" type="text" />
+              </div>
 
-            <article class="admin-card">
-              <h3>Midia da Home</h3>
-              <form id="home-form" class="admin-form">
-                <div id="hero-drop" class="upload-dropzone" role="button" tabindex="0" data-file-input="hero-photo-file">
-                  Arraste a midia principal (foto/video) aqui ou clique para selecionar
-                </div>
-                <input id="hero-photo-file" class="upload-input" type="file" accept="image/*,video/*" />
-                <img id="hero-photo-preview" class="upload-preview" alt="Preview da foto principal" hidden />
-                <video id="hero-video-preview" class="upload-preview" muted loop playsinline controls hidden></video>
+              <div class="full">
+                <label class="label" for="specialGuests">Convidados especiais</label>
+                <input id="specialGuests" type="text" />
+              </div>
 
-                <div id="gallery-drop" class="upload-dropzone" role="button" tabindex="0" data-file-input="gallery-files">
-                  Arraste fotos da galeria aqui (multiplas) ou clique para selecionar
-                </div>
-                <input id="gallery-files" class="upload-input" type="file" accept="image/*" multiple />
-                <div id="gallery-preview" class="upload-preview-grid"></div>
+              <div class="full">
+                <label class="label" for="description">Descricao</label>
+                <textarea id="description"></textarea>
+              </div>
 
-                <button class="btn btn-primary" type="submit">Salvar fotos</button>
-              </form>
-            </article>
-          </div>
-        </div>
+              <div class="full">
+                <label class="label" for="flyerFile">Flyer do evento (imagem)</label>
+                <input id="flyerFile" type="file" accept="image/*" />
+                <img id="flyerPreview" class="flyer-preview" src="" alt="Preview flyer" hidden />
+              </div>
+            </div>
+
+            <h4 style="margin-top:0.8rem; font-family:'Bebas Neue',sans-serif; letter-spacing:0.08em; font-size:1.3rem;">Mesas</h4>
+            <div class="table-row">
+              <input id="tblName" type="text" placeholder="Nome da mesa" />
+              <input id="tblPrice" type="text" placeholder="Preco" />
+              <input id="tblCapacity" type="number" min="1" placeholder="Lugares" />
+              <input id="tblAvailable" type="number" min="0" placeholder="Qtd" />
+              <button id="addTableBtn" class="mini-btn" type="button">Adicionar</button>
+            </div>
+            <div id="tablesDraft" class="list"></div>
+
+            <button class="btn" type="submit" style="margin-top:0.8rem;">Salvar evento</button>
+            <button id="cancelEditBtn" class="btn-ghost" type="button" style="margin-top:0.5rem;">Cancelar edicao</button>
+          </form>
+        </article>
+
+        <article class="panel-card">
+          <h3 style="font-family:'Bebas Neue',sans-serif; letter-spacing:0.08em; font-size:1.5rem;">Eventos Cadastrados</h3>
+          <div id="eventsList" class="list"></div>
+
+          <h3 style="font-family:'Bebas Neue',sans-serif; letter-spacing:0.08em; font-size:1.5rem; margin-top:1rem;">Reservas Recebidas</h3>
+          <div id="reservationsList" class="list"></div>
+        </article>
       </div>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../assets/js/supabase-config.js"></script>
-  <script src="../assets/js/app.js"></script>
+  <script src="/assets/js/supabase-config.js"></script>
+  <script src="/assets/js/event-store.js"></script>
+  <script>
+    const store = window.ViaParisEventsStore;
+    let state = store.load();
+    let draftTables = [];
+    let pendingFlyer = "";
+
+    const loginSection = document.getElementById("login");
+    const panelSection = document.getElementById("panel");
+    const syncStatus = document.getElementById("sync-status");
+
+    function setSyncStatus(message, ok) {
+      syncStatus.textContent = message;
+      syncStatus.classList.toggle("ok", Boolean(ok));
+    }
+
+    function toLocalInputValue(isoValue) {
+      if (!isoValue) return "";
+      const date = new Date(isoValue);
+      if (Number.isNaN(date.getTime())) return "";
+      const offset = date.getTimezoneOffset() * 60000;
+      return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+    }
+
+    function fromLocalInputValue(localValue) {
+      if (!localValue) return "";
+      const date = new Date(localValue);
+      if (Number.isNaN(date.getTime())) return "";
+      return date.toISOString();
+    }
+
+    function parseTags(raw) {
+      return raw
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    function resetForm() {
+      document.getElementById("event-form").reset();
+      document.getElementById("event-id").value = "";
+      pendingFlyer = "";
+      draftTables = [];
+      renderDraftTables();
+      const preview = document.getElementById("flyerPreview");
+      preview.hidden = true;
+      preview.src = "";
+    }
+
+    function renderDraftTables() {
+      const list = document.getElementById("tablesDraft");
+      if (!draftTables.length) {
+        list.innerHTML = "<small style='color:#d2d2d2;'>Nenhuma mesa adicionada ainda.</small>";
+        return;
+      }
+
+      list.innerHTML = draftTables
+        .map(
+          (table) => `
+            <div class="item">
+              <div>
+                <strong>${table.name}</strong>
+                <small>Preco ${table.price} · ${table.capacity} lugares · ${table.available} disponiveis</small>
+              </div>
+              <div class="actions">
+                <button class="mini-btn" type="button" data-remove-table="${table.id}">Remover</button>
+              </div>
+            </div>
+          `
+        )
+        .join("");
+    }
+
+    function formatDate(isoValue) {
+      if (!isoValue) return "Data a definir";
+      const date = new Date(isoValue);
+      if (Number.isNaN(date.getTime())) return isoValue;
+      return new Intl.DateTimeFormat("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(date);
+    }
+
+    function renderEventsList() {
+      const list = document.getElementById("eventsList");
+      if (!state.events.length) {
+        list.innerHTML = "<small style='color:#d2d2d2;'>Nenhum evento cadastrado.</small>";
+        return;
+      }
+
+      list.innerHTML = state.events
+        .slice()
+        .sort((a, b) => new Date(a.startAt || 0).getTime() - new Date(b.startAt || 0).getTime())
+        .map(
+          (eventItem) => `
+            <div class="item">
+              <div>
+                <strong>${eventItem.title}</strong>
+                <small>${formatDate(eventItem.startAt)} · ${eventItem.entryPrice} · ${eventItem.tables.length} tipos de mesa</small>
+              </div>
+              <div class="actions">
+                <button class="mini-btn" type="button" data-edit-event="${eventItem.id}">Editar</button>
+                <button class="mini-btn" type="button" data-delete-event="${eventItem.id}">Excluir</button>
+              </div>
+            </div>
+          `
+        )
+        .join("");
+    }
+
+    function renderReservations() {
+      const list = document.getElementById("reservationsList");
+      if (!state.reservations.length) {
+        list.innerHTML = "<small style='color:#d2d2d2;'>Sem reservas ainda.</small>";
+        return;
+      }
+
+      list.innerHTML = state.reservations
+        .slice()
+        .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+        .map((reservation) => {
+          const eventItem = state.events.find((item) => item.id === reservation.eventId);
+          const table = eventItem && eventItem.tables ? eventItem.tables.find((item) => item.id === reservation.tableId) : null;
+          return `
+            <div class="item">
+              <div>
+                <strong>${reservation.name} (${reservation.guests} pessoas)</strong>
+                <small>${eventItem ? eventItem.title : "Evento removido"} · ${table ? table.name : "Mesa removida"}</small>
+                <small>${reservation.phone} · ${reservation.note || "Sem observacao"}</small>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    async function persistState(nextState) {
+      state = store.save(nextState);
+      try {
+        await store.pushCloud(state);
+        setSyncStatus("Sincronizado com Supabase.", true);
+      } catch (_error) {
+        setSyncStatus("Salvo localmente. Falha no sync cloud agora.", false);
+      }
+      renderEventsList();
+      renderReservations();
+    }
+
+    function getFormData() {
+      const editId = document.getElementById("event-id").value;
+      return {
+        id: editId || store.makeId("evt"),
+        title: document.getElementById("title").value.trim(),
+        startAt: fromLocalInputValue(document.getElementById("startAt").value),
+        endLabel: document.getElementById("endLabel").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        venue: document.getElementById("venue").value.trim(),
+        singers: document.getElementById("singers").value.trim(),
+        djs: document.getElementById("djs").value.trim(),
+        specialGuests: document.getElementById("specialGuests").value.trim(),
+        entryPrice: document.getElementById("entryPrice").value.trim(),
+        description: document.getElementById("description").value.trim(),
+        tags: parseTags(document.getElementById("tags").value.trim()),
+        flyer: pendingFlyer,
+        tables: draftTables
+      };
+    }
+
+    function loadEventToForm(eventId) {
+      const eventItem = state.events.find((item) => item.id === eventId);
+      if (!eventItem) return;
+      document.getElementById("event-id").value = eventItem.id;
+      document.getElementById("title").value = eventItem.title || "";
+      document.getElementById("startAt").value = toLocalInputValue(eventItem.startAt);
+      document.getElementById("endLabel").value = eventItem.endLabel || "";
+      document.getElementById("address").value = eventItem.address || "";
+      document.getElementById("venue").value = eventItem.venue || "";
+      document.getElementById("singers").value = eventItem.singers || "";
+      document.getElementById("djs").value = eventItem.djs || "";
+      document.getElementById("specialGuests").value = eventItem.specialGuests || "";
+      document.getElementById("entryPrice").value = eventItem.entryPrice || "";
+      document.getElementById("description").value = eventItem.description || "";
+      document.getElementById("tags").value = (eventItem.tags || []).join(", ");
+      pendingFlyer = eventItem.flyer || "";
+      draftTables = Array.isArray(eventItem.tables) ? eventItem.tables.map((table) => ({ ...table })) : [];
+      renderDraftTables();
+
+      const preview = document.getElementById("flyerPreview");
+      if (pendingFlyer) {
+        preview.src = pendingFlyer;
+        preview.hidden = false;
+      } else {
+        preview.hidden = true;
+      }
+    }
+
+    function wireTableDraft() {
+      document.getElementById("addTableBtn").addEventListener("click", () => {
+        const name = document.getElementById("tblName").value.trim();
+        const price = document.getElementById("tblPrice").value.trim();
+        const capacity = Math.max(Number(document.getElementById("tblCapacity").value) || 1, 1);
+        const available = Math.max(Number(document.getElementById("tblAvailable").value) || 0, 0);
+
+        if (!name || !price) return;
+
+        draftTables.push({
+          id: store.makeId("tbl"),
+          name,
+          price,
+          capacity,
+          available
+        });
+
+        document.getElementById("tblName").value = "";
+        document.getElementById("tblPrice").value = "";
+        document.getElementById("tblCapacity").value = "";
+        document.getElementById("tblAvailable").value = "";
+        renderDraftTables();
+      });
+
+      document.getElementById("tablesDraft").addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const tableId = target.getAttribute("data-remove-table");
+        if (!tableId) return;
+        draftTables = draftTables.filter((item) => item.id !== tableId);
+        renderDraftTables();
+      });
+    }
+
+    function wireEventsListActions() {
+      document.getElementById("eventsList").addEventListener("click", async (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+
+        const editId = target.getAttribute("data-edit-event");
+        if (editId) {
+          loadEventToForm(editId);
+          return;
+        }
+
+        const deleteId = target.getAttribute("data-delete-event");
+        if (!deleteId) return;
+
+        const confirmed = window.confirm("Tem certeza que quer excluir este evento?");
+        if (!confirmed) return;
+
+        const nextState = structuredClone(state);
+        nextState.events = nextState.events.filter((item) => item.id !== deleteId);
+        nextState.reservations = nextState.reservations.filter((item) => item.eventId !== deleteId);
+        await persistState(nextState);
+        resetForm();
+      });
+    }
+
+    function wireFormSubmit() {
+      const form = document.getElementById("event-form");
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const payload = getFormData();
+        if (!payload.title || !payload.startAt || !payload.address || !payload.venue || !payload.entryPrice) {
+          alert("Preencha os campos obrigatorios do evento.");
+          return;
+        }
+
+        if (!payload.flyer) {
+          payload.flyer = "/assets/images/logo-alt.png";
+        }
+
+        const nextState = structuredClone(state);
+        const index = nextState.events.findIndex((item) => item.id === payload.id);
+
+        if (index >= 0) {
+          nextState.events[index] = payload;
+        } else {
+          nextState.events.push(payload);
+        }
+
+        await persistState(nextState);
+        resetForm();
+      });
+
+      document.getElementById("cancelEditBtn").addEventListener("click", () => {
+        resetForm();
+      });
+
+      document.getElementById("flyerFile").addEventListener("change", async (event) => {
+        const input = event.target;
+        if (!(input instanceof HTMLInputElement) || !input.files || !input.files[0]) return;
+        const file = input.files[0];
+        const dataUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error("Erro ao ler imagem"));
+          reader.readAsDataURL(file);
+        });
+
+        pendingFlyer = String(dataUrl);
+        const preview = document.getElementById("flyerPreview");
+        preview.src = pendingFlyer;
+        preview.hidden = false;
+      });
+    }
+
+    function wireAuth() {
+      document.getElementById("login-btn").addEventListener("click", () => {
+        const pin = document.getElementById("pin").value;
+        if (pin !== state.adminPin) {
+          alert("PIN invalido.");
+          return;
+        }
+        loginSection.hidden = true;
+        panelSection.hidden = false;
+      });
+
+      document.getElementById("logout-btn").addEventListener("click", () => {
+        panelSection.hidden = true;
+        loginSection.hidden = false;
+        document.getElementById("pin").value = "";
+      });
+    }
+
+    async function init() {
+      setSyncStatus("Sincronizando com Supabase...", false);
+      try {
+        state = await store.syncWithCloud();
+        setSyncStatus("Sincronizado com Supabase.", true);
+      } catch (_error) {
+        state = store.load();
+        setSyncStatus("Cloud indisponivel no momento. Usando dados locais.", false);
+      }
+
+      resetForm();
+      renderEventsList();
+      renderReservations();
+      wireAuth();
+      wireTableDraft();
+      wireEventsListActions();
+      wireFormSubmit();
+    }
+
+    window.addEventListener("storage", (event) => {
+      if (event.key === store.STORAGE_KEY) {
+        state = store.load();
+        renderEventsList();
+        renderReservations();
+      }
+    });
+
+    void init();
+  </script>
 </body>
 </html>

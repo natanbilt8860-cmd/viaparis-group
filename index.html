@@ -1,191 +1,739 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Via Paris Music Bar</title>
-  <meta name="description" content="Via Paris Music Bar - menu, galeria de fotos e reservas." />
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/16x16.png?v=5" />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/32x32.png?v=5" />
-  <link rel="icon" type="image/png" sizes="48x48" href="assets/images/favicon/48x48.png?v=5" />
-  <link rel="icon" type="image/png" sizes="512x512" href="assets/images/favicon/favicon-512x512.png?v=5" />
-  <link rel="shortcut icon" href="assets/images/favicon/32x32.png?v=5" />
-  <link rel="apple-touch-icon" href="assets/images/favicon/favicon-512x512.png?v=5" />
+  <title>Via Paris | Music Bar Bruxelles</title>
+  <meta
+    name="description"
+    content="Via Paris est un music bar a Bruxelles. Univers nocturne editorial, ambiance luxe et experiences inoubliables depuis 2019."
+  />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #080808;
+      --bg-soft: #101010;
+      --text: #ffffff;
+      --muted: #d0d0d0;
+      --gold: #ff8a00;
+      --pink: #ff8a00;
+      --border: rgba(245, 240, 232, 0.16);
+      --overlay: rgba(8, 8, 8, 0.5);
+      --max: 1220px;
+      --nav-h: 78px;
+      --ease: 360ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image:
+        radial-gradient(circle at 10% 0%, rgba(255, 138, 0, 0.14), transparent 35%),
+        radial-gradient(circle at 90% 20%, rgba(255, 255, 255, 0.08), transparent 30%),
+        linear-gradient(180deg, #080808 0%, #000000 100%);
+    }
+
+    img,
+    video {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(100% - 3rem, var(--max));
+      margin-inline: auto;
+    }
+
+    .section-pad {
+      padding: clamp(4rem, 7vw, 7rem) 0;
+    }
+
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    .logo-display,
+    .quote-text,
+    .motto {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      font-weight: 400;
+    }
+
+    .reveal {
+      opacity: 0;
+      transition: opacity 700ms ease, transform 700ms ease;
+      will-change: opacity, transform;
+    }
+
+    .reveal-up {
+      transform: translateY(40px);
+    }
+
+    .reveal-left {
+      transform: translateX(-46px);
+    }
+
+    .reveal-right {
+      transform: translateX(46px);
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+
+    .site-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 60;
+      height: var(--nav-h);
+      border-bottom: 1px solid transparent;
+      transition: background var(--ease), border-color var(--ease), backdrop-filter var(--ease);
+    }
+
+    .site-nav.scrolled {
+      background: rgba(8, 8, 8, 0.92);
+      backdrop-filter: blur(12px);
+      border-color: rgba(245, 240, 232, 0.08);
+    }
+
+    .site-nav-inner {
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .brand {
+      justify-self: start;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .brand img {
+      height: 54px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.6rem;
+      justify-self: center;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      transition: color var(--ease);
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--text);
+    }
+
+    .social-links {
+      justify-self: end;
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .social-link {
+      width: 2.1rem;
+      height: 2.1rem;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--text);
+      transition: border-color var(--ease), background var(--ease), transform var(--ease);
+    }
+
+    .social-link:hover,
+    .social-link:focus-visible {
+      border-color: var(--gold);
+      background: rgba(201, 168, 76, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .social-link svg {
+      width: 1rem;
+      height: 1rem;
+      fill: currentColor;
+    }
+
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: grid;
+      place-items: center;
+      isolation: isolate;
+      overflow: hidden;
+      padding-top: var(--nav-h);
+    }
+
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -3;
+      filter: saturate(1.1) contrast(1.04);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(8, 8, 8, 0.4) 0%, rgba(8, 8, 8, 0.16) 45%, rgba(8, 8, 8, 0.94) 100%),
+        radial-gradient(circle at 50% 10%, rgba(255, 138, 0, 0.18), transparent 42%);
+      z-index: -2;
+    }
+
+    .hero-content {
+      text-align: center;
+      width: min(92vw, 860px);
+      padding-top: 2rem;
+    }
+
+    .logo-display {
+      font-size: clamp(5.8rem, 18vw, 13rem);
+      line-height: 0.9;
+      text-shadow: 0 10px 25px rgba(0, 0, 0, 0.55);
+    }
+
+    .subtitle {
+      margin-top: 0.3rem;
+      font-size: clamp(0.8rem, 2vw, 1rem);
+      letter-spacing: 0.36em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .cta {
+      margin-top: 2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.95rem 2.2rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ff8a00 0%, #ff6a00 100%);
+      color: #fff;
+      box-shadow: 0 14px 35px rgba(255, 122, 0, 0.35);
+      transition: transform var(--ease), box-shadow var(--ease);
+    }
+
+    .cta:hover,
+    .cta:focus-visible {
+      transform: translateY(-3px);
+      box-shadow: 0 22px 42px rgba(255, 122, 0, 0.45);
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 620px;
+      border-top: 1px solid rgba(245, 240, 232, 0.07);
+      border-bottom: 1px solid rgba(245, 240, 232, 0.07);
+      background: linear-gradient(125deg, #080808 0%, #121212 60%, #0a0a0a 100%);
+    }
+
+    .split-media {
+      min-height: 520px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .split-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(1.05) brightness(0.87);
+      transform: scale(1.02);
+    }
+
+    .split-copy {
+      padding: clamp(2rem, 6vw, 5.4rem);
+      display: grid;
+      align-content: center;
+      gap: 1.3rem;
+    }
+
+    .split-copy h2 {
+      font-size: clamp(2.4rem, 5.2vw, 4.6rem);
+      color: var(--text);
+    }
+
+    .split-copy p {
+      color: #efefef;
+      max-width: 56ch;
+      font-size: 1rem;
+    }
+
+    .motto {
+      margin-top: 0.4rem;
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      color: var(--gold);
+      letter-spacing: 0.1em;
+    }
+
+    .quote-band {
+      background: #0c0c0c;
+      border-top: 1px solid rgba(245, 240, 232, 0.06);
+      border-bottom: 1px solid rgba(245, 240, 232, 0.06);
+      text-align: center;
+      padding: clamp(3rem, 6vw, 5rem) 1.5rem;
+    }
+
+    .quote-text {
+      font-size: clamp(2.1rem, 7vw, 5.1rem);
+      line-height: 0.95;
+      color: #ffffff;
+    }
+
+    .quote-band p {
+      margin-top: 1rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .partners-grid {
+      margin-top: 0.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    .partner-tile {
+      border: 1px solid var(--border);
+      min-height: 86px;
+      display: grid;
+      place-items: center;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      font-size: 0.72rem;
+      color: #ffffff;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.04));
+      transition: border-color var(--ease), transform var(--ease);
+    }
+
+    .partner-tile:hover {
+      border-color: rgba(201, 168, 76, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .site-footer {
+      padding-top: clamp(2.8rem, 6vw, 5rem);
+      border-top: 1px solid rgba(245, 240, 232, 0.08);
+      background: #070707;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr 1fr;
+      gap: 2rem;
+      padding-bottom: 2.2rem;
+    }
+
+    .footer-logo {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      letter-spacing: 0.12em;
+      line-height: 0.9;
+    }
+
+    .footer-col h3 {
+      margin-bottom: 0.7rem;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      font-weight: 400;
+    }
+
+    .footer-col p,
+    .footer-col a,
+    .footer-bottom a {
+      color: #ffffff;
+      font-size: 0.94rem;
+    }
+
+    .footer-col a:hover,
+    .footer-bottom a:hover {
+      color: #fff;
+    }
+
+    .social-footer {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 0.7rem;
+    }
+
+    .social-footer a {
+      width: 2.15rem;
+      height: 2.15rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      transition: border-color var(--ease), background var(--ease);
+    }
+
+    .social-footer a:hover {
+      border-color: var(--gold);
+      background: rgba(201, 168, 76, 0.1);
+    }
+
+    .social-footer svg {
+      width: 1rem;
+      height: 1rem;
+      fill: currentColor;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(245, 240, 232, 0.08);
+      padding: 1rem 0 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      color: #b8afa3;
+      font-size: 0.84rem;
+    }
+
+    .footer-legal {
+      display: flex;
+      gap: 1.2rem;
+    }
+
+    @media (max-width: 900px) {
+      :root {
+        --nav-h: 72px;
+      }
+
+      .site-nav-inner {
+        grid-template-columns: auto 1fr auto;
+      }
+
+      .nav-links {
+        gap: 0.9rem;
+        justify-self: start;
+        margin-left: 1rem;
+        font-size: 0.69rem;
+        letter-spacing: 0.14em;
+      }
+
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      .split-media {
+        order: -1;
+        min-height: 360px;
+      }
+
+      .split.reverse .split-media {
+        order: -1;
+      }
+
+      .footer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .partners-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: min(100% - 1.4rem, var(--max));
+      }
+
+      .site-nav-inner {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        align-content: center;
+        gap: 0.3rem;
+        padding: 0.6rem 0;
+      }
+
+      .site-nav {
+        height: auto;
+      }
+
+      .brand {
+        justify-self: center;
+      }
+
+      .brand img {
+        height: 42px;
+      }
+
+      .nav-links {
+        margin-left: 0;
+        justify-self: center;
+        gap: 0.65rem;
+        font-size: 0.62rem;
+      }
+
+      .social-links {
+        justify-self: center;
+      }
+
+      .hero {
+        padding-top: 9.5rem;
+      }
+
+      .logo-display {
+        font-size: clamp(4.2rem, 23vw, 6.4rem);
+      }
+
+      .subtitle {
+        letter-spacing: 0.22em;
+        font-size: 0.7rem;
+      }
+
+      .cta {
+        width: 100%;
+      }
+
+      .split-copy {
+        padding: 2.1rem 1rem 2.4rem;
+      }
+
+      .split-copy p {
+        font-size: 0.93rem;
+      }
+
+      .quote-text {
+        font-size: clamp(1.65rem, 12vw, 3rem);
+      }
+
+      .partners-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="site-root">
-    <header class="site-header">
-      <div class="container nav-wrap">
-        <a href="#inicio" class="brand" aria-label="Voltar ao inicio">
-          <img src="assets/images/logo.png" alt="Logo Via Paris" class="brand-logo" />
+  <header class="site-nav" id="site-nav">
+    <div class="container site-nav-inner">
+      <a class="brand" href="#home" aria-label="Via Paris Home">
+        <img src="assets/images/logo.png" alt="Via Paris" />
+      </a>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <a href="agenda.html">Agenda</a>
+        <a href="#corporate">Corporate</a>
+        <a href="#group-booking">Group Booking</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="social-links" aria-label="Social media links">
+        <a class="social-link" href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2m0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5M12 7.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5m0 1.8a2.7 2.7 0 1 0 2.7 2.7A2.7 2.7 0 0 0 12 9.3m4.86-3.14a1.08 1.08 0 1 1-1.08 1.08 1.08 1.08 0 0 1 1.08-1.08"/></svg>
         </a>
-
-        <button id="menu-toggle" class="menu-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Abrir menu">
-          <span></span><span></span><span></span>
-        </button>
-
-        <nav id="main-nav" class="main-nav" aria-label="Menu principal">
-          <a href="#inicio" data-i18n="nav.home">Inicio</a>
-          <a href="#sobre" data-i18n="nav.about">Sobre</a>
-          <a href="#fotos" data-i18n="nav.photos">Fotos</a>
-          <a href="#proximos" data-i18n="nav.upcoming">Proximos</a>
-          <a href="#reserva" data-i18n="nav.reserve">Reserva</a>
-        </nav>
+        <a class="social-link" href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.28 2c.36 1.96 1.94 3.5 3.9 3.8v3.24a7.07 7.07 0 0 1-3.9-1.23v6.84a6.62 6.62 0 1 1-5.73-6.56v3.36a3.26 3.26 0 1 0 2.37 3.2V2h3.36z"/></svg>
+        </a>
+        <a class="social-link" href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 22v-8.2h2.8l.42-3.2H13.6V8.56c0-.92.26-1.54 1.58-1.54h1.68V4.18A22.8 22.8 0 0 0 14.4 4c-2.44 0-4.1 1.5-4.1 4.26V10.6H7.5v3.2h2.8V22h3.3z"/></svg>
+        </a>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <main>
-      <section id="inicio" class="hero section">
-        <div class="container hero-grid">
-          <div>
-            <p class="kicker">Music Bar · Bruxelles</p>
-            <h1>Via Paris</h1>
-            <p class="lead" data-i18n="hero.lead">A noite começa aqui. Drinks, música e uma energia que não para.</p>
-            <div class="hero-actions">
-              <a href="#reserva" class="btn btn-primary" data-i18n="hero.ctaStrong">Reserva a tua mesa - e gratuito</a>
-              <a href="#proximos" class="btn btn-outline" data-i18n="hero.ctaSecondary">Ver proximos eventos</a>
-            </div>
-            <div class="hero-contact-grid" aria-label="Informacoes principais">
-              <p class="hero-contact-item"><strong data-i18n="contact.addressLabel">Morada:</strong> <span data-i18n="contact.addressValue">Chaussée d'Alsemberg 5, Bruxelles</span></p>
-              <p class="hero-contact-item"><strong data-i18n="contact.hoursLabel">Horario:</strong> <span data-i18n="contact.hoursValue">Quinta a Domingo - 22h as 5h</span></p>
-              <p class="hero-contact-item"><strong data-i18n="contact.phoneLabel">Telefone:</strong> <a href="tel:+32465557160">+32 465 55 71 60</a></p>
-            </div>
-          </div>
-          <div class="hero-image-wrap">
-            <video id="hero-video" class="hero-video" autoplay muted loop playsinline hidden>
-              <source src="" type="video/mp4" />
-            </video>
-          </div>
-          <img src="assets/images/mascotte.png" alt="Mascotte Via Paris" class="hero-mascotte" />
-        </div>
-      </section>
+  <main>
+    <section class="hero reveal reveal-up" id="home" aria-label="Hero section">
+      <!-- Replace this video source with your official nightclub hero video URL -->
+      <video class="hero-video" autoplay muted loop playsinline>
+        <source src="assets/images/video-home.mp4" type="video/mp4" />
+      </video>
 
-      <section id="sobre" class="section section-dark">
-        <div class="container about-box">
-          <p class="kicker" data-i18n="about.kicker">Sobre</p>
-          <h2 data-i18n="about.title">O que e o Via Paris</h2>
-          <p class="section-intro" data-i18n="about.intro">O Via Paris e um music bar em Bruxelles com noites latinas, urban e afro, ambiente premium e energia de pista cheia ate de madrugada.</p>
-          <div class="about-grid">
-            <article class="about-card">
-              <h3 data-i18n="about.card1Title">Atmosfera</h3>
-              <p data-i18n="about.card1Text">Casa focada em experiencia completa: som forte, luz envolvente e atendimento rapido.</p>
-            </article>
-            <article class="about-card">
-              <h3 data-i18n="about.card2Title">Musica</h3>
-              <p data-i18n="about.card2Text">Programacao com ritmos latinos, funk, afrobeat e DJs convidados em festas especiais.</p>
-            </article>
-            <article class="about-card">
-              <h3 data-i18n="about.card3Title">Publico</h3>
-              <p data-i18n="about.card3Text">Perfeito para aniversarios, grupos e quem quer viver a noite de Bruxelles com estilo.</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section id="fotos" class="section section-dark">
-        <div class="container">
-          <p class="kicker" data-i18n="gallery.kicker">Galeria</p>
-          <h2 data-i18n="gallery.title">Fotos do Via Paris</h2>
-          <p class="section-intro" data-i18n="gallery.intro">Clique nas fotos para visualizar maior.</p>
-          <div id="gallery-grid" class="gallery-grid"></div>
-        </div>
-      </section>
-
-      <section id="reserva" class="section">
-        <div class="container reservation-box">
-          <p class="kicker" data-i18n="events.kicker">Eventos</p>
-          <h2 data-i18n="events.title">Reservar Mesa por Evento</h2>
-          <p class="section-intro" data-i18n="events.intro">Clique no flyer da festa para ver os detalhes, valor de entrada e reservar sua mesa gratuitamente.</p>
-          <div id="events-grid" class="events-grid"></div>
-          <div class="reservation-actions reservation-contact">
-            <a class="btn btn-outline" href="https://wa.me/32465557160" target="_blank" rel="noopener" data-i18n="events.whatsapp">Duvidas no WhatsApp</a>
-          </div>
-        </div>
-      </section>
-
-      <section id="proximos" class="section section-dark">
-        <div class="container upcoming-box">
-          <p class="kicker" data-i18n="upcoming.kicker">Agenda</p>
-          <h2 data-i18n="upcoming.title">Proximos eventos em destaque</h2>
-          <p class="section-intro" data-i18n="upcoming.intro">Atualizamos esta lista com as proximas noites para facilitar a pesquisa no Google e ajudar novos clientes a conhecer o Via Paris.</p>
-          <ul id="upcoming-events-list" class="upcoming-events-list" aria-live="polite"></ul>
-        </div>
-      </section>
-
-    </main>
-
-    <section class="partners-strip" aria-label="Faixa de logos">
-      <div class="container partners-context">
-        <p class="kicker" data-i18n="partners.kicker">Parcerias</p>
-        <h2 data-i18n="partners.title">Quem construi a noite conosco</h2>
-        <p class="section-intro" data-i18n="partners.intro">Lisa, Pablo e Nexvo apoiam o Via Paris em conteudo, divulgacao e ativacoes que fortalecem cada evento.</p>
-      </div>
-      <div class="container partners-wrap">
-        <div class="partners-marquee" role="presentation">
-          <div class="partners-track">
-            <img src="assets/images/parceria-lisa.png" alt="Lisa" />
-            <img src="assets/images/parceria-pablo.png" alt="Pablo" />
-            <img src="assets/images/parceria-nexvo.png" alt="Nexvo" />
-            <img src="assets/images/parceria-lisa.png" alt="" aria-hidden="true" />
-            <img src="assets/images/parceria-pablo.png" alt="" aria-hidden="true" />
-            <img src="assets/images/parceria-nexvo.png" alt="" aria-hidden="true" />
-          </div>
-        </div>
+      <div class="hero-content">
+        <p class="subtitle">EST. 2019 · BRUXELLES</p>
+        <a href="agenda.html" class="cta">Acheter des Tickets</a>
       </div>
     </section>
 
-    <div id="lightbox" class="lightbox" hidden>
-      <button id="lightbox-close" class="lightbox-close" aria-label="Fechar imagem">X</button>
-      <img id="lightbox-image" src="" alt="Foto ampliada" />
-    </div>
+    <section class="split section-pad" id="agenda">
+      <div class="split-copy reveal reveal-left">
+        <p class="eyebrow">About The House</p>
+        <h2>Bruxelles Nights, Elevated Since 2019</h2>
+        <p>
+          Nee au coeur de Bruxelles, Via Paris est rapidement devenue une adresse signature pour celles et ceux qui recherchent
+          des nuits intenses, un son cisele et une atmosphere vraiment selective.
+        </p>
+        <p>
+          Entre vibes urbaines, esthetique editoriale et energie de foule, le bar melange la sophistication d'un lounge premium
+          et la puissance d'une vraie scene de club.
+        </p>
+        <p class="motto">No Rules. Just Rhythm.</p>
+      </div>
+      <div class="split-media reveal reveal-right">
+        <!-- Replace this image with your real About section visual -->
+        <img src="assets/images/mascotte.png" alt="People celebrating at Via Paris" />
+      </div>
+    </section>
 
-    <div id="event-modal" class="event-modal" hidden>
-      <div class="event-modal-card">
-        <button id="event-modal-close" class="event-modal-close" type="button" aria-label="Fechar">X</button>
-        <img id="event-modal-flyer" class="event-modal-flyer" src="" alt="Flyer do evento" />
-        <div class="event-modal-content">
-          <p id="event-modal-date" class="kicker"></p>
-          <h3 id="event-modal-title"></h3>
-          <p id="event-modal-details" class="section-intro"></p>
-          <p id="event-modal-price" class="event-price"></p>
+    <section class="quote-band reveal reveal-up" aria-label="Featured quote">
+      <h2 class="quote-text">THE WILDEST BAR I'VE EVER BEEN TO</h2>
+      <p>Editorial Guest Review</p>
+    </section>
 
-          <form id="reservation-form" class="reservation-form">
-            <h4 data-i18n="modal.formTitle">Reserva de mesa gratuita</h4>
-            <input id="reserve-name" type="text" placeholder="Seu nome" data-i18n-placeholder="modal.name" required />
-            <input id="reserve-phone" type="text" placeholder="WhatsApp/Telefone" data-i18n-placeholder="modal.phone" required />
-            <input id="reserve-guests" type="number" min="1" placeholder="Numero de pessoas" data-i18n-placeholder="modal.guests" required />
-            <select id="reserve-table" required></select>
-            <textarea id="reserve-note" rows="2" placeholder="Observacoes (opcional)" data-i18n-placeholder="modal.note"></textarea>
-            <button class="btn btn-primary" type="submit" data-i18n="modal.confirm">Confirmar reserva</button>
-          </form>
-          <p id="reservation-feedback" class="reservation-feedback" aria-live="polite"></p>
+    <section class="split reverse section-pad" id="corporate">
+      <div class="split-media reveal reveal-left">
+        <!-- Replace this image with your real Partners section visual -->
+        <img src="assets/images/parceria-lisa.png" alt="Partner event at Via Paris" />
+      </div>
+      <div class="split-copy reveal reveal-right">
+        <p class="eyebrow">Partners</p>
+        <h2>Built With Trusted Names</h2>
+        <p>
+          Nos partenaires contribuent a chaque production: contenu, communication, scenographie et experiences speciales qui
+          renforcent l'identite de chaque soiree.
+        </p>
+
+        <div class="partners-grid" aria-label="Partner logos">
+          <div class="partner-tile">Maison Luxe</div>
+          <div class="partner-tile">Nexus Events</div>
+          <div class="partner-tile">Noir Studio</div>
+          <div class="partner-tile">Pulse Agency</div>
+          <div class="partner-tile">Gold Label</div>
+          <div class="partner-tile">Bleu District</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="contact">
+    <div id="group-booking" aria-hidden="true"></div>
+    <div class="container footer-grid reveal reveal-up">
+      <div class="footer-col">
+        <p class="footer-logo">VIA PARIS</p>
+        <p>Music Bar editorial a Bruxelles. Nights designed to be unforgettable.</p>
+      </div>
+
+      <div class="footer-col">
+        <h3>Address</h3>
+        <!-- Replace with real venue address -->
+        <p>Chaussée d'Alsemberg 5<br />1060 Bruxelles, Belgium</p>
+      </div>
+
+      <div class="footer-col">
+        <h3>Contact</h3>
+        <!-- Replace with real phone, email and website -->
+        <p><a href="tel:+32465557160">+32 465 55 71 60</a></p>
+        <p><a href="mailto:info@viaparis.be">info@viaparis.be</a></p>
+        <p><a href="https://viaparis.be" target="_blank" rel="noopener">www.viaparis.be</a></p>
+      </div>
+
+      <div class="footer-col">
+        <h3>Social</h3>
+        <p>Follow the movement</p>
+        <div class="social-footer">
+          <a href="https://wa.me/32465557160" target="_blank" rel="noopener" aria-label="WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.52 3.48A11.92 11.92 0 0 0 12.06 0C5.48 0 .1 5.35.1 11.95a11.8 11.8 0 0 0 1.64 6.02L0 24l6.22-1.62a11.95 11.95 0 0 0 5.84 1.49h.01c6.58 0 11.93-5.35 11.93-11.94a11.84 11.84 0 0 0-3.48-8.45M12.07 21.8h-.01a9.9 9.9 0 0 1-5.04-1.38l-.36-.22-3.69.96.98-3.6-.24-.38a9.87 9.87 0 0 1-1.53-5.24c0-5.47 4.46-9.92 9.94-9.92a9.93 9.93 0 0 1 9.92 9.93c0 5.48-4.45 9.93-9.92 9.93m5.44-7.43c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15s-.77.96-.94 1.16-.35.22-.64.08c-.3-.15-1.25-.46-2.38-1.46a8.92 8.92 0 0 1-1.65-2.04c-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.57-.48-.5-.67-.51h-.57c-.2 0-.52.08-.8.37-.27.3-1.05 1.02-1.05 2.5s1.08 2.9 1.23 3.1c.15.2 2.12 3.24 5.14 4.54.72.31 1.28.5 1.72.64.72.23 1.37.2 1.88.12.57-.08 1.75-.72 2-1.4.25-.68.25-1.27.17-1.4-.07-.12-.27-.2-.57-.35"/></svg>
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2m0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5M12 7.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5m0 1.8a2.7 2.7 0 1 0 2.7 2.7A2.7 2.7 0 0 0 12 9.3m4.86-3.14a1.08 1.08 0 1 1-1.08 1.08 1.08 1.08 0 0 1 1.08-1.08"/></svg>
+          </a>
+          <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 22v-8.2h2.8l.42-3.2H13.6V8.56c0-.92.26-1.54 1.58-1.54h1.68V4.18A22.8 22.8 0 0 0 14.4 4c-2.44 0-4.1 1.5-4.1 4.26V10.6H7.5v3.2h2.8V22h3.3z"/></svg>
+          </a>
         </div>
       </div>
     </div>
 
-    <footer class="site-footer">
-      <div class="container footer-content">
-        <img src="assets/images/logo-alt.png" alt="Via Paris" class="footer-logo" />
-        <p data-i18n="footer.copy">Via Paris Music Bar - Todos os direitos reservados</p>
-        <a
-          class="footer-instagram"
-          href="https://www.instagram.com/viaparisbar/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Instagram Via Paris"
-        >
-          Instagram @viaparisbar
-        </a>
+    <div class="container footer-bottom">
+      <p>© 2026 Via Paris. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="#">Mentions legales</a>
+        <a href="#">Privacy Policy</a>
       </div>
-    </footer>
-  </div>
+    </div>
+  </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/js/supabase-config.js"></script>
-  <script src="assets/js/app.js"></script>
+  <script>
+    const nav = document.getElementById("site-nav");
+
+    window.addEventListener("scroll", () => {
+      nav.classList.toggle("scrolled", window.scrollY > 18);
+    });
+
+    const revealElements = document.querySelectorAll(".reveal");
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.2,
+        rootMargin: "0px 0px -40px 0px"
+      }
+    );
+
+    revealElements.forEach((element) => revealObserver.observe(element));
+  </script>
 </body>
 </html>
