@@ -19,6 +19,77 @@
     return date.toISOString();
   }
 
+  function parsePlacesRange(value) {
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      const objectMin = Number(value.minPlaces);
+      const objectMax = Number(value.maxPlaces);
+
+      if (Number.isFinite(objectMin) && Number.isFinite(objectMax)) {
+        const minPlaces = Math.max(Math.trunc(objectMin), 1);
+        const maxPlaces = Math.max(Math.trunc(objectMax), minPlaces);
+        return { minPlaces, maxPlaces };
+      }
+
+      if (value.places !== undefined) return parsePlacesRange(value.places);
+      if (value.lugares !== undefined) return parsePlacesRange(value.lugares);
+      if (value.capacity !== undefined) return parsePlacesRange(value.capacity);
+      if (value.quantity !== undefined) return parsePlacesRange(value.quantity);
+    }
+
+    if (typeof value === "number" && Number.isFinite(value)) {
+      const maxPlaces = Math.max(Math.trunc(value), 1);
+      return { minPlaces: 1, maxPlaces };
+    }
+
+    const text = String(value || "")
+      .replace(/[\u00A0\u2000-\u200B]/g, " ")
+      .trim();
+    if (!text) return null;
+
+    const normalized = text.replace(/[\u2010-\u2015\u2212]/g, "-").replace(/\s*[-–—]\s*/g, "-");
+
+    const rangeMatch = normalized.match(/^(\d+)\s*-\s*(\d+)$/);
+    if (rangeMatch) {
+      const minPlaces = Math.trunc(Number(rangeMatch[1]));
+      const maxPlaces = Math.trunc(Number(rangeMatch[2]));
+
+      if (minPlaces < 1 || maxPlaces < 1 || minPlaces > maxPlaces) {
+        return null;
+      }
+
+      return { minPlaces, maxPlaces };
+    }
+
+    const singleMatch = text.match(/^(\d+)$/);
+    if (singleMatch) {
+      const maxPlaces = Math.max(Math.trunc(Number(singleMatch[1])), 1);
+      return { minPlaces: 1, maxPlaces };
+    }
+
+    return null;
+  }
+
+  function formatPlacesRange(minPlaces, maxPlaces) {
+    const minValue = Math.max(Number(minPlaces) || 1, 1);
+    const maxValue = Math.max(Number(maxPlaces) || minValue, minValue);
+
+    if (minValue === maxValue) {
+      return `${minValue} pessoa${minValue === 1 ? "" : "s"}`;
+    }
+
+    return `${minValue} a ${maxValue} pessoas`;
+  }
+  function formatEuroPrice(value) {
+    const text = String(value || "").trim();
+    if (!text) return "0 EUR";
+    return /\bEUR\b/i.test(text) ? text : `${text} EUR`;
+  }
+
+  function describePlacesRange(table) {
+    const range = parsePlacesRange(table) || { minPlaces: 1, maxPlaces: 1 };
+    return formatPlacesRange(range.minPlaces, range.maxPlaces);
+  }
+
   function buildDefaultData() {
     const baseFlyers = [
       "/assets/images/parceria-pablo.png",
@@ -31,6 +102,8 @@
       {
         id: makeId("evt"),
         title: "CANDYWORLD x TKS 2G (SHOWCASE)",
+        status: "active",
+        capacity: 450,
         startAt: "2026-05-22T23:00:00.000Z",
         endLabel: "6:00am",
         address: "Chaussée d'Alsemberg 5, 1060 Bruxelles",
@@ -39,17 +112,19 @@
         djs: "DJ L'Or, DJ Riva",
         specialGuests: "MC Nox",
         entryPrice: "20 EUR",
-        description: "Showcase exclusif, ambiance immersive et performance live.",
-        tags: ["Afro House", "Showcase"],
+        description: "Apresentacao exclusiva, atmosfera imersiva e performance ao vivo.",
+        tags: ["Afro House", "Apresentacao"],
         flyer: baseFlyers[0],
         tables: [
-          { id: makeId("tbl"), name: "VIP Gold", price: "350 EUR", capacity: 6, available: 5 },
-          { id: makeId("tbl"), name: "Lounge", price: "220 EUR", capacity: 4, available: 8 }
+          { id: makeId("tbl"), name: "VIP Gold", price: "350 EUR", minPlaces: 1, maxPlaces: 6, capacity: 6, available: 5 },
+          { id: makeId("tbl"), name: "Lounge", price: "220 EUR", minPlaces: 1, maxPlaces: 4, available: 8 }
         ]
       },
       {
         id: makeId("evt"),
         title: "NO PARTY",
+        status: "active",
+        capacity: 420,
         startAt: "2026-05-23T23:00:00.000Z",
         endLabel: "5:00am",
         address: "Chaussée d'Alsemberg 5, 1060 Bruxelles",
@@ -58,17 +133,19 @@
         djs: "DJ Maze, DJ Rina",
         specialGuests: "Collectif NO PARTY",
         entryPrice: "15 EUR",
-        description: "Edition underground avec line-up house et urban.",
+        description: "Edicao underground com selecao house e urbana.",
         tags: ["House", "Underground"],
         flyer: baseFlyers[1],
         tables: [
-          { id: makeId("tbl"), name: "VIP Black", price: "300 EUR", capacity: 6, available: 4 },
-          { id: makeId("tbl"), name: "Standard", price: "180 EUR", capacity: 4, available: 10 }
+          { id: makeId("tbl"), name: "VIP Black", price: "300 EUR", minPlaces: 1, maxPlaces: 6, capacity: 6, available: 4 },
+          { id: makeId("tbl"), name: "Standard", price: "180 EUR", minPlaces: 1, maxPlaces: 4, available: 10 }
         ]
       },
       {
         id: makeId("evt"),
         title: "BAILE BAILE",
+        status: "active",
+        capacity: 500,
         startAt: "2026-05-29T23:00:00.000Z",
         endLabel: "6:00am",
         address: "Chaussée d'Alsemberg 5, 1060 Bruxelles",
@@ -77,17 +154,19 @@
         djs: "DJ Vibe, DJ Tino",
         specialGuests: "Dance Crew RioBrux",
         entryPrice: "18 EUR",
-        description: "Nuit latino/baile avec show dancers et surprises.",
+        description: "Noite latina/baile com dancers e surpresas.",
         tags: ["Latin Tech House", "Baile"],
         flyer: baseFlyers[2],
         tables: [
-          { id: makeId("tbl"), name: "Front Stage", price: "400 EUR", capacity: 6, available: 3 },
-          { id: makeId("tbl"), name: "Lounge", price: "240 EUR", capacity: 4, available: 7 }
+          { id: makeId("tbl"), name: "Front Stage", price: "400 EUR", minPlaces: 1, maxPlaces: 6, capacity: 6, available: 3 },
+          { id: makeId("tbl"), name: "Lounge", price: "240 EUR", minPlaces: 1, maxPlaces: 4, available: 7 }
         ]
       },
       {
         id: makeId("evt"),
         title: "LAPREMICE x GENEZIO (EXPERIENCE)",
+        status: "active",
+        capacity: 520,
         startAt: "2026-05-30T23:00:00.000Z",
         endLabel: "6:00am",
         address: "Chaussée d'Alsemberg 5, 1060 Bruxelles",
@@ -96,12 +175,12 @@
         djs: "DJ Lino",
         specialGuests: "Lapremice Crew",
         entryPrice: "25 EUR",
-        description: "Experience premium avec performance live et scene ouverte.",
-        tags: ["Experience", "Special"],
+        description: "Experiencia premium com performance ao vivo e palco aberto.",
+        tags: ["Experiencia", "Especial"],
         flyer: baseFlyers[3],
         tables: [
-          { id: makeId("tbl"), name: "Artist Table", price: "500 EUR", capacity: 8, available: 2 },
-          { id: makeId("tbl"), name: "VIP", price: "320 EUR", capacity: 6, available: 5 }
+          { id: makeId("tbl"), name: "Artist Table", price: "500 EUR", minPlaces: 1, maxPlaces: 8, capacity: 8, available: 2 },
+          { id: makeId("tbl"), name: "VIP", price: "320 EUR", minPlaces: 1, maxPlaces: 6, available: 5 }
         ]
       }
     ];
@@ -109,26 +188,86 @@
     return {
       version: 2,
       updatedAt: new Date().toISOString(),
-      adminPin: "1234",
+      adminPin: "123",
+      publicContent: {
+        siteContent: {
+          heroSubtitle: "EST. 2019 · BRUXELAS",
+          heroCta: "Comprar ingressos",
+          quote: "Uma noite que ultrapassa tudo o que se espera de um bar.",
+          motto: "Sem regras. Apenas ritmo."
+        },
+        partners: [],
+        navbar: {
+          home: true,
+          agenda: true,
+          event: false
+        }
+      },
       events: defaultEvents,
       reservations: []
     };
   }
 
+  function normalizePublicContent(publicContent) {
+    const source = publicContent && typeof publicContent === "object" ? publicContent : {};
+    const siteContent = source.siteContent && typeof source.siteContent === "object" ? source.siteContent : {};
+    const navbar = source.navbar && typeof source.navbar === "object" ? source.navbar : {};
+
+    return {
+      siteContent: {
+        heroSubtitle: siteContent.heroSubtitle ? String(siteContent.heroSubtitle) : "EST. 2019 · BRUXELAS",
+        heroCta: siteContent.heroCta ? String(siteContent.heroCta) : "Comprar ingressos",
+        quote: siteContent.quote ? String(siteContent.quote) : "Uma noite que ultrapassa tudo o que se espera de um bar.",
+        motto: siteContent.motto ? String(siteContent.motto) : "Sem regras. Apenas ritmo."
+      },
+      partners: Array.isArray(source.partners)
+        ? source.partners.map((partner) => ({
+            id: partner && partner.id ? String(partner.id) : makeId("ptr"),
+            name: partner && partner.name ? String(partner.name) : "Parceiro",
+            link: partner && partner.link ? String(partner.link) : "",
+            logo: partner && partner.logo ? String(partner.logo) : "",
+            description: partner && partner.description ? String(partner.description) : "",
+            status: partner && partner.status === "inactive" ? "inactive" : "active",
+            eventIds: Array.isArray(partner && partner.eventIds) ? partner.eventIds.map((id) => String(id)) : []
+          }))
+        : [],
+      navbar: {
+        home: navbar.home !== false,
+        agenda: navbar.agenda !== false,
+        event: Boolean(navbar.event)
+      }
+    };
+  }
+
   function normalizeTable(table) {
+    const range = parsePlacesRange(table) || { minPlaces: 1, maxPlaces: 1 };
+
     return {
       id: table && table.id ? String(table.id) : makeId("tbl"),
       name: table && table.name ? String(table.name) : "Table",
-      price: table && table.price ? String(table.price) : "0 EUR",
-      capacity: Math.max(Number(table && table.capacity) || 1, 1),
+      price: formatEuroPrice(table && table.price ? String(table.price) : "0 EUR"),
+      minPlaces: range.minPlaces,
+      maxPlaces: range.maxPlaces,
+      capacity: range.maxPlaces,
       available: Math.max(Number(table && table.available) || 0, 0)
     };
   }
 
   function normalizeEvent(event) {
+    const normalizedTables = Array.isArray(event && event.tables) ? event.tables.map(normalizeTable) : [];
+    const fallbackCapacity = normalizedTables.reduce((sum, table) => {
+      const maxPlaces = Math.max(Number(table.maxPlaces) || 1, 1);
+      const available = Math.max(Number(table.available) || 0, 0);
+      return sum + maxPlaces * available;
+    }, 0);
+
     return {
       id: event && event.id ? String(event.id) : makeId("evt"),
       title: event && event.title ? String(event.title) : "Untitled Event",
+      status: ["active", "full", "finished"].includes(String(event && event.status || "").toLowerCase())
+        ? String(event.status).toLowerCase()
+        : "active",
+      capacity: Math.max(Number(event && event.capacity) || fallbackCapacity || 0, 0),
       startAt: toISODateTime(event && event.startAt),
       endLabel: event && event.endLabel ? String(event.endLabel) : "",
       address: event && event.address ? String(event.address) : "",
@@ -140,11 +279,14 @@
       description: event && event.description ? String(event.description) : "",
       tags: Array.isArray(event && event.tags) ? event.tags.map((item) => String(item).trim()).filter(Boolean) : [],
       flyer: event && event.flyer ? String(event.flyer) : "/assets/images/logo-alt.png",
-      tables: Array.isArray(event && event.tables) ? event.tables.map(normalizeTable) : []
+      tables: normalizedTables
     };
   }
 
   function normalizeReservation(reservation) {
+    const rawStatus = String(reservation && reservation.status || "pending").toLowerCase();
+    const status = ["pending", "approved", "rejected", "cancelled"].includes(rawStatus) ? rawStatus : "pending";
+
     return {
       id: reservation && reservation.id ? String(reservation.id) : makeId("rsv"),
       eventId: reservation && reservation.eventId ? String(reservation.eventId) : "",
@@ -152,8 +294,10 @@
       name: reservation && reservation.name ? String(reservation.name) : "",
       phone: reservation && reservation.phone ? String(reservation.phone) : "",
       guests: Math.max(Number(reservation && reservation.guests) || 1, 1),
+      status,
       note: reservation && reservation.note ? String(reservation.note) : "",
-      createdAt: toISODateTime(reservation && reservation.createdAt) || new Date().toISOString()
+      createdAt: toISODateTime(reservation && reservation.createdAt) || new Date().toISOString(),
+      updatedAt: toISODateTime(reservation && reservation.updatedAt) || new Date().toISOString()
     };
   }
 
@@ -162,7 +306,8 @@
     return {
       version: 2,
       updatedAt: toISODateTime(source.updatedAt) || new Date().toISOString(),
-      adminPin: source.adminPin ? String(source.adminPin) : "1234",
+      adminPin: source.adminPin ? String(source.adminPin) : "123",
+      publicContent: normalizePublicContent(source.publicContent),
       events: Array.isArray(source.events) ? source.events.map(normalizeEvent) : [],
       reservations: Array.isArray(source.reservations) ? source.reservations.map(normalizeReservation) : []
     };
@@ -183,7 +328,8 @@
           id: table.id || makeId("tbl"),
           name: table.name || "Table",
           price: table.notes || "A definir",
-          capacity: Math.max(Number(table.quantity) || 1, 1),
+          minPlaces: 1,
+          maxPlaces: Math.max(Number(table.quantity) || 1, 1),
           available: Math.max(Number(table.quantity) || 1, 1)
         }));
 
@@ -220,7 +366,7 @@
 
       return normalizeData({
         updatedAt: new Date().toISOString(),
-        adminPin: legacy.adminPin || "1234",
+        adminPin: legacy.adminPin || "123",
         events: migratedEvents,
         reservations: migratedReservations
       });
@@ -348,6 +494,10 @@
   window.ViaParisEventsStore = {
     STORAGE_KEY,
     makeId,
+    parsePlacesRange,
+    formatPlacesRange,
+    formatEuroPrice,
+    describePlacesRange,
     load,
     save,
     update,

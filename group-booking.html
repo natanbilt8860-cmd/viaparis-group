@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Via Paris | Reservas em Grupo</title>
+  <meta name="description" content="Pagina dedicada para aniversarios, comemoracoes e reservas em grupo no Via Paris." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #050505;
+      --surface: #121212;
+      --surface-2: #1a1a1a;
+      --line: rgba(255, 255, 255, 0.16);
+      --text: #fff;
+      --muted: #cfcfcf;
+      --accent: #ff8a00;
+      --accent-2: #ffd27e;
+      --max: 1120px;
+      --ease: 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% -8%, rgba(255, 138, 0, 0.2), transparent 30%),
+        radial-gradient(circle at 90% 22%, rgba(255, 255, 255, 0.05), transparent 34%),
+        var(--bg);
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container { width: min(100% - 2rem, var(--max)); margin: 0 auto; }
+
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(8, 8, 8, 0.92);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .site-nav-inner {
+      min-height: 76px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand img { height: 50px; width: auto; }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.3rem;
+      flex-wrap: wrap;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.8rem;
+    }
+
+    .nav-links a {
+      border: 1px solid transparent;
+      padding: 0.3rem 0.4rem;
+      transition: border-color var(--ease), background var(--ease);
+    }
+
+    .nav-links a.active,
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      border-color: var(--accent);
+      background: rgba(255, 138, 0, 0.16);
+    }
+
+    .social-links {
+      justify-self: end;
+      display: flex;
+      gap: 0.55rem;
+    }
+
+    .social-link {
+      width: 2.1rem;
+      height: 2.1rem;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      transition: border-color var(--ease), transform var(--ease);
+    }
+
+    .social-link:hover,
+    .social-link:focus-visible {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .social-link svg { width: 1rem; height: 1rem; fill: currentColor; }
+
+    .hero {
+      padding: 4.2rem 0 2.4rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(2.2rem, 7vw, 4.4rem);
+      letter-spacing: 0.06em;
+      line-height: 0.98;
+      margin-bottom: 0.95rem;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 780px;
+      font-size: 1.03rem;
+    }
+
+    .hero-actions {
+      margin-top: 1.3rem;
+      display: flex;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.65rem 1rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: transform var(--ease), border-color var(--ease), background var(--ease);
+    }
+
+    .btn:hover { transform: translateY(-2px); border-color: var(--accent); }
+
+    .btn-primary {
+      border-color: var(--accent);
+      background: linear-gradient(100deg, #ff8a00, #ff6e00);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .layout {
+      padding: 2rem 0 3rem;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 1rem;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--surface);
+      padding: 1rem;
+    }
+
+    .card h2 {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.08em;
+      font-size: 1.8rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .card p { color: var(--muted); }
+
+    .packages {
+      display: grid;
+      gap: 0.7rem;
+      margin-top: 0.9rem;
+    }
+
+    .package {
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      border-radius: 12px;
+      padding: 0.8rem;
+    }
+
+    .package strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .package small {
+      color: var(--accent-2);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.68rem;
+    }
+
+    .checklist { list-style: none; margin-top: 0.8rem; display: grid; gap: 0.4rem; }
+    .checklist li { color: var(--muted); }
+    .checklist li::before { content: "- "; color: var(--accent); }
+
+    .contact-block {
+      margin-top: 0.9rem;
+      border-top: 1px solid var(--line);
+      padding-top: 0.9rem;
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .contact-block a { color: #fff; }
+
+    .site-footer {
+      border-top: 1px solid var(--line);
+      padding: 1.1rem 0 1.5rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 920px) {
+      .site-nav-inner {
+        grid-template-columns: 1fr;
+        padding: 0.75rem 0;
+        justify-items: center;
+      }
+
+      .social-links { justify-self: center; }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-nav">
+    <div class="container site-nav-inner">
+      <a class="brand" href="index.html#home" aria-label="Via Paris Inicio">
+        <img src="assets/images/logo.png" alt="Via Paris" />
+      </a>
+
+      <nav class="nav-links" aria-label="Navegacao principal">
+        <a href="index.html#home">Inicio</a>
+        <a href="agenda.html">Agenda</a>
+        <a href="group-booking.html" class="active">Reservas em Grupo</a>
+        <a href="loja.html">Loja</a>
+        <a href="index.html#contact">Contato</a>
+      </nav>
+
+      <div class="social-links" aria-label="Links de redes sociais">
+        <a class="social-link" href="https://www.instagram.com/viaparisbar/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2m0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5M12 7.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5m0 1.8a2.7 2.7 0 1 0 2.7 2.7A2.7 2.7 0 0 0 12 9.3m4.86-3.14a1.08 1.08 0 1 1-1.08 1.08 1.08 1.08 0 0 1 1.08-1.08"/></svg>
+        </a>
+        <a class="social-link" href="https://www.facebook.com/pages/Via-paris-music-bar/100776081342285?locale=fr_CA" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 22v-8.2h2.8l.42-3.2H13.6V8.56c0-.92.26-1.54 1.58-1.54h1.68V4.18A22.8 22.8 0 0 0 14.4 4c-2.44 0-4.1 1.5-4.1 4.26V10.6H7.5v3.2h2.8V22h3.3z"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <p class="eyebrow">Comemoracoes Privadas</p>
+        <h1>Reservas em Grupo para Aniversarios e Celebracoes</h1>
+        <p>
+          Planejamos noites especiais para aniversario, confraternizacao, despedida, team night ou qualquer data importante.
+          Nossa equipe monta uma experiencia completa com mesa, atendimento dedicado, trilha e ambientacao sob medida.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="tel:+32465557160">Falar no WhatsApp</a>
+          <a class="btn" href="mailto:info@viaparis.be">Solicitar proposta por e-mail</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="container layout">
+      <article class="card">
+        <h2>Como Funciona</h2>
+        <p>
+          Informe o tipo de comemoracao, quantidade de pessoas e o estilo da noite. Em seguida, enviamos as melhores opcoes
+          de mesa, consumo e horario para confirmar sua reserva em grupo.
+        </p>
+        <ul class="checklist">
+          <li>Recepcao personalizada para aniversariante e convidados.</li>
+          <li>Opcoes de mesas por capacidade e area do clube.</li>
+          <li>Suporte da equipe para detalhes de decoracao e roteiro.</li>
+          <li>Ajustes de experiencia para eventos corporativos e sociais.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>Pacotes de Referencia</h2>
+        <div class="packages">
+          <div class="package">
+            <small>Celebracao Essential</small>
+            <strong>Grupo de 8 a 12 pessoas</strong>
+            <p>Mesa reservada, atendimento rapido e setup ideal para aniversarios intimistas.</p>
+          </div>
+          <div class="package">
+            <small>Celebracao Signature</small>
+            <strong>Grupo de 15 a 25 pessoas</strong>
+            <p>Area premium com estrutura para brindes, bolo e momento de destaque.</p>
+          </div>
+          <div class="package">
+            <small>Celebracao Full House</small>
+            <strong>Grupo acima de 30 pessoas</strong>
+            <p>Proposta customizada para grandes comemoracoes, aniversarios e eventos especiais.</p>
+          </div>
+        </div>
+
+        <div class="contact-block">
+          <p><strong>Contato direto para reservas:</strong></p>
+          <p><a href="tel:+32465557160">+32 465 55 71 60</a></p>
+          <p><a href="mailto:info@viaparis.be">info@viaparis.be</a></p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">Via Paris - Reservas em Grupo e comemoracoes especiais em Bruxelas.</div>
+  </footer>
+</body>
+</html>

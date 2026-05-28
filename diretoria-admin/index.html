@@ -3,22 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Via Paris | Diretoria Admin</title>
-  <meta name="description" content="Painel administrativo completo para eventos Via Paris." />
+  <title>Via Paris | Painel Admin</title>
+  <meta name="description" content="Painel administrativo completo para eventos e reservas do Via Paris." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #000;
-      --surface: #0d0d0d;
-      --text: #fff;
-      --muted: #d2d2d2;
-      --line: rgba(255, 255, 255, 0.2);
-      --orange: #ff8a00;
-      --orange-soft: rgba(255, 138, 0, 0.12);
-      --ok: #8fff98;
-      --max: 1180px;
+      --bg: #090909;
+      --surface: #101010;
+      --surface-2: #171717;
+      --line: rgba(255, 255, 255, 0.14);
+      --line-strong: rgba(255, 255, 255, 0.24);
+      --muted: #b9b9b9;
+      --text: #ffffff;
+      --control-bg: #1f1f1f;
+      --control-hover: #252525;
+      --accent: #ff8a00;
+      --ok: #46d37f;
+      --warn: #ffd166;
+      --danger: #ff5c5c;
+      --radius: 14px;
+      --ease: 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,287 +32,1047 @@
     body {
       font-family: "DM Sans", sans-serif;
       color: var(--text);
-      background: radial-gradient(circle at 0 0, rgba(255, 138, 0, 0.18), transparent 24%), var(--bg);
+      line-height: 1.45;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255, 138, 0, 0.16), transparent 28%),
+        radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.05), transparent 35%),
+        var(--bg);
       min-height: 100vh;
-      padding: 1.2rem 0 2rem;
     }
 
-    .container { width: min(100% - 2rem, var(--max)); margin: 0 auto; }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    .header img { height: 60px; }
-    h1 {
-      font-family: "Bebas Neue", sans-serif;
-      letter-spacing: 0.08em;
-      font-size: clamp(2rem, 5vw, 3rem);
-      line-height: 1;
-    }
-    .subtitle { color: var(--muted); margin-top: 0.35rem; }
-
-    .login,
-    .panel-card {
-      border: 1px solid var(--line);
-      background: var(--surface);
-      padding: 1rem;
-      margin-top: 0.9rem;
+    body.light {
+      --bg: #f1f1f1;
+      --surface: #ffffff;
+      --surface-2: #f8f8f8;
+      --line: rgba(0, 0, 0, 0.12);
+      --line-strong: rgba(0, 0, 0, 0.22);
+      --muted: #5e5e5e;
+      --text: #111111;
+      --control-bg: #f3f3f3;
+      --control-hover: #ececec;
     }
 
-    .login { max-width: 440px; }
-
+    button,
     input,
     textarea,
-    select,
-    button {
-      width: 100%;
+    select {
       font: inherit;
-      color: var(--text);
-      background: #060606;
-      border: 1px solid var(--line);
-      padding: 0.62rem;
-      margin-top: 0.5rem;
+      color: inherit;
     }
 
-    textarea { min-height: 80px; resize: vertical; }
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--control-bg);
+      padding: 0.62rem 0.7rem;
+      min-height: 40px;
+      transition: border-color var(--ease), background var(--ease), box-shadow var(--ease);
+    }
+
+    textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+
+    input:not([type="checkbox"]):not([type="radio"])::placeholder,
+    textarea::placeholder {
+      color: color-mix(in srgb, var(--muted) 78%, transparent);
+      opacity: 1;
+    }
+
+    input:not([type="checkbox"]):not([type="radio"]):hover,
+    textarea:hover,
+    select:hover {
+      background: var(--control-hover);
+    }
+
+    input:not([type="checkbox"]):not([type="radio"]):focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: color-mix(in srgb, var(--accent) 68%, var(--line));
+      box-shadow: 0 0 0 3px rgba(255, 138, 0, 0.16);
+    }
+
+    input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+      margin-right: 0.35rem;
+      vertical-align: middle;
+    }
+
+    select {
+      appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+        linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+      background-position:
+        calc(100% - 16px) 52%,
+        calc(100% - 11px) 52%;
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+      padding-right: 2rem;
+    }
+
+    select[multiple] {
+      appearance: auto;
+      background-image: none;
+      padding-right: 0.7rem;
+      min-height: 120px;
+    }
+
+    .auth-wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+    }
+
+    .auth-card {
+      width: min(480px, 100%);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 1.2rem;
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    .auth-title {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(2rem, 6vw, 2.8rem);
+      letter-spacing: 0.08em;
+      line-height: 1;
+    }
+
+    .auth-sub {
+      color: var(--muted);
+      margin-top: 0.55rem;
+      margin-bottom: 1rem;
+    }
+
+    .field { margin-top: 0.75rem; }
+
+    .field label {
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .field textarea { min-height: 78px; }
 
     .btn {
-      border-color: var(--orange);
-      background: linear-gradient(90deg, #ff8a00, #ff6e00);
-      color: #fff;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      border-radius: 10px;
+      padding: 0.62rem 0.8rem;
       cursor: pointer;
+      transition: transform var(--ease), border-color var(--ease), background var(--ease);
+    }
+
+    .btn:hover { transform: translateY(-1px); border-color: rgba(255, 138, 0, 0.5); }
+    .btn:disabled { opacity: 0.48; cursor: not-allowed; transform: none; }
+
+    .btn-primary {
+      border-color: var(--accent);
+      background: linear-gradient(90deg, #ff8a00, #ff6d00);
+      color: #fff;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
 
-    .btn-ghost {
-      border-color: var(--line);
-      background: transparent;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      cursor: pointer;
+    .btn-danger { border-color: rgba(255, 92, 92, 0.6); }
+    .btn-ghost { background: transparent; }
+
+    .auth-actions { margin-top: 1rem; display: flex; gap: 0.55rem; }
+    .auth-error { color: #ff9d9d; margin-top: 0.65rem; min-height: 1.2rem; }
+
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
     }
 
-    .panel { display: grid; gap: 1rem; }
-    .grid {
+    .app[hidden] { display: none !important; }
+
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: linear-gradient(180deg, #0f0f0f, #070707);
+      padding: 1rem 0.85rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+    }
+
+    body.light .sidebar {
+      background: linear-gradient(180deg, #ffffff, #f5f5f5);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.65rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .brand img { height: 36px; width: auto; }
+
+    .brand strong {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.08em;
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+
+    .menu-btn {
+      width: 100%;
+      text-align: left;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      background: transparent;
+      color: inherit;
+      padding: 0.62rem 0.65rem;
+      cursor: pointer;
+      margin-bottom: 0.3rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      align-items: center;
+      font-size: 1.02rem;
+    }
+
+    .menu-btn:hover,
+    .menu-btn.active {
+      border-color: var(--line);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .menu-hint {
+      color: var(--muted);
+      font-size: 0.76rem;
+      margin-top: 0.65rem;
+      line-height: 1.45;
+    }
+
+    .main {
+      padding: 1rem;
+      overflow: auto;
+    }
+
+    .topbar {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.8rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .topbar-title {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.08em;
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .topbar-sub { color: var(--muted); font-size: 0.86rem; margin-top: 0.25rem; }
+
+    .topbar-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+    .badge {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.16rem 0.5rem;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .section { display: none; gap: 1rem; }
+    .section.active { display: grid; }
+
+    .grid-kpi {
       display: grid;
-      gap: 1rem;
-      grid-template-columns: 1.2fr 1fr;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1rem;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    }
+
+    .kpi-label {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      font-size: 0.73rem;
+    }
+
+    .kpi-value {
+      margin-top: 0.25rem;
+      font-size: clamp(1.4rem, 2.8vw, 2.1rem);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .kpi-note { margin-top: 0.25rem; color: var(--muted); font-size: 0.8rem; }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 0.8rem;
+    }
+
+    .bars {
+      display: grid;
+      gap: 0.45rem;
+      margin-top: 0.7rem;
+    }
+
+    .bar {
+      display: grid;
+      grid-template-columns: 76px 1fr auto;
+      gap: 0.5rem;
+      align-items: center;
+      font-size: 0.82rem;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff8a00, #ff6d00);
+      border-radius: inherit;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      background: var(--surface);
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      padding: 0.72rem 0.64rem;
+      font-size: 0.89rem;
+      vertical-align: top;
+    }
+
+    th {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: color-mix(in srgb, var(--text) 80%, var(--muted));
+      font-size: 0.73rem;
+      background: color-mix(in srgb, var(--surface-2) 82%, transparent);
+    }
+
+    tbody tr:nth-child(even) {
+      background: color-mix(in srgb, var(--surface-2) 52%, transparent);
+    }
+
+    tbody tr:hover {
+      background: color-mix(in srgb, var(--surface-2) 72%, transparent);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 0.8rem;
       align-items: start;
     }
 
     .form-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.7rem;
+      gap: 0.6rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .form-grid label.tiny {
+      display: block;
+      margin-bottom: 0.24rem;
     }
 
     .form-grid .full { grid-column: span 2; }
 
-    .label {
-      font-size: 0.78rem;
+    .inline {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .muted { color: var(--muted); }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 0.12rem 0.5rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #ffd8ab;
-      margin-top: 0.35rem;
-      display: block;
-    }
-
-    .flyer-preview {
-      width: 100%;
-      max-height: 260px;
-      object-fit: cover;
       border: 1px solid var(--line);
-      margin-top: 0.55rem;
-      background: #000;
+      white-space: nowrap;
     }
 
-    .table-row {
+    .status.active { color: #9cf2bc; border-color: rgba(70, 211, 127, 0.5); }
+    .status.full { color: #ffe39d; border-color: rgba(255, 209, 102, 0.5); }
+    .status.finished { color: #d0d0d0; }
+    .status.pending { color: #ffd9a8; border-color: rgba(255, 172, 69, 0.5); }
+    .status.approved { color: #9cf2bc; border-color: rgba(70, 211, 127, 0.5); }
+    .status.rejected,
+    .status.cancelled { color: #ffb0b0; border-color: rgba(255, 92, 92, 0.55); }
+
+    .map-grid {
+      margin-top: 0.65rem;
       display: grid;
-      grid-template-columns: 1fr 0.9fr 0.7fr 0.7fr auto;
-      gap: 0.5rem;
-      align-items: end;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.55rem;
+    }
+
+    .table-box {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.55rem;
+      background: var(--surface-2);
+    }
+
+    .table-box strong { display: block; }
+    .table-box small { color: var(--muted); }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.55rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .tiny {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      padding: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .section-title {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.08em;
+      font-size: 1.7rem;
+      line-height: 1;
+    }
+
+    .filters > * {
+      min-height: 40px;
+    }
+
+    td select {
+      min-width: 150px;
+    }
+
+    .error-inline {
       margin-top: 0.5rem;
+      color: #ffb0b0;
+      min-height: 1.1rem;
+      font-size: 0.86rem;
     }
 
-    .mini-btn {
-      width: auto;
-      padding: 0.55rem 0.8rem;
-      margin-top: 0;
-      cursor: pointer;
-      border: 1px solid var(--line);
-      background: #111;
-      color: #fff;
-      text-transform: uppercase;
-      font-size: 0.72rem;
-      letter-spacing: 0.06em;
-    }
-
-    .list { display: grid; gap: 0.6rem; margin-top: 0.6rem; }
-    .item {
-      border: 1px solid var(--line);
-      padding: 0.65rem;
-      display: flex;
-      justify-content: space-between;
-      gap: 0.8rem;
-      align-items: center;
-      background: #070707;
-    }
-
-    .item strong { display: block; font-size: 1rem; }
-    .item small { color: var(--muted); }
-    .actions { display: flex; gap: 0.4rem; }
-
-    .sync { margin-top: 0.5rem; color: #ffd8ab; }
-    .ok { color: var(--ok); }
-
-    @media (max-width: 980px) {
-      .grid { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 700px) {
-      .form-grid { grid-template-columns: 1fr; }
+    @media (max-width: 1140px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar {
+        position: static;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .dashboard-grid,
+      .two-col,
+      .grid-kpi,
+      .filters,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
       .form-grid .full { grid-column: span 1; }
-      .table-row { grid-template-columns: 1fr; }
-      .item { flex-direction: column; align-items: flex-start; }
+      .topbar-title { font-size: 1.7rem; }
+      td select { min-width: 130px; }
     }
   </style>
 </head>
 <body>
-  <main class="container">
-    <div class="header">
-      <div>
-        <h1>Diretoria Admin</h1>
-        <p class="subtitle">Configure cada evento completo, mesas e reservas com sync automatico.</p>
+  <main id="login-view" class="auth-wrap">
+    <section class="auth-card">
+      <h1 class="auth-title">Painel Admin</h1>
+      <p class="auth-sub">Acesso seguro para gestao completa de eventos, reservas e conteudos do site.</p>
+      <div class="field">
+        <label for="login-pin">PIN de acesso</label>
+        <input id="login-pin" type="password" placeholder="Digite seu PIN" />
       </div>
-      <img src="/assets/images/logo.png" alt="Via Paris" />
-    </div>
-
-    <section id="login" class="login">
-      <label class="label" for="pin">PIN admin</label>
-      <input id="pin" type="password" placeholder="Digite seu PIN" />
-      <button id="login-btn" class="btn" type="button">Entrar</button>
-    </section>
-
-    <section id="panel" class="panel" hidden>
-      <article class="panel-card">
-        <div style="display:flex; justify-content:space-between; gap:1rem; align-items:center;">
-          <h2 style="font-family:'Bebas Neue',sans-serif; letter-spacing:0.08em; font-size:1.8rem;">Painel de Eventos</h2>
-          <button id="logout-btn" class="btn-ghost" type="button" style="width:auto;">Sair</button>
-        </div>
-        <p id="sync-status" class="sync">Sincronizando...</p>
-      </article>
-
-      <div class="grid">
-        <article class="panel-card">
-          <h3 style="font-family:'Bebas Neue',sans-serif; letter-spacing:0.08em; font-size:1.5rem;">Cadastrar / Editar Evento</h3>
-          <form id="event-form">
-            <input id="event-id" type="hidden" />
-            <div class="form-grid">
-              <div>
-                <label class="label" for="title">Nome da festa</label>
-                <input id="title" type="text" required />
-              </div>
-              <div>
-                <label class="label" for="entryPrice">Preco de entrada</label>
-                <input id="entryPrice" type="text" placeholder="Ex: 20 EUR" required />
-              </div>
-
-              <div>
-                <label class="label" for="startAt">Data e horario de inicio</label>
-                <input id="startAt" type="datetime-local" required />
-              </div>
-              <div>
-                <label class="label" for="endLabel">Horario final (texto)</label>
-                <input id="endLabel" type="text" placeholder="Ex: 6:00am" />
-              </div>
-
-              <div class="full">
-                <label class="label" for="address">Endereco</label>
-                <input id="address" type="text" required />
-              </div>
-
-              <div>
-                <label class="label" for="venue">Nome do local</label>
-                <input id="venue" type="text" required />
-              </div>
-              <div>
-                <label class="label" for="tags">Tags (separadas por virgula)</label>
-                <input id="tags" type="text" placeholder="Afro House, Showcase" />
-              </div>
-
-              <div>
-                <label class="label" for="singers">Cantores / artistas</label>
-                <input id="singers" type="text" />
-              </div>
-              <div>
-                <label class="label" for="djs">DJs</label>
-                <input id="djs" type="text" />
-              </div>
-
-              <div class="full">
-                <label class="label" for="specialGuests">Convidados especiais</label>
-                <input id="specialGuests" type="text" />
-              </div>
-
-              <div class="full">
-                <label class="label" for="description">Descricao</label>
-                <textarea id="description"></textarea>
-              </div>
-
-              <div class="full">
-                <label class="label" for="flyerFile">Flyer do evento (imagem)</label>
-                <input id="flyerFile" type="file" accept="image/*" />
-                <img id="flyerPreview" class="flyer-preview" src="" alt="Preview flyer" hidden />
-              </div>
-            </div>
-
-            <h4 style="margin-top:0.8rem; font-family:'Bebas Neue',sans-serif; letter-spacing:0.08em; font-size:1.3rem;">Mesas</h4>
-            <div class="table-row">
-              <input id="tblName" type="text" placeholder="Nome da mesa" />
-              <input id="tblPrice" type="text" placeholder="Preco" />
-              <input id="tblCapacity" type="number" min="1" placeholder="Lugares" />
-              <input id="tblAvailable" type="number" min="0" placeholder="Qtd" />
-              <button id="addTableBtn" class="mini-btn" type="button">Adicionar</button>
-            </div>
-            <div id="tablesDraft" class="list"></div>
-
-            <button class="btn" type="submit" style="margin-top:0.8rem;">Salvar evento</button>
-            <button id="cancelEditBtn" class="btn-ghost" type="button" style="margin-top:0.5rem;">Cancelar edicao</button>
-          </form>
-        </article>
-
-        <article class="panel-card">
-          <h3 style="font-family:'Bebas Neue',sans-serif; letter-spacing:0.08em; font-size:1.5rem;">Eventos Cadastrados</h3>
-          <div id="eventsList" class="list"></div>
-
-          <h3 style="font-family:'Bebas Neue',sans-serif; letter-spacing:0.08em; font-size:1.5rem; margin-top:1rem;">Reservas Recebidas</h3>
-          <div id="reservationsList" class="list"></div>
-        </article>
+      <div class="auth-actions">
+        <button id="login-btn" class="btn btn-primary" type="button">Entrar</button>
       </div>
+      <p id="login-error" class="auth-error"></p>
+      <p class="tiny">Perfis suportados: admin, staff e leitura.</p>
     </section>
   </main>
+
+  <div id="app-view" class="app" hidden>
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="/assets/images/logo.png" alt="Via Paris" />
+        <div>
+          <strong>Via Paris</strong>
+          <p class="tiny">Painel central</p>
+        </div>
+      </div>
+
+      <button class="menu-btn active" data-section="dashboard">Dashboard <span class="tiny">KPIs</span></button>
+      <button class="menu-btn" data-section="eventos">Eventos <span class="tiny">CRUD + layout</span></button>
+      <button class="menu-btn" data-section="reservas">Reservas <span class="tiny">Status + anti conflito</span></button>
+      <button class="menu-btn" data-section="parceiros">Parceiros <span class="tiny">Colaboracoes</span></button>
+      <button class="menu-btn" data-section="clientes">Clientes <span class="tiny">Historico</span></button>
+      <button class="menu-btn" data-section="conteudo">Conteudo <span class="tiny">Site publico</span></button>
+      <button class="menu-btn" data-section="seguranca">Seguranca <span class="tiny">Acessos</span></button>
+
+      <p class="menu-hint" id="session-hint"></p>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h2 class="topbar-title" id="topbar-title">Dashboard</h2>
+          <p class="topbar-sub" id="sync-status">Sincronizando...</p>
+        </div>
+        <div class="topbar-actions">
+          <span id="role-badge" class="badge">role: -</span>
+          <button id="theme-toggle" class="btn" type="button">Tema</button>
+          <button id="force-sync" class="btn" type="button">Recarregar nuvem</button>
+          <button id="logout-btn" class="btn btn-danger" type="button">Sair</button>
+        </div>
+      </header>
+
+      <section class="section active" id="section-dashboard">
+        <div class="grid-kpi" id="kpi-grid"></div>
+
+        <div class="dashboard-grid">
+          <article class="card">
+            <h3 class="section-title">Reservas ultimos 7 dias</h3>
+            <div class="bars" id="reservations-bars"></div>
+          </article>
+
+          <article class="card">
+            <h3 class="section-title">Atividade recente</h3>
+            <div id="recent-activity" class="inline muted" style="margin-top:0.6rem; flex-direction:column; align-items:flex-start;"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="section-eventos">
+        <div class="two-col">
+          <article class="card">
+            <h3 class="section-title">Cadastrar / editar evento</h3>
+            <form id="event-form" style="margin-top:0.7rem;">
+              <input id="event-id" type="hidden" />
+              <div class="form-grid">
+                <div>
+                  <label class="tiny" for="evt-title">Nome do evento</label>
+                  <input id="evt-title" type="text" required />
+                </div>
+                <div>
+                  <label class="tiny" for="evt-status">Status</label>
+                  <select id="evt-status">
+                    <option value="active">Ativo</option>
+                    <option value="full">Completo</option>
+                    <option value="finished">Finalizado</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="tiny" for="evt-start">Inicio</label>
+                  <input id="evt-start" type="datetime-local" required />
+                </div>
+                <div>
+                  <label class="tiny" for="evt-end">Termino (texto)</label>
+                  <input id="evt-end" type="text" placeholder="Ex: 6:00am" />
+                </div>
+
+                <div>
+                  <label class="tiny" for="evt-capacity">Capacidade do evento</label>
+                  <input id="evt-capacity" type="number" min="0" placeholder="Ex: 500" />
+                </div>
+                <div>
+                  <label class="tiny" for="evt-price">Preco de entrada</label>
+                  <input id="evt-price" type="text" placeholder="Ex: 20 EUR" />
+                </div>
+
+                <div class="full">
+                  <label class="tiny" for="evt-venue">Local</label>
+                  <input id="evt-venue" type="text" />
+                </div>
+
+                <div class="full">
+                  <label class="tiny" for="evt-address">Endereco</label>
+                  <input id="evt-address" type="text" />
+                </div>
+
+                <div>
+                  <label class="tiny" for="evt-singers">Artistas</label>
+                  <input id="evt-singers" type="text" />
+                </div>
+                <div>
+                  <label class="tiny" for="evt-djs">DJs</label>
+                  <input id="evt-djs" type="text" />
+                </div>
+
+                <div class="full">
+                  <label class="tiny" for="evt-guests">Convidados especiais</label>
+                  <input id="evt-guests" type="text" />
+                </div>
+
+                <div class="full">
+                  <label class="tiny" for="evt-tags">Tags (virgula)</label>
+                  <input id="evt-tags" type="text" placeholder="Afro House, Showcase" />
+                </div>
+
+                <div class="full">
+                  <label class="tiny" for="evt-description">Descricao</label>
+                  <textarea id="evt-description"></textarea>
+                </div>
+
+                <div class="full">
+                  <label class="tiny" for="evt-flyer-file">Flyer do evento (pasta/galeria)</label>
+                  <input id="evt-flyer-file" type="file" accept="image/*" />
+                  <input id="evt-flyer-current" type="hidden" />
+                  <p id="evt-flyer-name" class="tiny">Nenhuma imagem selecionada.</p>
+                  <button id="evt-flyer-clear" class="btn btn-ghost" type="button" data-permission="editEvent">Remover imagem</button>
+                </div>
+              </div>
+
+              <h4 style="margin-top:0.75rem;" class="section-title">Mesas e zonas</h4>
+              <div class="form-grid" style="margin-top:0.5rem;">
+                <div>
+                  <label class="tiny" for="tbl-name">Nome da mesa</label>
+                  <input id="tbl-name" type="text" placeholder="Ex: VIP Plus" />
+                </div>
+                <div>
+                  <label class="tiny" for="tbl-zone">Zona</label>
+                  <input id="tbl-zone" type="text" placeholder="Ex: Lounge A" />
+                </div>
+                <div>
+                  <label class="tiny" for="tbl-price">Preco</label>
+                  <input id="tbl-price" type="text" placeholder="Ex: 350" />
+                </div>
+                <div>
+                  <label class="tiny" for="tbl-range">Faixa pessoas (a-b)</label>
+                  <input id="tbl-range" type="text" placeholder="Ex: 1-5" />
+                </div>
+                <div>
+                  <label class="tiny" for="tbl-available">Quantidade disponivel</label>
+                  <input id="tbl-available" type="number" min="0" placeholder="Ex: 10" />
+                </div>
+                <div class="inline" style="align-items:flex-end;">
+                  <button id="add-table-btn" class="btn" type="button" data-permission="editEvent">Adicionar mesa</button>
+                </div>
+              </div>
+
+              <div id="tables-draft" class="map-grid"></div>
+
+              <div class="inline" style="margin-top:0.75rem;">
+                <button class="btn btn-primary" type="submit" data-permission="editEvent">Salvar evento</button>
+                <button id="cancel-edit-event" class="btn btn-ghost" type="button">Cancelar</button>
+              </div>
+              <p class="error-inline" id="event-error"></p>
+            </form>
+          </article>
+
+          <article class="card">
+            <h3 class="section-title">Eventos cadastrados</h3>
+            <div id="events-list" style="margin-top:0.7rem;"></div>
+
+            <h3 class="section-title" style="margin-top:1rem;">Mapa de mesas (visual)</h3>
+            <select id="layout-event-select" style="margin-top:0.5rem;"></select>
+            <div id="layout-preview" class="map-grid"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="section-reservas">
+        <article class="card">
+          <h3 class="section-title">Gestao de reservas de mesas</h3>
+          <div class="filters" style="margin-top:0.65rem;">
+            <select id="filter-event"></select>
+            <select id="filter-status">
+              <option value="all">Todos status</option>
+              <option value="pending">Pendente</option>
+              <option value="approved">Aprovada</option>
+              <option value="rejected">Recusada</option>
+              <option value="cancelled">Cancelada</option>
+            </select>
+            <input id="filter-date" type="date" />
+            <input id="filter-text" type="text" placeholder="Nome / telefone" />
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Evento</th>
+                  <th>Pessoas</th>
+                  <th>Mesa</th>
+                  <th>Status</th>
+                  <th>Acoes</th>
+                </tr>
+              </thead>
+              <tbody id="reservations-body"></tbody>
+            </table>
+          </div>
+          <p class="error-inline" id="reservation-error"></p>
+        </article>
+
+        <article class="card">
+          <h3 class="section-title">Plano de sala (ocupacao)</h3>
+          <select id="room-event-select" style="margin-top:0.55rem;"></select>
+          <div id="room-layout" class="map-grid"></div>
+        </article>
+      </section>
+
+      <section class="section" id="section-parceiros">
+        <div class="two-col">
+          <article class="card">
+            <h3 class="section-title">Novo parceiro</h3>
+            <form id="partner-form" style="margin-top:0.65rem;">
+              <input id="partner-id" type="hidden" />
+              <div class="field">
+                <label for="partner-name">Nome</label>
+                <input id="partner-name" type="text" required />
+              </div>
+              <div class="field">
+                <label for="partner-link">Link</label>
+                <input id="partner-link" type="text" placeholder="https://" />
+              </div>
+              <div class="field">
+                <label for="partner-logo-file">Logo do parceiro (pasta/galeria)</label>
+                <input id="partner-logo-file" type="file" accept="image/*" />
+                <input id="partner-logo-current" type="hidden" />
+                <p id="partner-logo-name" class="tiny">Nenhuma imagem selecionada.</p>
+                <button id="partner-logo-clear" class="btn btn-ghost" type="button" data-permission="editPartner">Remover imagem</button>
+              </div>
+              <div class="field">
+                <label for="partner-status">Status</label>
+                <select id="partner-status">
+                  <option value="active">Ativo</option>
+                  <option value="inactive">Inativo</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="partner-events">Eventos associados</label>
+                <select id="partner-events" multiple style="min-height:120px;"></select>
+              </div>
+              <div class="field">
+                <label for="partner-description">Descricao</label>
+                <textarea id="partner-description"></textarea>
+              </div>
+              <div class="inline" style="margin-top:0.7rem;">
+                <button class="btn btn-primary" type="submit" data-permission="editPartner">Salvar parceiro</button>
+                <button id="partner-cancel" class="btn btn-ghost" type="button">Cancelar</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="card">
+            <h3 class="section-title">Parceiros cadastrados</h3>
+            <div id="partners-list" style="margin-top:0.65rem;"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="section-clientes">
+        <article class="card">
+          <h3 class="section-title">Base de clientes</h3>
+          <div class="table-wrap" style="margin-top:0.65rem;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Contato</th>
+                  <th>Reservas</th>
+                  <th>Ultima visita</th>
+                  <th>Perfil</th>
+                  <th>Notas internas</th>
+                </tr>
+              </thead>
+              <tbody id="clients-body"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="section" id="section-conteudo">
+        <div class="two-col">
+          <article class="card">
+            <h3 class="section-title">Conteudo publico</h3>
+            <form id="content-form" style="margin-top:0.65rem;">
+              <div class="field">
+                <label for="content-hero-sub">Hero subtitulo</label>
+                <input id="content-hero-sub" type="text" />
+              </div>
+              <div class="field">
+                <label for="content-hero-cta">Hero botao</label>
+                <input id="content-hero-cta" type="text" />
+              </div>
+              <div class="field">
+                <label for="content-quote">Frase de destaque</label>
+                <textarea id="content-quote"></textarea>
+              </div>
+              <div class="field">
+                <label for="content-motto">Mote</label>
+                <input id="content-motto" type="text" />
+              </div>
+              <div class="inline" style="margin-top:0.7rem;">
+                <button class="btn btn-primary" type="submit" data-permission="editContent">Salvar conteudo</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="card">
+            <h3 class="section-title">Controle de navbar</h3>
+            <div class="field">
+              <label><input id="nav-home" type="checkbox" /> Exibir navbar na Home</label>
+            </div>
+            <div class="field">
+              <label><input id="nav-agenda" type="checkbox" /> Exibir navbar na Agenda</label>
+            </div>
+            <div class="field">
+              <label><input id="nav-event" type="checkbox" /> Exibir navbar em pagina de evento</label>
+            </div>
+            <button id="save-nav-settings" class="btn btn-primary" type="button" style="margin-top:0.65rem;" data-permission="editContent">Salvar navbar</button>
+            <p class="tiny" style="margin-top:0.7rem;">Configuracoes ficam centralizadas no painel para evolucao futura. A pagina de evento ja suporta esconder navbar automaticamente.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="section-seguranca">
+        <div class="two-col">
+          <article class="card">
+            <h3 class="section-title">Usuarios e papeis</h3>
+            <form id="user-form" style="margin-top:0.65rem;">
+              <input id="user-id" type="hidden" />
+              <div class="form-grid">
+                <div>
+                  <label class="tiny" for="user-name">Nome</label>
+                  <input id="user-name" type="text" required />
+                </div>
+                <div>
+                  <label class="tiny" for="user-role">Papel</label>
+                  <select id="user-role">
+                    <option value="admin">Admin</option>
+                    <option value="staff">Staff</option>
+                    <option value="viewer">Leitura</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="tiny" for="user-pin">PIN</label>
+                  <input id="user-pin" type="password" required />
+                </div>
+                <div>
+                  <label class="tiny" for="user-active">Status</label>
+                  <select id="user-active">
+                    <option value="true">Ativo</option>
+                    <option value="false">Inativo</option>
+                  </select>
+                </div>
+              </div>
+              <div class="inline" style="margin-top:0.7rem;">
+                <button class="btn btn-primary" type="submit" data-permission="editSecurity">Salvar usuario</button>
+                <button id="user-cancel" class="btn btn-ghost" type="button">Cancelar</button>
+              </div>
+            </form>
+
+            <div id="users-list" style="margin-top:0.7rem;"></div>
+          </article>
+
+          <article class="card">
+            <h3 class="section-title">Sessoes e restricoes</h3>
+            <p class="tiny" id="session-info" style="margin-top:0.6rem;"></p>
+            <div class="field">
+              <label for="session-hours">Duracao da sessao (horas)</label>
+              <input id="session-hours" type="number" min="1" max="72" />
+            </div>
+            <button id="save-session-policy" class="btn btn-primary" type="button" data-permission="editSecurity" style="margin-top:0.6rem;">Salvar politica de sessao</button>
+            <p class="tiny" style="margin-top:0.7rem;">Acoes sensiveis (excluir, seguranca e configuracoes) sao bloqueadas por papel.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/assets/js/supabase-config.js"></script>
   <script src="/assets/js/event-store.js"></script>
   <script>
     const store = window.ViaParisEventsStore;
+
+    const META_KEY = "via-paris-admin-meta-v2";
+    const SESSION_KEY = "via-paris-admin-session-v2";
+
+    const defaultMeta = {
+      partners: [],
+      siteContent: {
+        heroSubtitle: "EST. 2019 · BRUXELAS",
+        heroCta: "Comprar ingressos",
+        quote: "Uma noite que ultrapassa tudo o que se espera de um bar.",
+        motto: "Sem regras. Apenas ritmo."
+      },
+      navbar: {
+        home: true,
+        agenda: true,
+        event: false
+      },
+      users: [
+        {
+          id: "user-admin",
+          name: "Admin Principal",
+          role: "admin",
+          pin: "123",
+          active: true
+        }
+      ],
+      sessionHours: 8,
+      recentActivity: []
+    };
+
     let state = store.load();
-    let draftTables = [];
-    let pendingFlyer = "";
+    let meta = loadMeta();
+    let currentSession = null;
+    let currentSection = "dashboard";
+    let tablesDraft = [];
+    let eventFlyerDraft = "";
+    let partnerLogoDraft = "";
+    let contentDraft = null;
+    const updateChannel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel("via-paris-updates") : null;
 
-    const loginSection = document.getElementById("login");
-    const panelSection = document.getElementById("panel");
-    const syncStatus = document.getElementById("sync-status");
+    function broadcastUpdate(kind) {
+      if (updateChannel) {
+        updateChannel.postMessage({ kind, at: Date.now() });
+      }
+      window.dispatchEvent(new CustomEvent("via-paris-meta-updated", { detail: { source: kind } }));
+    }
 
-    function setSyncStatus(message, ok) {
-      syncStatus.textContent = message;
-      syncStatus.classList.toggle("ok", Boolean(ok));
+    function deepCopy(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function mergeMeta(raw) {
+      const source = raw && typeof raw === "object" ? raw : {};
+      const merged = {
+        ...deepCopy(defaultMeta),
+        ...source,
+        siteContent: {
+          ...deepCopy(defaultMeta.siteContent),
+          ...(source.siteContent || {})
+        },
+        navbar: {
+          ...deepCopy(defaultMeta.navbar),
+          ...(source.navbar || {})
+        },
+        users: Array.isArray(source.users) && source.users.length ? source.users : deepCopy(defaultMeta.users),
+        partners: Array.isArray(source.partners) ? source.partners : [],
+        recentActivity: Array.isArray(source.recentActivity) ? source.recentActivity : []
+      };
+
+      merged.users = merged.users.map((user) => ({
+        id: user.id ? String(user.id) : store.makeId("usr"),
+        name: user.name ? String(user.name) : "Usuario",
+        role: ["admin", "staff", "viewer"].includes(user.role) ? user.role : "viewer",
+        pin: user.pin ? String(user.pin) : "",
+        active: user.active !== false
+      }));
+
+      return merged;
+    }
+
+    function loadMeta() {
+      try {
+        const raw = localStorage.getItem(META_KEY);
+        if (!raw) return deepCopy(defaultMeta);
+        return mergeMeta(JSON.parse(raw));
+      } catch (_error) {
+        return deepCopy(defaultMeta);
+      }
+    }
+
+    function saveMeta() {
+      meta = mergeMeta(meta);
+      localStorage.setItem(META_KEY, JSON.stringify(meta));
+      broadcastUpdate("meta");
+      void syncPublicContentToStore();
+    }
+
+    async function syncPublicContentToStore() {
+      try {
+        const currentState = store.load();
+        const nextState = store.save({
+          ...currentState,
+          publicContent: {
+            siteContent: deepCopy(meta.siteContent),
+            partners: deepCopy(meta.partners),
+            navbar: deepCopy(meta.navbar)
+          }
+        });
+        await store.pushCloud(nextState);
+      } catch (_error) {
+        // Keep local admin flow working even if cloud sync is unavailable.
+      }
+    }
+
+    function parseNumber(value) {
+      const parsed = Number(String(value || "").replace(",", ".").replace(/[^\d.-]/g, ""));
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    function formatMoney(value) {
+      return store.formatEuroPrice(String(value || "0"));
     }
 
     function toLocalInputValue(isoValue) {
@@ -324,52 +1090,9 @@
       return date.toISOString();
     }
 
-    function parseTags(raw) {
-      return raw
-        .split(",")
-        .map((item) => item.trim())
-        .filter(Boolean);
-    }
-
-    function resetForm() {
-      document.getElementById("event-form").reset();
-      document.getElementById("event-id").value = "";
-      pendingFlyer = "";
-      draftTables = [];
-      renderDraftTables();
-      const preview = document.getElementById("flyerPreview");
-      preview.hidden = true;
-      preview.src = "";
-    }
-
-    function renderDraftTables() {
-      const list = document.getElementById("tablesDraft");
-      if (!draftTables.length) {
-        list.innerHTML = "<small style='color:#d2d2d2;'>Nenhuma mesa adicionada ainda.</small>";
-        return;
-      }
-
-      list.innerHTML = draftTables
-        .map(
-          (table) => `
-            <div class="item">
-              <div>
-                <strong>${table.name}</strong>
-                <small>Preco ${table.price} · ${table.capacity} lugares · ${table.available} disponiveis</small>
-              </div>
-              <div class="actions">
-                <button class="mini-btn" type="button" data-remove-table="${table.id}">Remover</button>
-              </div>
-            </div>
-          `
-        )
-        .join("");
-    }
-
-    function formatDate(isoValue) {
-      if (!isoValue) return "Data a definir";
-      const date = new Date(isoValue);
-      if (Number.isNaN(date.getTime())) return isoValue;
+    function formatDate(value) {
+      const date = new Date(value || "");
+      if (Number.isNaN(date.getTime())) return "-";
       return new Intl.DateTimeFormat("pt-BR", {
         day: "2-digit",
         month: "2-digit",
@@ -379,270 +1102,1220 @@
       }).format(date);
     }
 
-    function renderEventsList() {
-      const list = document.getElementById("eventsList");
-      if (!state.events.length) {
-        list.innerHTML = "<small style='color:#d2d2d2;'>Nenhum evento cadastrado.</small>";
-        return;
-      }
+    function setFileLabel(labelId, text) {
+      const node = document.getElementById(labelId);
+      if (node) node.textContent = text;
+    }
 
-      list.innerHTML = state.events
-        .slice()
-        .sort((a, b) => new Date(a.startAt || 0).getTime() - new Date(b.startAt || 0).getTime())
+    function clearFileInput(inputId) {
+      const node = document.getElementById(inputId);
+      if (node instanceof HTMLInputElement) node.value = "";
+    }
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) {
+          reject(new Error("Arquivo nao informado."));
+          return;
+        }
+        if (!String(file.type || "").startsWith("image/")) {
+          reject(new Error("Selecione um arquivo de imagem."));
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(new Error("Falha ao ler imagem."));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function findUserByPin(pin) {
+      const normalizedPin = String(pin || "").trim();
+      return meta.users.find((user) => user.active && user.pin === normalizedPin) || null;
+    }
+
+    function saveSession(user) {
+      const hours = Math.max(Number(meta.sessionHours) || 8, 1);
+      const session = {
+        userId: user.id,
+        role: user.role,
+        name: user.name,
+        expiresAt: Date.now() + hours * 60 * 60 * 1000
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      currentSession = session;
+    }
+
+    function loadSession() {
+      try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        if (!raw) return null;
+        const session = JSON.parse(raw);
+        if (!session || !session.expiresAt || session.expiresAt <= Date.now()) {
+          localStorage.removeItem(SESSION_KEY);
+          return null;
+        }
+        return session;
+      } catch (_error) {
+        localStorage.removeItem(SESSION_KEY);
+        return null;
+      }
+    }
+
+    function clearSession() {
+      localStorage.removeItem(SESSION_KEY);
+      currentSession = null;
+    }
+
+    function can(action) {
+      const role = currentSession ? currentSession.role : "viewer";
+      if (role === "admin") return true;
+      if (role === "viewer") return action === "view";
+
+      const staffAllowed = new Set([
+        "view",
+        "editEvent",
+        "editReservation",
+        "editPartner",
+        "editContent"
+      ]);
+      return staffAllowed.has(action);
+    }
+
+    function requirePermission(action, message) {
+      if (can(action)) return true;
+      alert(message || "Seu perfil nao pode executar essa acao.");
+      return false;
+    }
+
+    function updatePermissionUi() {
+      document.querySelectorAll("[data-permission]").forEach((node) => {
+        const permission = node.getAttribute("data-permission") || "view";
+        const allowed = can(permission);
+        if (node instanceof HTMLButtonElement || node instanceof HTMLInputElement || node instanceof HTMLSelectElement) {
+          node.disabled = !allowed;
+        }
+      });
+    }
+
+    function pushActivity(type, details) {
+      meta.recentActivity.unshift({
+        id: store.makeId("act"),
+        type,
+        details,
+        by: currentSession ? currentSession.name : "Sistema",
+        at: new Date().toISOString()
+      });
+      meta.recentActivity = meta.recentActivity.slice(0, 50);
+      saveMeta();
+    }
+
+    async function persistState(mutator, successActivity) {
+      const draft = structuredClone(state);
+      mutator(draft);
+      state = store.save(draft);
+      try {
+        await store.pushCloud(state);
+        document.getElementById("sync-status").textContent = "Sincronizado com Supabase.";
+      } catch (_error) {
+        document.getElementById("sync-status").textContent = "Salvo localmente. Nuvem indisponivel no momento.";
+      }
+      broadcastUpdate("state");
+      void syncPublicContentToStore();
+      if (successActivity) {
+        pushActivity(successActivity.type, successActivity.details);
+      }
+      renderAll();
+    }
+
+    function setSection(section) {
+      currentSection = section;
+      document.querySelectorAll(".menu-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-section") === section);
+      });
+      document.querySelectorAll(".section").forEach((node) => node.classList.remove("active"));
+      const sectionNode = document.getElementById(`section-${section}`);
+      if (sectionNode) sectionNode.classList.add("active");
+
+      const titles = {
+        dashboard: "Dashboard",
+        eventos: "Eventos",
+        reservas: "Reservas",
+        parceiros: "Parceiros",
+        clientes: "Clientes",
+        conteudo: "Conteudo do site",
+        seguranca: "Seguranca e acessos"
+      };
+      document.getElementById("topbar-title").textContent = titles[section] || "Painel";
+    }
+
+    function parseEventTags(raw) {
+      return String(raw || "")
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+    }
+
+    function findEvent(eventId) {
+      return state.events.find((eventItem) => eventItem.id === eventId) || null;
+    }
+
+    function approvedReservations(eventId, tableId, ignoreReservationId) {
+      return state.reservations.filter((reservation) => {
+        if (ignoreReservationId && reservation.id === ignoreReservationId) return false;
+        return reservation.eventId === eventId && reservation.tableId === tableId && reservation.status === "approved";
+      }).length;
+    }
+
+    function renderKpis() {
+      const totalReservations = state.reservations.length;
+      const approved = state.reservations.filter((reservation) => reservation.status === "approved").length;
+      const activeEvents = state.events.filter((eventItem) => eventItem.status === "active").length;
+      const finishedEvents = state.events.filter((eventItem) => eventItem.status === "finished").length;
+
+      const revenue = state.reservations
+        .filter((reservation) => reservation.status === "approved")
+        .reduce((sum, reservation) => {
+          const eventItem = findEvent(reservation.eventId);
+          const table = eventItem && Array.isArray(eventItem.tables)
+            ? eventItem.tables.find((item) => item.id === reservation.tableId)
+            : null;
+          return sum + parseNumber(table ? table.price : 0);
+        }, 0);
+
+      const activeEventFill = state.events
+        .filter((eventItem) => eventItem.status === "active")
+        .map((eventItem) => {
+          const capacity = Math.max(Number(eventItem.capacity) || 0, 1);
+          const seats = state.reservations
+            .filter((reservation) => reservation.eventId === eventItem.id && reservation.status === "approved")
+            .reduce((sum, reservation) => sum + Math.max(Number(reservation.guests) || 1, 1), 0);
+          return Math.min((seats / capacity) * 100, 100);
+        });
+
+      const avgFill = activeEventFill.length
+        ? Math.round(activeEventFill.reduce((sum, value) => sum + value, 0) / activeEventFill.length)
+        : 0;
+
+      const items = [
+        { label: "Reservas", value: String(totalReservations), note: `${approved} aprovadas` },
+        { label: "Taxa media de lotacao", value: `${avgFill}%`, note: "Eventos ativos" },
+        { label: "Receita estimada", value: formatMoney(revenue.toFixed(0)), note: "Somente aprovadas" },
+        { label: "Eventos", value: `${activeEvents} ativos`, note: `${finishedEvents} finalizados` }
+      ];
+
+      document.getElementById("kpi-grid").innerHTML = items
         .map(
-          (eventItem) => `
-            <div class="item">
-              <div>
-                <strong>${eventItem.title}</strong>
-                <small>${formatDate(eventItem.startAt)} · ${eventItem.entryPrice} · ${eventItem.tables.length} tipos de mesa</small>
-              </div>
-              <div class="actions">
-                <button class="mini-btn" type="button" data-edit-event="${eventItem.id}">Editar</button>
-                <button class="mini-btn" type="button" data-delete-event="${eventItem.id}">Excluir</button>
-              </div>
-            </div>
+          (item) => `
+            <article class="card">
+              <p class="kpi-label">${item.label}</p>
+              <p class="kpi-value">${item.value}</p>
+              <p class="kpi-note">${item.note}</p>
+            </article>
           `
         )
         .join("");
     }
 
-    function renderReservations() {
-      const list = document.getElementById("reservationsList");
-      if (!state.reservations.length) {
-        list.innerHTML = "<small style='color:#d2d2d2;'>Sem reservas ainda.</small>";
-        return;
+    function renderBars() {
+      const byDay = {};
+      const now = Date.now();
+      for (let i = 6; i >= 0; i -= 1) {
+        const date = new Date(now - i * 24 * 60 * 60 * 1000);
+        const key = date.toISOString().slice(0, 10);
+        byDay[key] = 0;
       }
 
-      list.innerHTML = state.reservations
-        .slice()
-        .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
-        .map((reservation) => {
-          const eventItem = state.events.find((item) => item.id === reservation.eventId);
-          const table = eventItem && eventItem.tables ? eventItem.tables.find((item) => item.id === reservation.tableId) : null;
+      state.reservations.forEach((reservation) => {
+        const key = String(reservation.createdAt || "").slice(0, 10);
+        if (Object.prototype.hasOwnProperty.call(byDay, key)) {
+          byDay[key] += 1;
+        }
+      });
+
+      const values = Object.entries(byDay);
+      const max = Math.max(...values.map((entry) => entry[1]), 1);
+
+      document.getElementById("reservations-bars").innerHTML = values
+        .map(([day, count]) => {
+          const pct = Math.round((count / max) * 100);
           return `
-            <div class="item">
-              <div>
-                <strong>${reservation.name} (${reservation.guests} pessoas)</strong>
-                <small>${eventItem ? eventItem.title : "Evento removido"} · ${table ? table.name : "Mesa removida"}</small>
-                <small>${reservation.phone} · ${reservation.note || "Sem observacao"}</small>
-              </div>
+            <div class="bar">
+              <span>${day.slice(5)}</span>
+              <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+              <strong>${count}</strong>
             </div>
           `;
         })
         .join("");
     }
 
-    async function persistState(nextState) {
-      state = store.save(nextState);
-      try {
-        await store.pushCloud(state);
-        setSyncStatus("Sincronizado com Supabase.", true);
-      } catch (_error) {
-        setSyncStatus("Salvo localmente. Falha no sync cloud agora.", false);
+    function renderRecentActivity() {
+      const list = document.getElementById("recent-activity");
+      if (!meta.recentActivity.length) {
+        list.innerHTML = "<p class='empty'>Nenhuma atividade registrada ainda.</p>";
+        return;
       }
-      renderEventsList();
-      renderReservations();
+
+      list.innerHTML = meta.recentActivity
+        .slice(0, 10)
+        .map((item) => `<p><strong>${formatDate(item.at)}</strong> - ${item.by}: ${item.type} (${item.details})</p>`)
+        .join("");
     }
 
-    function getFormData() {
+    function renderDashboard() {
+      renderKpis();
+      renderBars();
+      renderRecentActivity();
+    }
+
+    function resetEventForm() {
+      document.getElementById("event-form").reset();
+      document.getElementById("event-id").value = "";
+      document.getElementById("evt-flyer-current").value = "";
+      eventFlyerDraft = "";
+      setFileLabel("evt-flyer-name", "Nenhuma imagem selecionada.");
+      clearFileInput("evt-flyer-file");
+      tablesDraft = [];
+      document.getElementById("event-error").textContent = "";
+      renderTablesDraft();
+    }
+
+    function renderTablesDraft() {
+      const root = document.getElementById("tables-draft");
+      if (!tablesDraft.length) {
+        root.innerHTML = "<p class='empty'>Sem mesas no layout deste evento.</p>";
+        return;
+      }
+
+      root.innerHTML = tablesDraft
+        .map(
+          (table) => `
+            <article class="table-box">
+              <strong>${table.name}</strong>
+              <small>${table.zone || "Zona geral"} | ${formatMoney(table.price)}</small>
+              <small>Mesa para ${store.describePlacesRange(table)}</small>
+              <small>${table.available} disponiveis</small>
+              <div class="inline" style="margin-top:0.35rem;">
+                <button class="btn btn-ghost" type="button" data-remove-table="${table.id}" data-permission="editEvent">Remover</button>
+              </div>
+            </article>
+          `
+        )
+        .join("");
+
+      updatePermissionUi();
+    }
+
+    function renderEventSelects() {
+      const selectIds = ["layout-event-select", "filter-event", "room-event-select", "partner-events"];
+      const options = state.events
+        .slice()
+        .sort((a, b) => new Date(a.startAt || 0).getTime() - new Date(b.startAt || 0).getTime())
+        .map((eventItem) => `<option value="${eventItem.id}">${eventItem.title}</option>`)
+        .join("");
+
+      selectIds.forEach((id) => {
+        const select = document.getElementById(id);
+        if (!(select instanceof HTMLSelectElement)) return;
+
+        if (id === "filter-event") {
+          const current = select.value;
+          select.innerHTML = `<option value="all">Todos eventos</option>${options}`;
+          if (current) select.value = current;
+          return;
+        }
+
+        const current = select.value;
+        select.innerHTML = options;
+        if (current) select.value = current;
+      });
+    }
+
+    function renderLayoutPreview() {
+      const select = document.getElementById("layout-event-select");
+      const root = document.getElementById("layout-preview");
+      const eventItem = findEvent(select.value);
+
+      if (!eventItem || !Array.isArray(eventItem.tables) || !eventItem.tables.length) {
+        root.innerHTML = "<p class='empty'>Sem mesas para este evento.</p>";
+        return;
+      }
+
+      root.innerHTML = eventItem.tables
+        .map((table) => `<article class="table-box"><strong>${table.name}</strong><small>${table.zone || "Zona geral"}</small><small>${store.describePlacesRange(table)}</small><small>${table.available} disponiveis</small></article>`)
+        .join("");
+    }
+
+    function renderEventsList() {
+      const root = document.getElementById("events-list");
+      if (!state.events.length) {
+        root.innerHTML = "<p class='empty'>Nenhum evento cadastrado.</p>";
+        return;
+      }
+
+      root.innerHTML = state.events
+        .slice()
+        .sort((a, b) => new Date(a.startAt || 0).getTime() - new Date(b.startAt || 0).getTime())
+        .map((eventItem) => {
+          const reservations = state.reservations.filter((reservation) => reservation.eventId === eventItem.id).length;
+          return `
+            <article class="card" style="margin-bottom:0.55rem;">
+              <div class="inline" style="justify-content:space-between; width:100%;">
+                <div>
+                  <strong>${eventItem.title}</strong>
+                  <p class="tiny">${formatDate(eventItem.startAt)} | ${eventItem.tables.length} tipos de mesa | ${reservations} reservas</p>
+                  <span class="status ${eventItem.status || "active"}">${eventItem.status || "active"}</span>
+                </div>
+                <div class="inline">
+                  <button class="btn" type="button" data-edit-event="${eventItem.id}" data-permission="editEvent">Editar</button>
+                  <button class="btn btn-danger" type="button" data-delete-event="${eventItem.id}" data-permission="deleteEvent">Excluir</button>
+                </div>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+
+      updatePermissionUi();
+    }
+
+    function populateEventForm(eventItem) {
+      document.getElementById("event-id").value = eventItem.id;
+      document.getElementById("evt-title").value = eventItem.title || "";
+      document.getElementById("evt-status").value = eventItem.status || "active";
+      document.getElementById("evt-start").value = toLocalInputValue(eventItem.startAt);
+      document.getElementById("evt-end").value = eventItem.endLabel || "";
+      document.getElementById("evt-capacity").value = String(Math.max(Number(eventItem.capacity) || 0, 0));
+      document.getElementById("evt-price").value = eventItem.entryPrice || "";
+      document.getElementById("evt-venue").value = eventItem.venue || "";
+      document.getElementById("evt-address").value = eventItem.address || "";
+      document.getElementById("evt-singers").value = eventItem.singers || "";
+      document.getElementById("evt-djs").value = eventItem.djs || "";
+      document.getElementById("evt-guests").value = eventItem.specialGuests || "";
+      document.getElementById("evt-tags").value = (eventItem.tags || []).join(", ");
+      document.getElementById("evt-description").value = eventItem.description || "";
+      document.getElementById("evt-flyer-current").value = eventItem.flyer || "";
+      eventFlyerDraft = "";
+      clearFileInput("evt-flyer-file");
+      setFileLabel("evt-flyer-name", eventItem.flyer ? "Imagem atual carregada. Selecione outra para substituir." : "Nenhuma imagem selecionada.");
+      tablesDraft = Array.isArray(eventItem.tables) ? eventItem.tables.map((table) => ({ ...table })) : [];
+      renderTablesDraft();
+    }
+
+    function buildEventPayload() {
       const editId = document.getElementById("event-id").value;
       return {
         id: editId || store.makeId("evt"),
-        title: document.getElementById("title").value.trim(),
-        startAt: fromLocalInputValue(document.getElementById("startAt").value),
-        endLabel: document.getElementById("endLabel").value.trim(),
-        address: document.getElementById("address").value.trim(),
-        venue: document.getElementById("venue").value.trim(),
-        singers: document.getElementById("singers").value.trim(),
-        djs: document.getElementById("djs").value.trim(),
-        specialGuests: document.getElementById("specialGuests").value.trim(),
-        entryPrice: document.getElementById("entryPrice").value.trim(),
-        description: document.getElementById("description").value.trim(),
-        tags: parseTags(document.getElementById("tags").value.trim()),
-        flyer: pendingFlyer,
-        tables: draftTables
+        title: document.getElementById("evt-title").value.trim(),
+        status: document.getElementById("evt-status").value,
+        startAt: fromLocalInputValue(document.getElementById("evt-start").value),
+        endLabel: document.getElementById("evt-end").value.trim(),
+        capacity: Math.max(Number(document.getElementById("evt-capacity").value) || 0, 0),
+        entryPrice: formatMoney(document.getElementById("evt-price").value.trim()),
+        venue: document.getElementById("evt-venue").value.trim(),
+        address: document.getElementById("evt-address").value.trim(),
+        singers: document.getElementById("evt-singers").value.trim(),
+        djs: document.getElementById("evt-djs").value.trim(),
+        specialGuests: document.getElementById("evt-guests").value.trim(),
+        tags: parseEventTags(document.getElementById("evt-tags").value),
+        description: document.getElementById("evt-description").value.trim(),
+        flyer: eventFlyerDraft || document.getElementById("evt-flyer-current").value.trim() || "/assets/images/logo-alt.png",
+        tables: tablesDraft
       };
     }
 
-    function loadEventToForm(eventId) {
-      const eventItem = state.events.find((item) => item.id === eventId);
-      if (!eventItem) return;
-      document.getElementById("event-id").value = eventItem.id;
-      document.getElementById("title").value = eventItem.title || "";
-      document.getElementById("startAt").value = toLocalInputValue(eventItem.startAt);
-      document.getElementById("endLabel").value = eventItem.endLabel || "";
-      document.getElementById("address").value = eventItem.address || "";
-      document.getElementById("venue").value = eventItem.venue || "";
-      document.getElementById("singers").value = eventItem.singers || "";
-      document.getElementById("djs").value = eventItem.djs || "";
-      document.getElementById("specialGuests").value = eventItem.specialGuests || "";
-      document.getElementById("entryPrice").value = eventItem.entryPrice || "";
-      document.getElementById("description").value = eventItem.description || "";
-      document.getElementById("tags").value = (eventItem.tags || []).join(", ");
-      pendingFlyer = eventItem.flyer || "";
-      draftTables = Array.isArray(eventItem.tables) ? eventItem.tables.map((table) => ({ ...table })) : [];
-      renderDraftTables();
+    function renderRoomLayout() {
+      const select = document.getElementById("room-event-select");
+      const root = document.getElementById("room-layout");
+      const eventItem = findEvent(select.value);
+      if (!eventItem || !Array.isArray(eventItem.tables) || !eventItem.tables.length) {
+        root.innerHTML = "<p class='empty'>Sem mesas para este evento.</p>";
+        return;
+      }
 
-      const preview = document.getElementById("flyerPreview");
-      if (pendingFlyer) {
-        preview.src = pendingFlyer;
-        preview.hidden = false;
-      } else {
-        preview.hidden = true;
+      root.innerHTML = eventItem.tables
+        .map((table) => {
+          const approvedCount = approvedReservations(eventItem.id, table.id);
+          return `
+            <article class="table-box">
+              <strong>${table.name}</strong>
+              <small>${table.zone || "Zona geral"}</small>
+              <small>${store.describePlacesRange(table)}</small>
+              <small>Ocupacao: ${approvedCount}/${table.available}</small>
+            </article>
+          `;
+        })
+        .join("");
+    }
+
+    function reservationStatusBadge(status) {
+      const safeStatus = ["pending", "approved", "rejected", "cancelled"].includes(status) ? status : "pending";
+      return `<span class="status ${safeStatus}">${safeStatus}</span>`;
+    }
+
+    function renderReservations() {
+      const eventFilter = document.getElementById("filter-event").value;
+      const statusFilter = document.getElementById("filter-status").value;
+      const dateFilter = document.getElementById("filter-date").value;
+      const textFilter = document.getElementById("filter-text").value.trim().toLowerCase();
+
+      const rows = state.reservations
+        .filter((reservation) => {
+          if (eventFilter !== "all" && reservation.eventId !== eventFilter) return false;
+          if (statusFilter !== "all" && reservation.status !== statusFilter) return false;
+          if (dateFilter && String(reservation.createdAt || "").slice(0, 10) !== dateFilter) return false;
+          if (textFilter && !(`${reservation.name} ${reservation.phone}`.toLowerCase().includes(textFilter))) return false;
+          return true;
+        })
+        .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+
+      const tbody = document.getElementById("reservations-body");
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="muted">Nenhuma reserva encontrada.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows
+        .map((reservation) => {
+          const eventItem = findEvent(reservation.eventId);
+          const tableOptions = eventItem && Array.isArray(eventItem.tables)
+            ? eventItem.tables.map((table) => `<option value="${table.id}" ${table.id === reservation.tableId ? "selected" : ""}>${table.name}</option>`).join("")
+            : "";
+          return `
+            <tr>
+              <td>
+                <strong>${reservation.name}</strong><br />
+                <span class="tiny">${reservation.phone}</span>
+              </td>
+              <td>${eventItem ? eventItem.title : "Evento removido"}<br /><span class="tiny">${formatDate(reservation.createdAt)}</span></td>
+              <td>${reservation.guests}</td>
+              <td>
+                <select data-reservation-table="${reservation.id}">${tableOptions}</select>
+              </td>
+              <td>${reservationStatusBadge(reservation.status)}</td>
+              <td>
+                <div class="inline">
+                  <select data-reservation-status="${reservation.id}">
+                    <option value="pending" ${reservation.status === "pending" ? "selected" : ""}>Pendente</option>
+                    <option value="approved" ${reservation.status === "approved" ? "selected" : ""}>Aprovar</option>
+                    <option value="rejected" ${reservation.status === "rejected" ? "selected" : ""}>Recusar</option>
+                    <option value="cancelled" ${reservation.status === "cancelled" ? "selected" : ""}>Cancelar</option>
+                  </select>
+                  <button class="btn" type="button" data-save-reservation="${reservation.id}" data-permission="editReservation">Salvar</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+
+      updatePermissionUi();
+    }
+
+    function renderPartners() {
+      const root = document.getElementById("partners-list");
+      if (!meta.partners.length) {
+        root.innerHTML = "<p class='empty'>Nenhum parceiro cadastrado.</p>";
+        return;
+      }
+
+      root.innerHTML = meta.partners
+        .map((partner) => {
+          const eventNames = Array.isArray(partner.eventIds)
+            ? partner.eventIds
+              .map((eventId) => {
+                const eventItem = findEvent(eventId);
+                return eventItem ? eventItem.title : null;
+              })
+              .filter(Boolean)
+            : [];
+
+          return `
+            <article class="card" style="margin-bottom:0.55rem;">
+              <div class="inline" style="justify-content:space-between; width:100%;">
+                <div>
+                  ${partner.logo ? `<img src="${partner.logo}" alt="Logo ${partner.name}" style="width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--line);margin-bottom:0.4rem;" />` : ""}
+                  <strong>${partner.name}</strong>
+                  <p class="tiny">${partner.link || "Sem link"}</p>
+                  <p class="tiny">${partner.description || "Sem descricao"}</p>
+                  <p class="tiny">Eventos: ${eventNames.length ? eventNames.join(" | ") : "Nenhum"}</p>
+                  <span class="status ${partner.status === "active" ? "active" : "finished"}">${partner.status || "inactive"}</span>
+                </div>
+                <div class="inline">
+                  <button class="btn" type="button" data-edit-partner="${partner.id}" data-permission="editPartner">Editar</button>
+                  <button class="btn btn-danger" type="button" data-delete-partner="${partner.id}" data-permission="deletePartner">Excluir</button>
+                </div>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+
+      updatePermissionUi();
+    }
+
+    function resetPartnerForm() {
+      document.getElementById("partner-form").reset();
+      document.getElementById("partner-id").value = "";
+      document.getElementById("partner-logo-current").value = "";
+      partnerLogoDraft = "";
+      setFileLabel("partner-logo-name", "Nenhuma imagem selecionada.");
+      clearFileInput("partner-logo-file");
+    }
+
+    function populatePartnerForm(partner) {
+      document.getElementById("partner-id").value = partner.id;
+      document.getElementById("partner-name").value = partner.name || "";
+      document.getElementById("partner-link").value = partner.link || "";
+      document.getElementById("partner-logo-current").value = partner.logo || "";
+      partnerLogoDraft = "";
+      clearFileInput("partner-logo-file");
+      setFileLabel("partner-logo-name", partner.logo ? "Imagem atual carregada. Selecione outra para substituir." : "Nenhuma imagem selecionada.");
+      document.getElementById("partner-status").value = partner.status || "active";
+      document.getElementById("partner-description").value = partner.description || "";
+
+      const select = document.getElementById("partner-events");
+      if (select instanceof HTMLSelectElement) {
+        Array.from(select.options).forEach((option) => {
+          option.selected = Array.isArray(partner.eventIds) && partner.eventIds.includes(option.value);
+        });
       }
     }
 
-    function wireTableDraft() {
-      document.getElementById("addTableBtn").addEventListener("click", () => {
-        const name = document.getElementById("tblName").value.trim();
-        const price = document.getElementById("tblPrice").value.trim();
-        const capacity = Math.max(Number(document.getElementById("tblCapacity").value) || 1, 1);
-        const available = Math.max(Number(document.getElementById("tblAvailable").value) || 0, 0);
+    function renderClients() {
+      const grouped = {};
 
-        if (!name || !price) return;
-
-        draftTables.push({
-          id: store.makeId("tbl"),
-          name,
-          price,
-          capacity,
-          available
-        });
-
-        document.getElementById("tblName").value = "";
-        document.getElementById("tblPrice").value = "";
-        document.getElementById("tblCapacity").value = "";
-        document.getElementById("tblAvailable").value = "";
-        renderDraftTables();
+      state.reservations.forEach((reservation) => {
+        const key = reservation.phone || reservation.name || reservation.id;
+        if (!grouped[key]) {
+          grouped[key] = {
+            name: reservation.name,
+            phone: reservation.phone,
+            total: 0,
+            lastAt: reservation.createdAt,
+            notes: "",
+            approved: 0
+          };
+        }
+        grouped[key].total += 1;
+        if (reservation.status === "approved") grouped[key].approved += 1;
+        if (new Date(reservation.createdAt || 0).getTime() > new Date(grouped[key].lastAt || 0).getTime()) {
+          grouped[key].lastAt = reservation.createdAt;
+        }
       });
 
-      document.getElementById("tablesDraft").addEventListener("click", (event) => {
-        const target = event.target;
-        if (!(target instanceof HTMLElement)) return;
-        const tableId = target.getAttribute("data-remove-table");
-        if (!tableId) return;
-        draftTables = draftTables.filter((item) => item.id !== tableId);
-        renderDraftTables();
+      const rows = Object.values(grouped).sort((a, b) => b.total - a.total);
+      const tbody = document.getElementById("clients-body");
+
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="muted">Sem clientes registrados ainda.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows
+        .map((client) => {
+          const profile = client.total >= 5 ? "frequente" : client.total >= 2 ? "recorrente" : "novo";
+          return `
+            <tr>
+              <td><strong>${client.name || "-"}</strong></td>
+              <td>${client.phone || "-"}</td>
+              <td>${client.total}</td>
+              <td>${formatDate(client.lastAt)}</td>
+              <td>${profile}</td>
+              <td>${client.notes || "-"}</td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    function renderContent() {
+      if (!contentDraft) {
+        contentDraft = {
+          heroSubtitle: meta.siteContent.heroSubtitle || "",
+          heroCta: meta.siteContent.heroCta || "",
+          quote: meta.siteContent.quote || "",
+          motto: meta.siteContent.motto || ""
+        };
+      }
+
+      const setValueIfIdle = (id, value) => {
+        const node = document.getElementById(id);
+        if (!(node instanceof HTMLInputElement) && !(node instanceof HTMLTextAreaElement)) return;
+        node.value = value || "";
+      };
+
+      setValueIfIdle("content-hero-sub", contentDraft.heroSubtitle);
+      setValueIfIdle("content-hero-cta", contentDraft.heroCta);
+      setValueIfIdle("content-quote", contentDraft.quote);
+      setValueIfIdle("content-motto", contentDraft.motto);
+
+      document.getElementById("nav-home").checked = Boolean(meta.navbar.home);
+      document.getElementById("nav-agenda").checked = Boolean(meta.navbar.agenda);
+      document.getElementById("nav-event").checked = Boolean(meta.navbar.event);
+    }
+
+    function renderSecurity() {
+      const list = document.getElementById("users-list");
+      if (!meta.users.length) {
+        list.innerHTML = "<p class='empty'>Nenhum usuario cadastrado.</p>";
+      } else {
+        list.innerHTML = meta.users
+          .map((user) => `
+            <article class="card" style="margin-bottom:0.45rem;">
+              <div class="inline" style="justify-content:space-between; width:100%;">
+                <div>
+                  <strong>${user.name}</strong>
+                  <p class="tiny">role: ${user.role} | status: ${user.active ? "ativo" : "inativo"}</p>
+                </div>
+                <div class="inline">
+                  <button class="btn" type="button" data-edit-user="${user.id}" data-permission="editSecurity">Editar</button>
+                  <button class="btn btn-danger" type="button" data-delete-user="${user.id}" data-permission="deleteSecurity">Excluir</button>
+                </div>
+              </div>
+            </article>
+          `)
+          .join("");
+      }
+
+      const expires = currentSession ? new Date(currentSession.expiresAt).toLocaleString("pt-BR") : "-";
+      document.getElementById("session-info").textContent = `Sessao ativa ate: ${expires}. Papel atual: ${currentSession ? currentSession.role : "-"}.`;
+      document.getElementById("session-hours").value = String(Math.max(Number(meta.sessionHours) || 8, 1));
+
+      updatePermissionUi();
+    }
+
+    function renderAll() {
+      renderDashboard();
+      renderEventSelects();
+      renderEventsList();
+      renderLayoutPreview();
+      renderReservations();
+      renderRoomLayout();
+      renderPartners();
+      renderClients();
+      if (currentSection !== "conteudo") {
+        renderContent();
+      }
+      renderSecurity();
+
+      const role = currentSession ? currentSession.role : "-";
+      document.getElementById("role-badge").textContent = `role: ${role}`;
+      document.getElementById("session-hint").textContent = currentSession
+        ? `${currentSession.name} (${currentSession.role})`
+        : "sessao encerrada";
+    }
+
+    function bindGlobal() {
+      document.querySelectorAll(".menu-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const section = btn.getAttribute("data-section");
+          if (section) setSection(section);
+        });
+      });
+
+      document.getElementById("theme-toggle").addEventListener("click", () => {
+        document.body.classList.toggle("light");
+      });
+
+      document.getElementById("logout-btn").addEventListener("click", () => {
+        clearSession();
+        document.getElementById("app-view").hidden = true;
+        document.getElementById("login-view").hidden = false;
+        document.getElementById("login-pin").value = "";
+      });
+
+      document.getElementById("force-sync").addEventListener("click", async () => {
+        document.getElementById("sync-status").textContent = "Sincronizando com nuvem...";
+        try {
+          state = await store.syncWithCloud();
+          document.getElementById("sync-status").textContent = "Sincronizado com Supabase.";
+        } catch (_error) {
+          state = store.load();
+          document.getElementById("sync-status").textContent = "Nuvem indisponivel. Mantido local.";
+        }
+        renderAll();
       });
     }
 
-    function wireEventsListActions() {
-      document.getElementById("eventsList").addEventListener("click", async (event) => {
+    function bindImagePickers() {
+      const eventInput = document.getElementById("evt-flyer-file");
+      const partnerInput = document.getElementById("partner-logo-file");
+
+      if (eventInput instanceof HTMLInputElement) {
+        eventInput.addEventListener("change", async () => {
+          const file = eventInput.files && eventInput.files[0];
+          if (!file) return;
+          try {
+            eventFlyerDraft = await fileToDataUrl(file);
+            document.getElementById("evt-flyer-current").value = eventFlyerDraft;
+            setFileLabel("evt-flyer-name", `Imagem selecionada: ${file.name}`);
+          } catch (error) {
+            eventFlyerDraft = "";
+            clearFileInput("evt-flyer-file");
+            setFileLabel("evt-flyer-name", error instanceof Error ? error.message : "Erro ao carregar imagem.");
+          }
+        });
+      }
+
+      if (partnerInput instanceof HTMLInputElement) {
+        partnerInput.addEventListener("change", async () => {
+          const file = partnerInput.files && partnerInput.files[0];
+          if (!file) return;
+          try {
+            partnerLogoDraft = await fileToDataUrl(file);
+            document.getElementById("partner-logo-current").value = partnerLogoDraft;
+            setFileLabel("partner-logo-name", `Imagem selecionada: ${file.name}`);
+          } catch (error) {
+            partnerLogoDraft = "";
+            clearFileInput("partner-logo-file");
+            setFileLabel("partner-logo-name", error instanceof Error ? error.message : "Erro ao carregar imagem.");
+          }
+        });
+      }
+
+      document.getElementById("evt-flyer-clear").addEventListener("click", () => {
+        if (!requirePermission("editEvent")) return;
+        eventFlyerDraft = "";
+        document.getElementById("evt-flyer-current").value = "";
+        clearFileInput("evt-flyer-file");
+        setFileLabel("evt-flyer-name", "Imagem removida. Sera usado o padrao ao salvar.");
+      });
+
+      document.getElementById("partner-logo-clear").addEventListener("click", () => {
+        if (!requirePermission("editPartner")) return;
+        partnerLogoDraft = "";
+        document.getElementById("partner-logo-current").value = "";
+        clearFileInput("partner-logo-file");
+        setFileLabel("partner-logo-name", "Imagem removida. Sera salvo sem logo.");
+      });
+    }
+
+    function bindEventsSection() {
+      document.getElementById("add-table-btn").addEventListener("click", () => {
+        if (!requirePermission("editEvent")) return;
+
+        const name = document.getElementById("tbl-name").value.trim();
+        const zone = document.getElementById("tbl-zone").value.trim();
+        const price = document.getElementById("tbl-price").value.trim();
+        const rangeRaw = document.getElementById("tbl-range").value.trim();
+        const available = Math.max(Number(document.getElementById("tbl-available").value) || 0, 0);
+
+        const range = store.parsePlacesRange(rangeRaw);
+        if (!name || !price || !range) {
+          document.getElementById("event-error").textContent = "Preencha mesa com nome, preco e faixa valida (ex: 1-5).";
+          return;
+        }
+
+        document.getElementById("event-error").textContent = "";
+        tablesDraft.push({
+          id: store.makeId("tbl"),
+          name,
+          zone,
+          price: formatMoney(price),
+          minPlaces: range.minPlaces,
+          maxPlaces: range.maxPlaces,
+          capacity: range.maxPlaces,
+          available
+        });
+
+        document.getElementById("tbl-name").value = "";
+        document.getElementById("tbl-zone").value = "";
+        document.getElementById("tbl-price").value = "";
+        document.getElementById("tbl-range").value = "";
+        document.getElementById("tbl-available").value = "";
+
+        renderTablesDraft();
+      });
+
+      document.getElementById("tables-draft").addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const removeId = target.getAttribute("data-remove-table");
+        if (!removeId) return;
+        if (!requirePermission("editEvent")) return;
+
+        tablesDraft = tablesDraft.filter((table) => table.id !== removeId);
+        renderTablesDraft();
+      });
+
+      document.getElementById("event-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!requirePermission("editEvent")) return;
+
+        const payload = buildEventPayload();
+        if (!payload.title || !payload.startAt) {
+          document.getElementById("event-error").textContent = "Nome e data de inicio sao obrigatorios.";
+          return;
+        }
+
+        await persistState((draft) => {
+          const index = draft.events.findIndex((eventItem) => eventItem.id === payload.id);
+          if (index >= 0) {
+            draft.events[index] = payload;
+          } else {
+            draft.events.push(payload);
+          }
+        }, {
+          type: "Evento salvo",
+          details: payload.title
+        });
+
+        resetEventForm();
+      });
+
+      document.getElementById("cancel-edit-event").addEventListener("click", resetEventForm);
+
+      document.getElementById("events-list").addEventListener("click", async (event) => {
         const target = event.target;
         if (!(target instanceof HTMLElement)) return;
 
         const editId = target.getAttribute("data-edit-event");
         if (editId) {
-          loadEventToForm(editId);
+          const eventItem = findEvent(editId);
+          if (eventItem) populateEventForm(eventItem);
           return;
         }
 
         const deleteId = target.getAttribute("data-delete-event");
         if (!deleteId) return;
+        if (!requirePermission("deleteEvent", "Seu perfil nao pode excluir eventos.")) return;
 
-        const confirmed = window.confirm("Tem certeza que quer excluir este evento?");
-        if (!confirmed) return;
+        if (!window.confirm("Confirmar exclusao deste evento e suas reservas?")) return;
 
-        const nextState = structuredClone(state);
-        nextState.events = nextState.events.filter((item) => item.id !== deleteId);
-        nextState.reservations = nextState.reservations.filter((item) => item.eventId !== deleteId);
-        await persistState(nextState);
-        resetForm();
-      });
-    }
-
-    function wireFormSubmit() {
-      const form = document.getElementById("event-form");
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault();
-
-        const payload = getFormData();
-        if (!payload.title || !payload.startAt || !payload.address || !payload.venue || !payload.entryPrice) {
-          alert("Preencha os campos obrigatorios do evento.");
-          return;
-        }
-
-        if (!payload.flyer) {
-          payload.flyer = "/assets/images/logo-alt.png";
-        }
-
-        const nextState = structuredClone(state);
-        const index = nextState.events.findIndex((item) => item.id === payload.id);
-
-        if (index >= 0) {
-          nextState.events[index] = payload;
-        } else {
-          nextState.events.push(payload);
-        }
-
-        await persistState(nextState);
-        resetForm();
-      });
-
-      document.getElementById("cancelEditBtn").addEventListener("click", () => {
-        resetForm();
-      });
-
-      document.getElementById("flyerFile").addEventListener("change", async (event) => {
-        const input = event.target;
-        if (!(input instanceof HTMLInputElement) || !input.files || !input.files[0]) return;
-        const file = input.files[0];
-        const dataUrl = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = () => reject(new Error("Erro ao ler imagem"));
-          reader.readAsDataURL(file);
+        const eventItem = findEvent(deleteId);
+        await persistState((draft) => {
+          draft.events = draft.events.filter((item) => item.id !== deleteId);
+          draft.reservations = draft.reservations.filter((item) => item.eventId !== deleteId);
+        }, {
+          type: "Evento excluido",
+          details: eventItem ? eventItem.title : deleteId
         });
 
-        pendingFlyer = String(dataUrl);
-        const preview = document.getElementById("flyerPreview");
-        preview.src = pendingFlyer;
-        preview.hidden = false;
+        resetEventForm();
+      });
+
+      document.getElementById("layout-event-select").addEventListener("change", renderLayoutPreview);
+    }
+
+    function bindReservationsSection() {
+      ["filter-event", "filter-status", "filter-date", "filter-text"].forEach((id) => {
+        document.getElementById(id).addEventListener("input", renderReservations);
+        document.getElementById(id).addEventListener("change", renderReservations);
+      });
+
+      document.getElementById("room-event-select").addEventListener("change", renderRoomLayout);
+
+      document.getElementById("reservations-body").addEventListener("click", async (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const reservationId = target.getAttribute("data-save-reservation");
+        if (!reservationId) return;
+        if (!requirePermission("editReservation")) return;
+
+        const statusSelect = document.querySelector(`[data-reservation-status="${reservationId}"]`);
+        const tableSelect = document.querySelector(`[data-reservation-table="${reservationId}"]`);
+        if (!(statusSelect instanceof HTMLSelectElement) || !(tableSelect instanceof HTMLSelectElement)) return;
+
+        const reservation = state.reservations.find((item) => item.id === reservationId);
+        if (!reservation) return;
+
+        const eventItem = findEvent(reservation.eventId);
+        if (!eventItem) return;
+
+        const nextStatus = statusSelect.value;
+        const nextTableId = tableSelect.value;
+        const table = Array.isArray(eventItem.tables) ? eventItem.tables.find((item) => item.id === nextTableId) : null;
+
+        if (!table) {
+          document.getElementById("reservation-error").textContent = "Mesa invalida para esta reserva.";
+          return;
+        }
+
+        if (nextStatus === "approved") {
+          const occupied = approvedReservations(eventItem.id, nextTableId, reservationId);
+          if (occupied >= Number(table.available || 0)) {
+            document.getElementById("reservation-error").textContent = "Anti double-booking: mesa sem disponibilidade para aprovacao.";
+            return;
+          }
+        }
+
+        document.getElementById("reservation-error").textContent = "";
+
+        await persistState((draft) => {
+          const item = draft.reservations.find((reservationItem) => reservationItem.id === reservationId);
+          if (!item) return;
+          item.tableId = nextTableId;
+          item.status = nextStatus;
+          item.updatedAt = new Date().toISOString();
+        }, {
+          type: "Reserva atualizada",
+          details: reservation.name
+        });
       });
     }
 
-    function wireAuth() {
-      document.getElementById("login-btn").addEventListener("click", () => {
-        const pin = document.getElementById("pin").value;
-        if (pin !== state.adminPin) {
-          alert("PIN invalido.");
+    function bindPartnersSection() {
+      document.getElementById("partner-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!requirePermission("editPartner")) return;
+
+        const id = document.getElementById("partner-id").value || store.makeId("ptr");
+        const eventSelect = document.getElementById("partner-events");
+        const eventIds = eventSelect instanceof HTMLSelectElement
+          ? Array.from(eventSelect.selectedOptions).map((option) => option.value)
+          : [];
+
+        const payload = {
+          id,
+          name: document.getElementById("partner-name").value.trim(),
+          link: document.getElementById("partner-link").value.trim(),
+          logo: partnerLogoDraft || document.getElementById("partner-logo-current").value.trim(),
+          description: document.getElementById("partner-description").value.trim(),
+          status: document.getElementById("partner-status").value,
+          eventIds
+        };
+
+        if (!payload.name) {
+          alert("Nome do parceiro e obrigatorio.");
           return;
         }
-        loginSection.hidden = true;
-        panelSection.hidden = false;
+
+        const index = meta.partners.findIndex((partner) => partner.id === payload.id);
+        if (index >= 0) {
+          meta.partners[index] = payload;
+        } else {
+          meta.partners.push(payload);
+        }
+
+        pushActivity("Parceiro salvo", payload.name);
+        saveMeta();
+        resetPartnerForm();
+        renderPartners();
       });
 
-      document.getElementById("logout-btn").addEventListener("click", () => {
-        panelSection.hidden = true;
-        loginSection.hidden = false;
-        document.getElementById("pin").value = "";
+      document.getElementById("partner-cancel").addEventListener("click", resetPartnerForm);
+
+      document.getElementById("partners-list").addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+
+        const editId = target.getAttribute("data-edit-partner");
+        if (editId) {
+          const partner = meta.partners.find((item) => item.id === editId);
+          if (partner) populatePartnerForm(partner);
+          return;
+        }
+
+        const deleteId = target.getAttribute("data-delete-partner");
+        if (!deleteId) return;
+        if (!requirePermission("deletePartner", "Seu perfil nao pode excluir parceiros.")) return;
+
+        meta.partners = meta.partners.filter((item) => item.id !== deleteId);
+        pushActivity("Parceiro excluido", deleteId);
+        saveMeta();
+        renderPartners();
+      });
+    }
+
+    function bindContentSection() {
+      const syncContentDraft = () => {
+        contentDraft = {
+          heroSubtitle: document.getElementById("content-hero-sub").value,
+          heroCta: document.getElementById("content-hero-cta").value,
+          quote: document.getElementById("content-quote").value,
+          motto: document.getElementById("content-motto").value
+        };
+      };
+
+      ["content-hero-sub", "content-hero-cta", "content-quote", "content-motto"].forEach((id) => {
+        const node = document.getElementById(id);
+        if (node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement) {
+          node.addEventListener("input", syncContentDraft);
+        }
+      });
+
+      document.getElementById("content-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!requirePermission("editContent")) return;
+
+        contentDraft = {
+          heroSubtitle: document.getElementById("content-hero-sub").value.trim(),
+          heroCta: document.getElementById("content-hero-cta").value.trim(),
+          quote: document.getElementById("content-quote").value.trim(),
+          motto: document.getElementById("content-motto").value.trim()
+        };
+
+        meta.siteContent.heroSubtitle = contentDraft.heroSubtitle;
+        meta.siteContent.heroCta = contentDraft.heroCta;
+        meta.siteContent.quote = contentDraft.quote;
+        meta.siteContent.motto = contentDraft.motto;
+
+        pushActivity("Conteudo salvo", "Textos do site atualizados");
+        saveMeta();
+        alert("Conteudo salvo no painel.");
+      });
+
+      document.getElementById("save-nav-settings").addEventListener("click", () => {
+        if (!requirePermission("editContent")) return;
+
+        meta.navbar.home = document.getElementById("nav-home").checked;
+        meta.navbar.agenda = document.getElementById("nav-agenda").checked;
+        meta.navbar.event = document.getElementById("nav-event").checked;
+
+        pushActivity("Navbar atualizada", `home:${meta.navbar.home} agenda:${meta.navbar.agenda} evento:${meta.navbar.event}`);
+        saveMeta();
+        alert("Configuracao de navbar salva.");
+      });
+    }
+
+    function resetUserForm() {
+      document.getElementById("user-form").reset();
+      document.getElementById("user-id").value = "";
+    }
+
+    function bindSecuritySection() {
+      document.getElementById("user-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!requirePermission("editSecurity")) return;
+
+        const id = document.getElementById("user-id").value || store.makeId("usr");
+        const payload = {
+          id,
+          name: document.getElementById("user-name").value.trim(),
+          role: document.getElementById("user-role").value,
+          pin: document.getElementById("user-pin").value.trim(),
+          active: document.getElementById("user-active").value === "true"
+        };
+
+        if (!payload.name || !payload.pin) {
+          alert("Nome e PIN sao obrigatorios.");
+          return;
+        }
+
+        const index = meta.users.findIndex((user) => user.id === payload.id);
+        if (index >= 0) {
+          meta.users[index] = payload;
+        } else {
+          meta.users.push(payload);
+        }
+
+        pushActivity("Usuario salvo", `${payload.name} (${payload.role})`);
+        saveMeta();
+        resetUserForm();
+        renderSecurity();
+      });
+
+      document.getElementById("user-cancel").addEventListener("click", resetUserForm);
+
+      document.getElementById("users-list").addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+
+        const editId = target.getAttribute("data-edit-user");
+        if (editId) {
+          const user = meta.users.find((item) => item.id === editId);
+          if (!user) return;
+
+          document.getElementById("user-id").value = user.id;
+          document.getElementById("user-name").value = user.name;
+          document.getElementById("user-role").value = user.role;
+          document.getElementById("user-pin").value = user.pin;
+          document.getElementById("user-active").value = user.active ? "true" : "false";
+          return;
+        }
+
+        const deleteId = target.getAttribute("data-delete-user");
+        if (!deleteId) return;
+        if (!requirePermission("deleteSecurity", "Somente admin pode excluir usuarios.")) return;
+
+        if (currentSession && currentSession.userId === deleteId) {
+          alert("Nao e permitido excluir o usuario da sessao atual.");
+          return;
+        }
+
+        meta.users = meta.users.filter((user) => user.id !== deleteId);
+        pushActivity("Usuario excluido", deleteId);
+        saveMeta();
+        renderSecurity();
+      });
+
+      document.getElementById("save-session-policy").addEventListener("click", () => {
+        if (!requirePermission("editSecurity")) return;
+        const value = Math.max(Number(document.getElementById("session-hours").value) || 8, 1);
+        meta.sessionHours = value;
+        pushActivity("Politica de sessao", `${value} horas`);
+        saveMeta();
+        renderSecurity();
+      });
+    }
+
+    function bindLogin() {
+      document.getElementById("login-btn").addEventListener("click", () => {
+        const pin = document.getElementById("login-pin").value;
+        const user = findUserByPin(pin);
+        const errorNode = document.getElementById("login-error");
+
+        if (!user) {
+          errorNode.textContent = "PIN invalido ou usuario inativo.";
+          return;
+        }
+
+        errorNode.textContent = "";
+        saveSession(user);
+        pushActivity("Login", user.name);
+
+        document.getElementById("login-view").hidden = true;
+        document.getElementById("app-view").hidden = false;
+        updatePermissionUi();
+        renderAll();
       });
     }
 
     async function init() {
-      setSyncStatus("Sincronizando com Supabase...", false);
-      try {
-        state = await store.syncWithCloud();
-        setSyncStatus("Sincronizado com Supabase.", true);
-      } catch (_error) {
-        state = store.load();
-        setSyncStatus("Cloud indisponivel no momento. Usando dados locais.", false);
+      bindLogin();
+
+      currentSession = loadSession();
+      if (!currentSession) {
+        document.getElementById("login-view").hidden = false;
+        document.getElementById("app-view").hidden = true;
+      } else {
+        document.getElementById("login-view").hidden = true;
+        document.getElementById("app-view").hidden = false;
       }
 
-      resetForm();
-      renderEventsList();
-      renderReservations();
-      wireAuth();
-      wireTableDraft();
-      wireEventsListActions();
-      wireFormSubmit();
+      document.getElementById("sync-status").textContent = "Sincronizando com Supabase...";
+      try {
+        state = await store.syncWithCloud();
+        document.getElementById("sync-status").textContent = "Sincronizado com Supabase.";
+      } catch (_error) {
+        state = store.load();
+        document.getElementById("sync-status").textContent = "Nuvem indisponivel. Usando dados locais.";
+      }
+
+      bindGlobal();
+      bindImagePickers();
+      bindEventsSection();
+      bindReservationsSection();
+      bindPartnersSection();
+      bindContentSection();
+      bindSecuritySection();
+
+      if (currentSession) {
+        renderAll();
+      }
     }
 
     window.addEventListener("storage", (event) => {
       if (event.key === store.STORAGE_KEY) {
         state = store.load();
-        renderEventsList();
-        renderReservations();
+        renderAll();
+      }
+      if (event.key === META_KEY) {
+        meta = loadMeta();
+        renderAll();
       }
     });
 

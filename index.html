@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Via Paris | Music Bar Bruxelles</title>
+  <title>Via Paris | Music Bar Bruxelas</title>
   <meta
     name="description"
-    content="Via Paris est un music bar a Bruxelles. Univers nocturne editorial, ambiance luxe et experiences inoubliables depuis 2019."
+    content="Via Paris e um music bar em Bruxelas. Universo noturno editorial, ambiente premium e experiencias inesqueciveis desde 2019."
   />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -362,6 +362,21 @@
       transition: border-color var(--ease), transform var(--ease);
     }
 
+    .partner-tile img {
+      width: 42px;
+      height: 42px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 0.35rem;
+    }
+
+    .partner-tile span {
+      text-align: center;
+      line-height: 1.25;
+      padding: 0 0.35rem;
+    }
+
     .partner-tile:hover {
       border-color: rgba(201, 168, 76, 0.6);
       transform: translateY(-2px);
@@ -572,26 +587,23 @@
 <body>
   <header class="site-nav" id="site-nav">
     <div class="container site-nav-inner">
-      <a class="brand" href="#home" aria-label="Via Paris Home">
+      <a class="brand" href="#home" aria-label="Via Paris Inicio">
         <img src="assets/images/logo.png" alt="Via Paris" />
       </a>
 
-      <nav class="nav-links" aria-label="Main navigation">
-        <a href="#home">Home</a>
+      <nav class="nav-links" aria-label="Navegacao principal">
+        <a href="#home">Inicio</a>
         <a href="agenda.html">Agenda</a>
-        <a href="#corporate">Corporate</a>
-        <a href="#group-booking">Group Booking</a>
-        <a href="#contact">Contact</a>
+        <a href="group-booking.html">Reservas em Grupo</a>
+        <a href="loja.html">Loja</a>
+        <a href="#contact">Contato</a>
       </nav>
 
-      <div class="social-links" aria-label="Social media links">
-        <a class="social-link" href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+      <div class="social-links" aria-label="Links de redes sociais">
+        <a class="social-link" href="https://www.instagram.com/viaparisbar/" target="_blank" rel="noopener" aria-label="Instagram">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2m0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5M12 7.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5m0 1.8a2.7 2.7 0 1 0 2.7 2.7A2.7 2.7 0 0 0 12 9.3m4.86-3.14a1.08 1.08 0 1 1-1.08 1.08 1.08 1.08 0 0 1 1.08-1.08"/></svg>
         </a>
-        <a class="social-link" href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.28 2c.36 1.96 1.94 3.5 3.9 3.8v3.24a7.07 7.07 0 0 1-3.9-1.23v6.84a6.62 6.62 0 1 1-5.73-6.56v3.36a3.26 3.26 0 1 0 2.37 3.2V2h3.36z"/></svg>
-        </a>
-        <a class="social-link" href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+        <a class="social-link" href="https://www.facebook.com/pages/Via-paris-music-bar/100776081342285?locale=fr_CA" target="_blank" rel="noopener" aria-label="Facebook">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 22v-8.2h2.8l.42-3.2H13.6V8.56c0-.92.26-1.54 1.58-1.54h1.68V4.18A22.8 22.8 0 0 0 14.4 4c-2.44 0-4.1 1.5-4.1 4.26V10.6H7.5v3.2h2.8V22h3.3z"/></svg>
         </a>
       </div>
@@ -599,57 +611,64 @@
   </header>
 
   <main>
-    <section class="hero reveal reveal-up" id="home" aria-label="Hero section">
+    <section class="hero reveal reveal-up" id="home" aria-label="Secao principal">
       <!-- Replace this video source with your official nightclub hero video URL -->
       <video class="hero-video" autoplay muted loop playsinline>
         <source src="assets/images/video-home.mp4" type="video/mp4" />
       </video>
 
       <div class="hero-content">
-        <p class="subtitle">EST. 2019 · BRUXELLES</p>
-        <a href="agenda.html" class="cta">Acheter des Tickets</a>
+        <p id="hero-subtitle" class="subtitle">EST. 2019 · BRUXELAS</p>
+        <a id="hero-cta" href="agenda.html" class="cta">Comprar ingressos</a>
       </div>
     </section>
 
     <section class="split section-pad" id="agenda">
       <div class="split-copy reveal reveal-left">
-        <p class="eyebrow">About The House</p>
-        <h2>Bruxelles Nights, Elevated Since 2019</h2>
+        <p class="eyebrow">Sobre a Casa</p>
+        <h2>Noites de Bruxelas, Elevadas Desde 2019</h2>
         <p>
-          Nee au coeur de Bruxelles, Via Paris est rapidement devenue une adresse signature pour celles et ceux qui recherchent
-          des nuits intenses, un son cisele et une atmosphere vraiment selective.
+          Nascido no coracao de Bruxelas, o Via Paris tornou-se rapidamente uma referencia para quem procura noites intensas,
+          som de alta qualidade e uma atmosfera verdadeiramente exclusiva.
         </p>
         <p>
-          Entre vibes urbaines, esthetique editoriale et energie de foule, le bar melange la sophistication d'un lounge premium
-          et la puissance d'une vraie scene de club.
+          Entre influencias urbanas, estetica contemporanea e a energia do publico, o espaco combina a sofisticacao de um lounge
+          premium com a forca de uma autentica cena de clube.
         </p>
-        <p class="motto">No Rules. Just Rhythm.</p>
+        <p>
+          Mais do que um bar, somos um music bar em Bruxelas onde a experiencia vai alem do habitual.
+        </p>
+        <p>
+          Todos os sabados apresentamos shows ao vivo com artistas vindos de diferentes partes do mundo, criando noites unicas,
+          acompanhadas de cerveja sempre bem gelada e um ambiente vibrante.
+        </p>
+        <p id="home-motto" class="motto">Sem regras. Apenas ritmo.</p>
       </div>
       <div class="split-media reveal reveal-right">
         <!-- Replace this image with your real About section visual -->
-        <img src="assets/images/mascotte.png" alt="People celebrating at Via Paris" />
+        <img src="assets/images/mascotte.png" alt="Pessoas celebrando no Via Paris" />
       </div>
     </section>
 
-    <section class="quote-band reveal reveal-up" aria-label="Featured quote">
-      <h2 class="quote-text">THE WILDEST BAR I'VE EVER BEEN TO</h2>
-      <p>Editorial Guest Review</p>
+    <section class="quote-band reveal reveal-up" aria-label="Citao em destaque">
+      <h2 id="quote-text" class="quote-text">Uma noite que ultrapassa tudo o que se espera de um bar.</h2>
+      <p>Critica de visitante editorial</p>
     </section>
 
     <section class="split reverse section-pad" id="corporate">
       <div class="split-media reveal reveal-left">
         <!-- Replace this image with your real Partners section visual -->
-        <img src="assets/images/parceria-lisa.png" alt="Partner event at Via Paris" />
+        <img src="assets/images/parceria-lisa.png" alt="Parceiros do Via Paris" />
       </div>
       <div class="split-copy reveal reveal-right">
-        <p class="eyebrow">Partners</p>
-        <h2>Built With Trusted Names</h2>
+        <p class="eyebrow">Parceiros</p>
+        <h2>Construido com nomes de confianca</h2>
         <p>
-          Nos partenaires contribuent a chaque production: contenu, communication, scenographie et experiences speciales qui
-          renforcent l'identite de chaque soiree.
+          Nossos parceiros contribuem para cada producao: conteudo, comunicacao, cenografia e experiencias especiais que
+          reforcam a identidade de cada noite.
         </p>
 
-        <div class="partners-grid" aria-label="Partner logos">
+        <div id="partners-grid" class="partners-grid" aria-label="Logotipos de parceiros">
           <div class="partner-tile">Maison Luxe</div>
           <div class="partner-tile">Nexus Events</div>
           <div class="partner-tile">Noir Studio</div>
@@ -666,34 +685,32 @@
     <div class="container footer-grid reveal reveal-up">
       <div class="footer-col">
         <p class="footer-logo">VIA PARIS</p>
-        <p>Music Bar editorial a Bruxelles. Nights designed to be unforgettable.</p>
+        <p>Music bar editorial em Bruxelas. Noites criadas para serem inesqueciveis.</p>
       </div>
 
       <div class="footer-col">
-        <h3>Address</h3>
-        <!-- Replace with real venue address -->
-        <p>Chaussée d'Alsemberg 5<br />1060 Bruxelles, Belgium</p>
+        <h3>Endereco</h3>
+        <p>Chaussée d'Alsemberg 5<br />1060 Bruxelas, Belgica</p>
       </div>
 
       <div class="footer-col">
-        <h3>Contact</h3>
-        <!-- Replace with real phone, email and website -->
+        <h3>Contato</h3>
         <p><a href="tel:+32465557160">+32 465 55 71 60</a></p>
         <p><a href="mailto:info@viaparis.be">info@viaparis.be</a></p>
         <p><a href="https://viaparis.be" target="_blank" rel="noopener">www.viaparis.be</a></p>
       </div>
 
       <div class="footer-col">
-        <h3>Social</h3>
-        <p>Follow the movement</p>
+        <h3>Redes Sociais</h3>
+        <p>Siga o movimento</p>
         <div class="social-footer">
           <a href="https://wa.me/32465557160" target="_blank" rel="noopener" aria-label="WhatsApp">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.52 3.48A11.92 11.92 0 0 0 12.06 0C5.48 0 .1 5.35.1 11.95a11.8 11.8 0 0 0 1.64 6.02L0 24l6.22-1.62a11.95 11.95 0 0 0 5.84 1.49h.01c6.58 0 11.93-5.35 11.93-11.94a11.84 11.84 0 0 0-3.48-8.45M12.07 21.8h-.01a9.9 9.9 0 0 1-5.04-1.38l-.36-.22-3.69.96.98-3.6-.24-.38a9.87 9.87 0 0 1-1.53-5.24c0-5.47 4.46-9.92 9.94-9.92a9.93 9.93 0 0 1 9.92 9.93c0 5.48-4.45 9.93-9.92 9.93m5.44-7.43c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15s-.77.96-.94 1.16-.35.22-.64.08c-.3-.15-1.25-.46-2.38-1.46a8.92 8.92 0 0 1-1.65-2.04c-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.57-.48-.5-.67-.51h-.57c-.2 0-.52.08-.8.37-.27.3-1.05 1.02-1.05 2.5s1.08 2.9 1.23 3.1c.15.2 2.12 3.24 5.14 4.54.72.31 1.28.5 1.72.64.72.23 1.37.2 1.88.12.57-.08 1.75-.72 2-1.4.25-.68.25-1.27.17-1.4-.07-.12-.27-.2-.57-.35"/></svg>
           </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+          <a href="https://www.instagram.com/viaparisbar/" target="_blank" rel="noopener" aria-label="Instagram">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2m0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5M12 7.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5m0 1.8a2.7 2.7 0 1 0 2.7 2.7A2.7 2.7 0 0 0 12 9.3m4.86-3.14a1.08 1.08 0 1 1-1.08 1.08 1.08 1.08 0 0 1 1.08-1.08"/></svg>
           </a>
-          <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+          <a href="https://www.facebook.com/pages/Via-paris-music-bar/100776081342285?locale=fr_CA" target="_blank" rel="noopener" aria-label="Facebook">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 22v-8.2h2.8l.42-3.2H13.6V8.56c0-.92.26-1.54 1.58-1.54h1.68V4.18A22.8 22.8 0 0 0 14.4 4c-2.44 0-4.1 1.5-4.1 4.26V10.6H7.5v3.2h2.8V22h3.3z"/></svg>
           </a>
         </div>
@@ -701,15 +718,114 @@
     </div>
 
     <div class="container footer-bottom">
-      <p>© 2026 Via Paris. All rights reserved.</p>
+      <p>© 2026 Via Paris. Todos os direitos reservados.</p>
       <div class="footer-legal">
-        <a href="#">Mentions legales</a>
-        <a href="#">Privacy Policy</a>
+        <a href="#">Aviso legal</a>
+        <a href="#">Politica de privacidade</a>
       </div>
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/assets/js/supabase-config.js"></script>
+  <script src="/assets/js/event-store.js"></script>
   <script>
+    const store = window.ViaParisEventsStore;
+    const ADMIN_META_KEY = "via-paris-admin-meta-v2";
+    const updateChannel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel("via-paris-updates") : null;
+    let lastStoreSnapshot = "";
+
+    function loadAdminMeta() {
+      try {
+        const raw = localStorage.getItem(ADMIN_META_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (_error) {
+        return null;
+      }
+    }
+
+    function renderPartnerTiles(partners) {
+      const root = document.getElementById("partners-grid");
+      if (!root) return;
+
+      const activePartners = Array.isArray(partners)
+        ? partners.filter((item) => item && item.status !== "inactive" && item.name)
+        : [];
+
+      if (!activePartners.length) return;
+
+      root.innerHTML = activePartners
+        .slice(0, 6)
+        .map((partner) => {
+          const name = String(partner.name || "Parceiro");
+          const logo = String(partner.logo || "").trim();
+          return `
+            <div class="partner-tile">
+              ${logo ? `<img src="${logo}" alt="Logo ${name}" />` : ""}
+              <span>${name}</span>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function applyAdminPublicContent() {
+      const currentState = store.load ? store.load() : null;
+      const publicContent = currentState && currentState.publicContent ? currentState.publicContent : null;
+      const meta = publicContent || loadAdminMeta();
+      if (!meta || typeof meta !== "object") return;
+
+      const siteContent = meta.siteContent && typeof meta.siteContent === "object" ? meta.siteContent : {};
+      const navbar = meta.navbar && typeof meta.navbar === "object" ? meta.navbar : {};
+      const partners = Array.isArray(meta.partners) ? meta.partners : [];
+
+      if (siteContent && typeof siteContent === "object") {
+        const subtitleNode = document.getElementById("hero-subtitle");
+        const ctaNode = document.getElementById("hero-cta");
+        const quoteNode = document.getElementById("quote-text");
+        const mottoNode = document.getElementById("home-motto");
+
+        if (subtitleNode && siteContent.heroSubtitle) subtitleNode.textContent = siteContent.heroSubtitle;
+        if (ctaNode && siteContent.heroCta) ctaNode.textContent = siteContent.heroCta;
+        if (quoteNode && siteContent.quote) quoteNode.textContent = siteContent.quote;
+        if (mottoNode && siteContent.motto) mottoNode.textContent = siteContent.motto;
+      }
+
+      if (navbar.home === false) {
+        const navNode = document.getElementById("site-nav");
+        if (navNode) navNode.style.display = "none";
+      }
+
+      renderPartnerTiles(partners);
+    }
+
+    let lastAdminMetaSnapshot = localStorage.getItem(ADMIN_META_KEY) || "";
+
+    function syncIfAdminMetaChanged() {
+      const snapshot = localStorage.getItem(ADMIN_META_KEY) || "";
+      if (snapshot !== lastAdminMetaSnapshot) {
+        lastAdminMetaSnapshot = snapshot;
+        refreshAdminContent();
+      }
+    }
+
+    function refreshAdminContent() {
+      applyAdminPublicContent();
+    }
+
+    async function syncFromCloud() {
+      try {
+        const nextState = await store.syncWithCloud();
+        const snapshot = JSON.stringify(nextState.publicContent || {});
+        if (snapshot !== lastStoreSnapshot) {
+          lastStoreSnapshot = snapshot;
+          refreshAdminContent();
+        }
+      } catch (_error) {
+        // Ignore transient sync issues.
+      }
+    }
+
     const nav = document.getElementById("site-nav");
 
     window.addEventListener("scroll", () => {
@@ -734,6 +850,26 @@
     );
 
     revealElements.forEach((element) => revealObserver.observe(element));
+
+    applyAdminPublicContent();
+
+    window.addEventListener("storage", (event) => {
+      if (event.key === ADMIN_META_KEY) {
+        refreshAdminContent();
+      }
+    });
+
+    if (updateChannel) {
+      updateChannel.addEventListener("message", () => refreshAdminContent());
+    }
+
+    window.addEventListener("via-paris-meta-updated", refreshAdminContent);
+    window.addEventListener("focus", refreshAdminContent);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) refreshAdminContent();
+    });
+    setInterval(syncIfAdminMetaChanged, 1200);
+    setInterval(syncFromCloud, 4000);
   </script>
 </body>
 </html>

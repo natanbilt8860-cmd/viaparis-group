@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Via Paris | Agenda</title>
   <meta name="description" content="Eventos Via Paris com detalhes completos e reserva." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,6 +49,7 @@
       backdrop-filter: blur(12px);
       background: rgba(8, 8, 8, 0.92);
       border-bottom: 1px solid var(--line-soft);
+      transition: opacity var(--ease), transform var(--ease), visibility var(--ease);
     }
 
     .site-nav-inner {
@@ -129,6 +133,7 @@
       backdrop-filter: blur(11px);
       background: rgba(0, 0, 0, 0.86);
       border-bottom: 1px solid var(--line-soft);
+      transition: background var(--ease), border-color var(--ease), backdrop-filter var(--ease);
     }
 
     .topbar-inner {
@@ -157,9 +162,57 @@
       font-size: 0.74rem;
       cursor: pointer;
       display: none;
+      transition: border-color var(--ease), background var(--ease), transform var(--ease), opacity var(--ease);
     }
 
     .back-btn.visible { display: inline-block; }
+
+    .back-btn:hover,
+    .back-btn:focus-visible {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      transform: translateY(-1px);
+    }
+
+    body.event-page .site-nav {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-100%);
+    }
+
+    body.event-page .topbar {
+      position: relative;
+      top: 0;
+      background: transparent;
+      border-bottom-color: transparent;
+      backdrop-filter: none;
+    }
+
+    body.event-page .topbar-inner {
+      min-height: 0;
+      padding: 0;
+      justify-content: flex-end;
+    }
+
+    body.event-page .topbar-title {
+      opacity: 0;
+      pointer-events: none;
+      height: 0;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    body.event-page .detail-view {
+      padding-top: 0;
+    }
+
+    body.event-page .back-btn.visible {
+      position: fixed;
+      top: 1rem;
+      right: max(1rem, calc((100vw - var(--max)) / 2 + 1rem));
+      z-index: 80;
+    }
 
     .home-view {
       padding: 1.2rem 0 4rem;
@@ -554,30 +607,34 @@
       .main-title { font-size: clamp(1.7rem, 9vw, 2.2rem); }
       .section-title { font-size: 1.7rem; }
       .bottom-cta { font-size: 0.76rem; }
+
+      body.event-page .back-btn.visible {
+        top: 0.75rem;
+        right: 0.75rem;
+        font-size: 0.68rem;
+        padding: 0.46rem 0.64rem;
+      }
     }
   </style>
 </head>
 <body>
-  <header class="site-nav">
+  <header class="site-nav navbar">
     <div class="container site-nav-inner">
       <a class="brand" href="index.html#home" aria-label="Via Paris Inicio">
         <img src="/assets/images/logo.png" alt="Via Paris" />
       </a>
       <nav class="nav-links" aria-label="Navegacao principal">
-        <a href="index.html#home">Home</a>
+        <a href="index.html#home">Inicio</a>
         <a href="agenda.html" class="active">Agenda</a>
-        <a href="index.html#corporate">Corporate</a>
-        <a href="index.html#group-booking">Group Booking</a>
-        <a href="index.html#contact">Contact</a>
+        <a href="group-booking.html">Reservas em Grupo</a>
+        <a href="loja.html">Loja</a>
+        <a href="index.html#contact">Contato</a>
       </nav>
-      <div class="social-links" aria-label="Social media links">
-        <a class="social-link" href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+      <div class="social-links" aria-label="Links de redes sociais">
+        <a class="social-link" href="https://www.instagram.com/viaparisbar/" target="_blank" rel="noopener" aria-label="Instagram">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2m0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5M12 7.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5m0 1.8a2.7 2.7 0 1 0 2.7 2.7A2.7 2.7 0 0 0 12 9.3m4.86-3.14a1.08 1.08 0 1 1-1.08 1.08 1.08 1.08 0 0 1 1.08-1.08"/></svg>
         </a>
-        <a class="social-link" href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.28 2c.36 1.96 1.94 3.5 3.9 3.8v3.24a7.07 7.07 0 0 1-3.9-1.23v6.84a6.62 6.62 0 1 1-5.73-6.56v3.36a3.26 3.26 0 1 0 2.37 3.2V2h3.36z"/></svg>
-        </a>
-        <a class="social-link" href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+        <a class="social-link" href="https://www.facebook.com/pages/Via-paris-music-bar/100776081342285?locale=fr_CA" target="_blank" rel="noopener" aria-label="Facebook">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 22v-8.2h2.8l.42-3.2H13.6V8.56c0-.92.26-1.54 1.58-1.54h1.68V4.18A22.8 22.8 0 0 0 14.4 4c-2.44 0-4.1 1.5-4.1 4.26V10.6H7.5v3.2h2.8V22h3.3z"/></svg>
         </a>
       </div>
@@ -587,7 +644,7 @@
   <header class="topbar">
     <div class="container topbar-inner">
       <h1 id="topbar-title" class="topbar-title">Eventos a seguir</h1>
-      <button id="back-home" class="back-btn" type="button">Voltar para agenda</button>
+      <button id="back-home" class="back-btn back-button" type="button">Voltar para agenda</button>
     </div>
   </header>
 
@@ -618,14 +675,14 @@
           <a href="#reserve-box" class="code-link">VOCE TEM UM CODIGO?</a>
 
           <div class="tabs">
-            <button class="tab-btn active" type="button" data-tab="lineup">Line-up</button>
+            <button class="tab-btn active" type="button" data-tab="lineup">Atracoes</button>
             <button class="tab-btn" type="button" data-tab="billets">Ingressos</button>
             <button class="tab-btn" type="button" data-tab="venue">Local</button>
           </div>
         </section>
 
         <section id="tab-lineup" class="tab-panel active">
-          <h3 class="section-title">Line-up</h3>
+          <h3 class="section-title">Atracoes</h3>
           <div id="lineup-grid" class="lineup-grid"></div>
         </section>
 
@@ -676,8 +733,25 @@
   <script src="/assets/js/event-store.js"></script>
   <script>
     const store = window.ViaParisEventsStore;
+    const ADMIN_META_KEY = "via-paris-admin-meta-v2";
+    const updateChannel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel("via-paris-updates") : null;
     let state = store.load();
     let selectedEventId = null;
+    const formatEuroPrice = store.formatEuroPrice || ((value) => {
+      const text = String(value || "").trim();
+      if (!text) return "0 EUR";
+      return /\bEUR\b/i.test(text) ? text : `${text} EUR`;
+    });
+    const formatPlacesRange = store.formatPlacesRange || ((minPlaces, maxPlaces) => {
+      const minValue = Math.max(Number(minPlaces) || 1, 1);
+      const maxValue = Math.max(Number(maxPlaces) || minValue, minValue);
+      return minValue === maxValue ? `${minValue} pessoa${minValue === 1 ? "" : "s"}` : `${minValue} a ${maxValue} pessoas`;
+    });
+    const describePlacesRange = store.describePlacesRange || ((table) => {
+      const minPlaces = Math.max(Number(table && table.minPlaces) || 1, 1);
+      const maxPlaces = Math.max(Number(table && (table.maxPlaces || table.capacity)) || minPlaces, minPlaces);
+      return formatPlacesRange(minPlaces, maxPlaces);
+    });
 
     const dateMonthFormatter = new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" });
     const dateShortFormatter = new Intl.DateTimeFormat("pt-BR", {
@@ -701,6 +775,66 @@
     const backBtn = document.getElementById("back-home");
     const topbarTitle = document.getElementById("topbar-title");
     const bottomCta = document.getElementById("bottom-cta");
+    const siteNav = document.querySelector(".site-nav");
+    let lastVenueAddress = "";
+
+    function loadAdminMeta() {
+      try {
+        const raw = localStorage.getItem(ADMIN_META_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (_error) {
+        return null;
+      }
+    }
+
+    function applyAgendaNavbarSetting() {
+      if (!siteNav) return;
+      const currentState = store.load ? store.load() : null;
+      const publicContent = currentState && currentState.publicContent ? currentState.publicContent : null;
+      const meta = publicContent || loadAdminMeta();
+      const showNavbar = !(meta && meta.navbar && meta.navbar.agenda === false);
+      siteNav.style.display = showNavbar ? "" : "none";
+    }
+
+    let lastAdminMetaSnapshot = localStorage.getItem(ADMIN_META_KEY) || "";
+    let lastStoreSnapshot = localStorage.getItem(store.STORAGE_KEY) || "";
+
+    function syncIfDataChanged() {
+      const adminSnapshot = localStorage.getItem(ADMIN_META_KEY) || "";
+      const storeSnapshot = localStorage.getItem(store.STORAGE_KEY) || "";
+
+      if (adminSnapshot !== lastAdminMetaSnapshot) {
+        lastAdminMetaSnapshot = adminSnapshot;
+        applyAgendaNavbarSetting();
+      }
+
+      if (storeSnapshot !== lastStoreSnapshot) {
+        lastStoreSnapshot = storeSnapshot;
+        state = store.load();
+        renderHome();
+        refreshSelectedEvent();
+      }
+
+      if (storeSnapshot !== lastStoreSnapshot) {
+        lastStoreSnapshot = storeSnapshot;
+      }
+    }
+
+    async function syncFromCloud() {
+      try {
+        const nextState = await store.syncWithCloud();
+        const snapshot = JSON.stringify(nextState.publicContent || {});
+        if (snapshot !== lastStoreSnapshot) {
+          lastStoreSnapshot = snapshot;
+          state = nextState;
+          renderHome();
+          refreshSelectedEvent();
+          applyAgendaNavbarSetting();
+        }
+      } catch (_error) {
+        // Ignore transient sync issues.
+      }
+    }
 
     function safe(value) {
       return value && String(value).trim() ? String(value) : "-";
@@ -730,11 +864,39 @@
     }
 
     function mapLink(address) {
-      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address || "Bruxelles")}`;
+      const query = String(address || "Bruxelles").trim() || "Bruxelles";
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
     }
 
-    function mapEmbed(address) {
-      return `https://maps.google.com/maps?q=${encodeURIComponent(address || "Bruxelles")}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
+    function mapEmbedFromAddress(address) {
+      const query = String(address || "Bruxelles").trim() || "Bruxelles";
+      return `https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`;
+    }
+
+    async function geocodeAddress(address) {
+      const query = String(address || "Bruxelles").trim() || "Bruxelles";
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(query)}`, {
+        headers: {
+          Accept: "application/json"
+        }
+      });
+      if (!response.ok) return null;
+      const results = await response.json();
+      if (!Array.isArray(results) || !results.length) return null;
+      const first = results[0];
+      const lat = Number(first.lat);
+      const lon = Number(first.lon);
+      if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+      return { lat, lon };
+    }
+
+    function mapEmbedFromCoords(coords, address) {
+      const lat = coords ? coords.lat : 50.8466;
+      const lon = coords ? coords.lon : 4.3517;
+      const bbox = `${lon - 0.01},${lat + 0.01},${lon + 0.01},${lat - 0.01}`;
+      const marker = `${lat},${lon},red-pushpin`;
+      const label = encodeURIComponent(address || "Bruxelles");
+      return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${marker}&mlat=${lat}&mlon=${lon}&query=${label}`;
     }
 
     function findSelectedEvent() {
@@ -808,7 +970,7 @@
         .map((table) => {
           const reserved = store.getReservedCount(state, eventItem.id, table.id);
           const left = Math.max((Number(table.available) || 0) - reserved, 0);
-          const label = `${table.name} - ${table.price} (${left} disponiveis)`;
+          const label = `${table.name} - ${formatEuroPrice(table.price)} (${describePlacesRange(table)}, ${left} disponiveis)`;
           return `<option value="${table.id}" ${left === 0 ? "disabled" : ""}>${label}</option>`;
         })
         .join("");
@@ -825,7 +987,7 @@
             <p class="ticket-sub">Ingresso regular (acesso a pista principal)</p>
             ${!eventItem.entryPrice ? '<span class="badge">Esgotado</span>' : ""}
           </div>
-          <p class="ticket-price">${safe(eventItem.entryPrice)}</p>
+          <p class="ticket-price">${formatEuroPrice(safe(eventItem.entryPrice))}</p>
         </article>
       `;
 
@@ -834,15 +996,16 @@
           const reserved = store.getReservedCount(state, eventItem.id, table.id);
           const left = Math.max((Number(table.available) || 0) - reserved, 0);
           const soldOut = left === 0;
+          const placesLabel = describePlacesRange(table);
 
           return `
             <article class="ticket-card ${soldOut ? "soldout" : ""}">
               <div>
                 <h4 class="ticket-title">${table.name}</h4>
-                <p class="ticket-sub">${table.capacity} lugares · ${left} disponiveis</p>
+                <p class="ticket-sub">Mesa para ${placesLabel} · ${left} disponiveis</p>
                 ${soldOut ? '<span class="badge">Esgotado</span>' : ""}
               </div>
-              <p class="ticket-price">${table.price}</p>
+              <p class="ticket-price">${formatEuroPrice(table.price)}</p>
             </article>
           `;
         })
@@ -851,18 +1014,24 @@
       ticketList.innerHTML = entryCard + tableCards;
 
       const prices = [];
-      if (eventItem.entryPrice) prices.push(eventItem.entryPrice);
+      if (eventItem.entryPrice) prices.push(formatEuroPrice(eventItem.entryPrice));
       (eventItem.tables || []).forEach((table) => {
-        if (table.price) prices.push(table.price);
+        if (table.price) prices.push(formatEuroPrice(table.price));
       });
       bottomCta.textContent = `Ingressos a partir de ${prices[0] || "-"}`;
     }
 
-    function renderVenue(eventItem) {
+    async function renderVenue(eventItem) {
+      const venueAddress = String(eventItem.address || eventItem.venue || "").trim();
       document.getElementById("venue-name").textContent = safe(eventItem.venue);
       document.getElementById("venue-address").textContent = safe(eventItem.address);
-      document.getElementById("map-link").setAttribute("href", mapLink(eventItem.address));
-      document.getElementById("map-frame").setAttribute("src", mapEmbed(eventItem.address));
+      document.getElementById("map-link").setAttribute("href", mapLink(venueAddress));
+
+      const frame = document.getElementById("map-frame");
+      if (venueAddress !== lastVenueAddress || !frame.getAttribute("src")) {
+        lastVenueAddress = venueAddress;
+        frame.setAttribute("src", mapEmbedFromAddress(venueAddress));
+      }
     }
 
     function renderDetail(eventItem) {
@@ -876,8 +1045,16 @@
 
       renderLineup(eventItem);
       renderTickets(eventItem);
-      renderVenue(eventItem);
+      void renderVenue(eventItem);
       fillTableOptions(eventItem);
+    }
+
+    function refreshSelectedEvent() {
+      if (!selectedEventId) return;
+      const eventItem = findSelectedEvent();
+      if (!eventItem) return;
+
+      renderDetail(eventItem);
     }
 
     function switchTab(tabName) {
@@ -896,6 +1073,7 @@
       backBtn.classList.remove("visible");
       bottomCta.classList.remove("visible");
       topbarTitle.textContent = "Eventos a seguir";
+      document.body.classList.remove("event-page");
       selectedEventId = null;
       history.replaceState(null, "", "agenda.html");
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -911,6 +1089,7 @@
       backBtn.classList.add("visible");
       bottomCta.classList.add("visible");
       topbarTitle.textContent = eventItem.title || "Evento";
+      document.body.classList.add("event-page");
 
       switchTab("lineup");
       renderDetail(eventItem);
@@ -936,6 +1115,14 @@
         return;
       }
 
+      const minPlaces = Math.max(Number(table.minPlaces) || 1, 1);
+      const maxPlaces = Math.max(Number(table.maxPlaces || table.capacity) || minPlaces, minPlaces);
+
+      if (guests < minPlaces || guests > maxPlaces) {
+        feedback.textContent = `Esta mesa aceita de ${formatPlacesRange(minPlaces, maxPlaces)}.`;
+        return;
+      }
+
       const reserved = store.getReservedCount(state, eventItem.id, table.id);
       if (reserved >= Number(table.available || 0)) {
         feedback.textContent = "Essa mesa esta lotada. Escolha outro tipo.";
@@ -943,9 +1130,11 @@
         return;
       }
 
+      const reservationId = store.makeId("rsv");
+
       state = store.update((draft) => {
         draft.reservations.push({
-          id: store.makeId("rsv"),
+          id: reservationId,
           eventId: eventItem.id,
           tableId: table.id,
           name,
@@ -956,7 +1145,7 @@
         });
       });
 
-      try {
+          reservationId,
         await store.pushCloud(state);
       } catch (_error) {
         feedback.textContent = "Reserva salva localmente. Sincronizacao na nuvem pendente.";
@@ -1013,28 +1202,95 @@
       const exists = (state.events || []).some((item) => item.id === eventId);
       if (exists) showDetail(eventId);
     }
+    async function notifyReservationByWhatsApp(payload) {
+      const response = await fetch("/api/notify-reservation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
 
-    async function init() {
+      if (response.ok) return;
+
+      let details = "";
       try {
-        state = await store.syncWithCloud();
+        const data = await response.json();
+        details = data && data.error ? ` (${data.error})` : "";
       } catch (_error) {
-        state = store.load();
+        details = "";
       }
 
+      throw new Error(`Falha ao notificar WhatsApp${details}`);
+    }
+
+    async function init() {
+      applyAgendaNavbarSetting();
+      state = store.load();
       renderHome();
       wire();
       openFromHashIfAny();
+      void syncFromCloud();
     }
 
     window.addEventListener("storage", (event) => {
       if (event.key === store.STORAGE_KEY) {
         state = store.load();
         renderHome();
-        if (selectedEventId) {
-          showDetail(selectedEventId);
-        }
+        refreshSelectedEvent();
+      }
+      if (event.key === ADMIN_META_KEY) {
+        applyAgendaNavbarSetting();
       }
     });
+
+    if (updateChannel) {
+      updateChannel.addEventListener("message", () => {
+        applyAgendaNavbarSetting();
+        state = store.load();
+        renderHome();
+        refreshSelectedEvent();
+      });
+    }
+
+    window.addEventListener("via-paris-meta-updated", () => {
+      applyAgendaNavbarSetting();
+      state = store.load();
+      renderHome();
+      refreshSelectedEvent();
+    });
+
+    window.addEventListener("focus", () => {
+      applyAgendaNavbarSetting();
+      state = store.load();
+      renderHome();
+      refreshSelectedEvent();
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        applyAgendaNavbarSetting();
+        state = store.load();
+        renderHome();
+        refreshSelectedEvent();
+      }
+    });
+    setInterval(syncIfDataChanged, 1200);
+
+        void notifyReservationByWhatsApp({
+          reservationId: `rsv-${Date.now()}`,
+          eventTitle: eventItem.title,
+          eventDate: formatDate(eventItem, true),
+          tableName: table.name,
+          name,
+          phone,
+          guests,
+          note,
+          createdAt: new Date().toISOString()
+        }).catch((error) => {
+          console.warn("WhatsApp notification failed:", error && error.message ? error.message : error);
+        });
+    setInterval(syncFromCloud, 4000);
 
     void init();
   </script>

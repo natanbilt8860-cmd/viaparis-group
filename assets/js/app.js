@@ -84,6 +84,7 @@ const HOME_PORTFOLIO_GALLERY = HERO_PORTFOLIO_IMAGES.map((src, index) => ({
 }));
 const HERO_DEFAULT_MEDIA = "assets/images/video-home.mp4";
 const HERO_FALLBACK_IMAGE = "assets/images/foto-2.png";
+const ADMIN_PIN = "123";
 let currentLanguage = "pt-BR";
 const supabaseConfig = window.VIA_PARIS_SUPABASE || {};
 const supabaseClient = createSupabaseClient();
@@ -388,7 +389,7 @@ function isVideoSource(src) {
 }
 
 const defaultState = {
-  adminPin: "1234",
+  adminPin: ADMIN_PIN,
   home: {
     heroMedia: HERO_DEFAULT_MEDIA,
     heroImage: HERO_FALLBACK_IMAGE,
@@ -437,6 +438,56 @@ let pendingGalleryImages = [];
 let syncRetryTimer = null;
 let syncInFlight = false;
 
+function createStartupLoaderController() {
+  const loader = document.getElementById("startup-loader");
+  const loaderTarget = document.querySelector(".startup-target");
+  const body = document.body;
+  const startedAt = Date.now();
+  const minDisplayTimeMs = 1800;
+
+  if (!(loader instanceof HTMLElement) || !(loaderTarget instanceof HTMLElement) || !(body instanceof HTMLBodyElement)) {
+    return async () => {};
+  }
+
+  let finished = false;
+
+  return async () => {
+    if (finished) return;
+    finished = true;
+
+    const remainingTime = Math.max(0, minDisplayTimeMs - (Date.now() - startedAt));
+
+    if (remainingTime > 0) {
+      await new Promise((resolve) => window.setTimeout(resolve, remainingTime));
+    }
+
+    await new Promise((resolve) => {
+      let cleaned = false;
+
+      const cleanup = () => {
+        if (cleaned) return;
+        cleaned = true;
+        loader.hidden = true;
+        loader.removeEventListener("transitionend", handleTransitionEnd);
+        resolve();
+      };
+
+      const handleTransitionEnd = (event) => {
+        if (event.target !== loader) return;
+        cleanup();
+      };
+
+      loader.addEventListener("transitionend", handleTransitionEnd);
+      window.setTimeout(cleanup, 900);
+
+      body.classList.remove("startup-loading");
+      body.classList.add("site-ready");
+    });
+  };
+}
+
+const finishStartupLoader = createStartupLoaderController();
+
 function createSupabaseClient() {
   if (!window.supabase || !supabaseConfig.url || !supabaseConfig.anonKey) {
     return null;
@@ -463,6 +514,7 @@ function mergeState(parsed) {
   return {
     ...deepCopy(defaultState),
     ...parsed,
+    adminPin: ADMIN_PIN,
     home: {
       ...deepCopy(defaultState.home),
       ...(parsed.home || {})
@@ -1349,7 +1401,7 @@ function setupAdmin() {
   }
 
   openBtn.addEventListener("click", () => {
-    if (pin.value !== state.adminPin) {
+    if (pin.value !== ADMIN_PIN) {
       alert("PIN admin invalido.");
       return;
     }
@@ -1579,7 +1631,9 @@ async function initApp() {
   }
 }
 
-void initApp();
+void initApp().finally(() => {
+  void finishStartupLoader();
+});
 
 window.addEventListener("online", () => {
   if (hasPendingSync()) {
